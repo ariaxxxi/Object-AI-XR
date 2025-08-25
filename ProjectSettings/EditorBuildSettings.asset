@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/ObjectAI/Scene/Z_Back Log/AI-Object - AR - hard code.unity
+    guid: 620d8f3b15ad546a880908a3356fb4ec
+  - enabled: 1
+    path: Assets/ObjectAI/Scene/Music - AR.unity
+    guid: 3eb1f54165008435286c88f34c8b71bd
+  m_configObjects:
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: d1cd90f9d92ec482ca129ddc438a413c,
+      type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 966add4f05f724a8b953e370aeb7e499,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 30a5ec0ce4935409d8871a4875928f66,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: d189a2971fd464adbac25b1fc33b885b,
+      type: 2}
