@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using DG.Tweening;
 
 [Serializable]
 public class StageDef
@@ -12,16 +10,28 @@ public class StageDef
     public float rangeMax = 2f;
 }
 
+public enum MotionType
+{
+    None = 0,
+
+    // Motion library (designer-facing names)
+    BouncyJumpAppearAndFloating, // old systemDotToIcon
+    ShrinkDown,                  // old systemIconToDot
+    StopFloating,                // old systemPillToPanel
+    StartFloating                // old systemPanelToPill
+}
+
 [Serializable]
 public class EdgeEvents
 {
-    public UnityEvent onForward;
-    public UnityEvent onBackward;
+    [Header("Motion (dropdown)")]
+    public MotionType forwardMotion = MotionType.None;   // i -> i+1
+    public MotionType backwardMotion = MotionType.None;  // (i+1) -> i
 }
 
 public class StageController : MonoBehaviour
 {
-    [Header("Stages (editable, scalable)")]
+    [Header("Stages (ordered)")]
     public List<StageDef> stages = new()
     {
         new StageDef{ id="dot",   rangeMin=0f, rangeMax=2f },
@@ -30,22 +40,28 @@ public class StageController : MonoBehaviour
         new StageDef{ id="panel", rangeMin=7f, rangeMax=10f },
     };
 
-    [Header("Edge Events (size = stages.Count - 1)")]
+    [Header("Edge Motions (size = stages.Count - 1)")]
     public List<EdgeEvents> edges = new();
 
     [Header("Global Transition Settings")]
     public float duration = 1f;
-    public Ease ease = Ease.InOutExpo;
+    public DG.Tweening.Ease ease = DG.Tweening.Ease.InOutExpo;
 
-    public event Action<int, StageDef, float, Ease> OnStageChanged;
+    public event Action<int, StageDef, float, DG.Tweening.Ease> OnStageChanged;
 
     public int CurrentIndex { get; private set; } = -1;
     public StageDef CurrentStage => (CurrentIndex >= 0 && CurrentIndex < stages.Count) ? stages[CurrentIndex] : null;
 
+    private MotionPlayer motionPlayer;
+
+    void Awake()
+    {
+        motionPlayer = FindObjectOfType<MotionPlayer>();
+    }
+
     void OnEnable()
     {
         ResizeEdges();
-        // initialize to first stage
         if (stages.Count > 0) ApplyIndex(0);
     }
 
@@ -58,7 +74,7 @@ public class StageController : MonoBehaviour
         if (edges.Count > target) edges.RemoveRange(target, edges.Count - target);
     }
 
-    // ------- Public request API for any input module -------
+    // -------- Public requests (from inputs) --------
 
     public void RequestStageIndex(int idx)
     {
@@ -73,22 +89,17 @@ public class StageController : MonoBehaviour
         if (idx != CurrentIndex) ApplyIndex(idx);
     }
 
-    // Useful if inputs want to jump by ±1, etc.
-    public void Nudge(int delta)
-    {
-        if (stages.Count == 0) return;
-        RequestStageIndex(Mathf.Clamp(CurrentIndex + delta, 0, stages.Count - 1));
-    }
+    public void Nudge(int delta) => RequestStageIndex(Mathf.Clamp(CurrentIndex + delta, 0, Mathf.Max(0, stages.Count - 1)));
 
-    // ------- Internals -------
+    // -------- Internals --------
 
     int ResolveIndex(float v)
     {
         for (int i = 0; i < stages.Count; i++)
         {
             var s = stages[i];
-            bool last = (i == stages.Count - 1);
-            if ((v >= s.rangeMin && v < s.rangeMax) || (last && v <= s.rangeMax)) return i;
+            bool isLast = (i == stages.Count - 1);
+            if ((v >= s.rangeMin && v < s.rangeMax) || (isLast && v <= s.rangeMax)) return i;
         }
         return Mathf.Clamp(CurrentIndex, 0, Mathf.Max(0, stages.Count - 1));
     }
@@ -96,10 +107,13 @@ public class StageController : MonoBehaviour
     void ApplyIndex(int newIndex)
     {
         int prev = CurrentIndex;
-        CurrentIndex = newIndex;
+        CurrentIndex = Mathf.Clamp(newIndex, 0, stages.Count - 1);
         var def = stages[CurrentIndex];
 
-        if (prev >= 0 && prev != CurrentIndex) StepEdges(prev, CurrentIndex);
+        if (prev >= 0 && prev != CurrentIndex)
+        {
+            StepEdges(prev, CurrentIndex);
+        }
 
         OnStageChanged?.Invoke(CurrentIndex, def, duration, ease);
     }
@@ -107,16 +121,25 @@ public class StageController : MonoBehaviour
     void StepEdges(int from, int to)
     {
         if (edges == null || edges.Count == 0) return;
+        if (motionPlayer == null) motionPlayer = FindObjectOfType<MotionPlayer>();
 
         if (from < to)
         {
             for (int e = from; e < to; e++)
-                if (e >= 0 && e < edges.Count) edges[e].onForward?.Invoke();
+            {
+                var ee = edges[e];
+                if (motionPlayer && ee.forwardMotion != MotionType.None)
+                    motionPlayer.Play(ee.forwardMotion);
+            }
         }
         else
         {
             for (int e = from - 1; e >= to; e--)
-                if (e >= 0 && e < edges.Count) edges[e].onBackward?.Invoke();
+            {
+                var ee = edges[e];
+                if (motionPlayer && ee.backwardMotion != MotionType.None)
+                    motionPlayer.Play(ee.backwardMotion);
+            }
         }
     }
 }
