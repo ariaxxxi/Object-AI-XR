@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [Serializable]
 public class StageDef
@@ -13,25 +14,26 @@ public class StageDef
 public enum MotionType
 {
     None = 0,
-
-    // Motion library (designer-facing names)
-    BouncyJumpAppearAndFloating, // old systemDotToIcon
-    ShrinkDown,                  // old systemIconToDot
-    StopFloating,                // old systemPillToPanel
-    StartFloating                // old systemPanelToPill
+    BouncyJumpAppearAndFloating, // (old systemDotToIcon)
+    ShrinkDown,                  // (old systemIconToDot)
+    StopFloating,                // (old systemPillToPanel)
+    StartFloating                // (old systemPanelToPill)
 }
 
 [Serializable]
-public class EdgeEvents
+public class StageEdgeRule
 {
-    [Header("Motion (dropdown)")]
-    public MotionType forwardMotion = MotionType.None;   // i -> i+1
-    public MotionType backwardMotion = MotionType.None;  // (i+1) -> i
+    [Tooltip("From stage index (0..N-1)")]
+    public int from = 0;
+    [Tooltip("To stage index (0..N-1)")]
+    public int to = 1;
+    [Tooltip("Which motion to play when traversing this edge")]
+    public MotionType motion = MotionType.None;
 }
 
 public class StageController : MonoBehaviour
 {
-    [Header("Stages (ordered)")]
+    [Header("Stages")]
     public List<StageDef> stages = new()
     {
         new StageDef{ id="dot",   rangeMin=0f, rangeMax=2f },
@@ -40,19 +42,20 @@ public class StageController : MonoBehaviour
         new StageDef{ id="panel", rangeMin=7f, rangeMax=10f },
     };
 
-    [Header("Edge Motions (size = stages.Count - 1)")]
-    public List<EdgeEvents> edges = new();
+    [Header("Transition Events")]
+    public List<StageEdgeRule> edges = new(); // e.g. add: 0->1, 1->0, 1->2, 2->1, 2->3, 3->2
+    public event System.Action<int,int,StageDef,float,DG.Tweening.Ease> OnStageChangedDetailed;
 
     [Header("Global Transition Settings")]
     public float duration = 1f;
-    public DG.Tweening.Ease ease = DG.Tweening.Ease.InOutExpo;
+    public Ease ease = Ease.InOutExpo;
 
-    public event Action<int, StageDef, float, DG.Tweening.Ease> OnStageChanged;
+    public event Action<int, StageDef, float, Ease> OnStageChanged;
 
     public int CurrentIndex { get; private set; } = -1;
     public StageDef CurrentStage => (CurrentIndex >= 0 && CurrentIndex < stages.Count) ? stages[CurrentIndex] : null;
 
-    private MotionPlayer motionPlayer;
+    MotionPlayer motionPlayer;
 
     void Awake()
     {
@@ -61,21 +64,10 @@ public class StageController : MonoBehaviour
 
     void OnEnable()
     {
-        ResizeEdges();
-        if (stages.Count > 0) ApplyIndex(0);
-    }
-
-    void OnValidate() => ResizeEdges();
-
-    void ResizeEdges()
-    {
-        int target = Mathf.Max(0, stages.Count - 1);
-        while (edges.Count < target) edges.Add(new EdgeEvents());
-        if (edges.Count > target) edges.RemoveRange(target, edges.Count - target);
+        if (stages.Count > 0) ApplyIndex(0); // initialize
     }
 
     // -------- Public requests (from inputs) --------
-
     public void RequestStageIndex(int idx)
     {
         idx = Mathf.Clamp(idx, 0, Mathf.Max(0, stages.Count - 1));
@@ -92,14 +84,13 @@ public class StageController : MonoBehaviour
     public void Nudge(int delta) => RequestStageIndex(Mathf.Clamp(CurrentIndex + delta, 0, Mathf.Max(0, stages.Count - 1)));
 
     // -------- Internals --------
-
     int ResolveIndex(float v)
     {
         for (int i = 0; i < stages.Count; i++)
         {
             var s = stages[i];
-            bool isLast = (i == stages.Count - 1);
-            if ((v >= s.rangeMin && v < s.rangeMax) || (isLast && v <= s.rangeMax)) return i;
+            bool last = (i == stages.Count - 1);
+            if ((v >= s.rangeMin && v < s.rangeMax) || (last && v <= s.rangeMax)) return i;
         }
         return Mathf.Clamp(CurrentIndex, 0, Mathf.Max(0, stages.Count - 1));
     }
@@ -108,38 +99,85 @@ public class StageController : MonoBehaviour
     {
         int prev = CurrentIndex;
         CurrentIndex = Mathf.Clamp(newIndex, 0, stages.Count - 1);
-        var def = stages[CurrentIndex];
 
+        // 1) Play motions along path (if any)
         if (prev >= 0 && prev != CurrentIndex)
         {
-            StepEdges(prev, CurrentIndex);
+            PlayPath(prev, CurrentIndex);
         }
 
+        // 2) Broadcast to object drivers
+        var def = stages[CurrentIndex];
         OnStageChanged?.Invoke(CurrentIndex, def, duration, ease);
+
+        OnStageChangedDetailed?.Invoke(prev, CurrentIndex, def, duration, ease);
+
     }
 
-    void StepEdges(int from, int to)
+    void PlayPath(int from, int to)
     {
-        if (edges == null || edges.Count == 0) return;
         if (motionPlayer == null) motionPlayer = FindObjectOfType<MotionPlayer>();
+        if (edges == null || edges.Count == 0 || motionPlayer == null) return;
 
-        if (from < to)
+        // BFS over the directed graph the user defined
+        var path = FindPathBFS(from, to);
+        if (path != null && path.Count > 0)
         {
-            for (int e = from; e < to; e++)
+            foreach (var edge in path)
+                if (edge.motion != MotionType.None) motionPlayer.Play(edge.motion);
+            return;
+        }
+
+        // Fallback: try single direct edge (from->to) if user defined it
+        var direct = edges.Find(e => e.from == from && e.to == to);
+        if (direct != null && direct.motion != MotionType.None)
+            motionPlayer.Play(direct.motion);
+    }
+
+    List<StageEdgeRule> FindPathBFS(int start, int goal)
+    {
+        // Build adjacency map
+        var adj = new Dictionary<int, List<StageEdgeRule>>();
+        foreach (var e in edges)
+        {
+            if (!adj.TryGetValue(e.from, out var list)) adj[e.from] = list = new List<StageEdgeRule>();
+            list.Add(e);
+        }
+
+        var queue = new Queue<int>();
+        var cameFrom = new Dictionary<int, StageEdgeRule>(); // key=node, value=edge that got us here
+        var visited = new HashSet<int>();
+
+        queue.Enqueue(start);
+        visited.Add(start);
+
+        while (queue.Count > 0)
+        {
+            int cur = queue.Dequeue();
+            if (cur == goal) break;
+
+            if (!adj.TryGetValue(cur, out var outs)) continue;
+            foreach (var e in outs)
             {
-                var ee = edges[e];
-                if (motionPlayer && ee.forwardMotion != MotionType.None)
-                    motionPlayer.Play(ee.forwardMotion);
+                if (visited.Contains(e.to)) continue;
+                visited.Add(e.to);
+                cameFrom[e.to] = e;
+                queue.Enqueue(e.to);
             }
         }
-        else
+
+        if (!visited.Contains(goal)) return null;
+
+        // Reconstruct edges path: start -> ... -> goal
+        var result = new List<StageEdgeRule>();
+        int node = goal;
+        while (node != start)
         {
-            for (int e = from - 1; e >= to; e--)
-            {
-                var ee = edges[e];
-                if (motionPlayer && ee.backwardMotion != MotionType.None)
-                    motionPlayer.Play(ee.backwardMotion);
-            }
+            var edge = cameFrom[node];
+            result.Add(edge);
+            node = edge.from;
         }
+        result.Reverse();
+        return result;
     }
 }

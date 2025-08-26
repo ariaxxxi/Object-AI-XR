@@ -8,37 +8,33 @@ public class SystemMovement : MonoBehaviour
     [Header("Target")]
     public Transform target;                 // defaults to this.transform
 
-    [Header("Durations")]
+    [Header("Appear + Grow + Throw")]
     public float growDuration = 0.35f;       // 0.1 -> 1
     public float throwDuration = 1.5f;       // total up + down
-    public float ssTime = 0.10f;             // squash/stretch step
-    public float settleToC_Duration = 0.6f;  // B -> C smooth settle
-    public float toA_Duration = 0.45f;       // B/C -> A shrink
+    private float ssTime = 0.10f;             // squash/stretch step
+    private float settleToC_Duration = 0.6f;  // B -> C smooth settle
+    private float toA_Duration = 0.45f;       // B/C -> A shrink
 
-    [Header("Throw Motion")]
     public float throwHeight = 0.1f;         // world units
-    public float arcForward = 0f;          // small forward arc
+    private float arcForward = 0f;          // small forward arc
 
-    [Header("Rotation / Style")]
     public float spinDegrees = 360f;         // y spin during ascent
-    public float tiltAngle = 6f;             // cute tilt on ascent
-    public float tiltTime = 0.25f;           // tilt easing time
+    float tiltAngle = 6f;             // cute tilt on ascent
+    float tiltTime = 0.25f;           // tilt easing time
 
-    [Header("Scale: Grow + Squash/Stretch")]
     public float growFrom = 0.1f;            // state A scale factor
     public float growTo = 1f;                // state B/C base scale
-    public float squashX = 1.10f;            // anticipation widen (kept subtle for round UI)
-    public float squashY = 0.90f;            // anticipation squash
-    public float stretchX = 0.95f;           // takeoff narrow (subtle)
-    public float stretchY = 1.05f;           // takeoff stretch (subtle)
+    private float squashX = 1.10f;            // anticipation widen (kept subtle for round UI)
+    private float squashY = 0.90f;            // anticipation squash
+    private float stretchX = 0.95f;           // takeoff narrow (subtle)
+    private float stretchY = 1.05f;           // takeoff stretch (subtle)
 
-    [Header("Landing")]
-    public float landingRebound = 0.0001f;     // small bounce height after landing
+    private float landingRebound = 0.0001f;     // small bounce height after landing
 
     [Header("Float Loop")]
     public float floatHeight = 0.01f;          // bob magnitude
     public float floatDuration = 0.7f;       // half-cycle (up or down)
-    public float hoverYawPerLoop = 20f;      // gentle yaw
+    public float hoverYawPerLoop = 10f;      // gentle yaw
 
     [Header("Icon↔Pill Subtle Morph (panel-level)")]
     public float morphScaleUp = 1.02f;

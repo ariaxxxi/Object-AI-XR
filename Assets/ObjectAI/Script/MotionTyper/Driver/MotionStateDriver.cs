@@ -3,28 +3,47 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
+[System.Serializable]
+public class TransitionOverride
+{
+    [Header("Match")]
+    [Tooltip("From stage index (0..N-1). Use -1 to match any source.")]
+    public int fromIndex = -1;
+    [Tooltip("To stage index (0..N-1). Use -1 to match any destination.")]
+    public int toIndex = -1;
+
+    [Header("Overrides")]
+    public bool overrideDuration = false;
+    public float duration = 1f;
+
+    public bool overrideEase = false;
+    public Ease ease = Ease.InOutExpo;
+
+    public bool overrideDelay = false;
+    public float delay = 0f;
+}
+
 [DisallowMultipleComponent]
 public class MotionStateDriver : MonoBehaviour
 {
     [Header("Refs")]
-    public StageController controller;       // auto-find if null
-    public RectTransform rt;                 // auto-get if null
-    public CanvasGroup cg;                   // needed if useAlpha (auto-add)
-    public Graphic graphic;                  // for color (UI)
-    public Renderer targetRenderer;          // for color (3D)
+    public StageController controller;
+    public RectTransform rt;
+    public CanvasGroup cg;
+    public Graphic graphic;
+    public Renderer targetRenderer;
 
     [Header("Position Mode")]
-    [Tooltip("OFF: localPosition (World Space). ON: anchoredPosition (Screen Space).")]
     public bool useAnchoredPosition = false;
 
     [Header("Track Toggles")]
-    public bool useLocalPos = true;          // ignored if useAnchoredPosition==true
-    public bool useAnchoredPos = false;      // used if useAnchoredPosition==true
-    public bool useEuler = false;            // local rotation (Euler)
-    public bool useUniformScale = false;     // uniform scale
-    public bool useSizeDelta = false;        // UI width/height
-    public bool useAlpha = false;            // CanvasGroup alpha
-    public bool useColor = false;            // UI Graphic color or Renderer material color
+    public bool useLocalPos = true;
+    public bool useAnchoredPos = false;
+    public bool useEuler = false;
+    public bool useUniformScale = false;
+    public bool useSizeDelta = false;
+    public bool useAlpha = false;
+    public bool useColor = false;
 
     [Header("Per-Stage Tracks (auto-sized)")]
     public List<Vector3> localPosPerStage = new();
@@ -35,19 +54,30 @@ public class MotionStateDriver : MonoBehaviour
     public List<float>   alphaPerStage = new();
     public List<Color>   colorPerStage = new();
 
-    [Header("Overrides (optional)")]
+    [Header("Per-Driver Timing Overrides (fallback)")]
     public bool overrideDuration = false;
     public float duration = 1f;
     public bool overrideEase = false;
     public Ease ease = Ease.InOutExpo;
 
+    [Header("Stagger / Delay (fallback)")]
+    public float startDelay = 0f;
+
+    [Header("Looping")]
+    public bool enableLoop = false;
+    public int loopCount = -1;
+    public LoopType loopType = LoopType.Yoyo;
+
+    [Header("Per-Transition Overrides (highest priority)")]
+    public List<TransitionOverride> transitionOverrides = new();
+
     void Reset()
     {
         rt = GetComponent<RectTransform>();
         cg = GetComponent<CanvasGroup>();
+        if (!cg && useAlpha) cg = gameObject.AddComponent<CanvasGroup>();
         graphic = GetComponent<Graphic>();
         targetRenderer = GetComponent<Renderer>();
-        if (!cg && useAlpha) cg = gameObject.AddComponent<CanvasGroup>();
     }
 
     void Awake()
@@ -66,15 +96,27 @@ public class MotionStateDriver : MonoBehaviour
             Debug.LogWarning($"[MotionStateDriver] No StageController for {name}");
             return;
         }
-        controller.OnStageChanged += ApplyStage;
+
+        // Prefer detailed event if available
+        controller.OnStageChangedDetailed += ApplyStageDetailed;
+        controller.OnStageChanged += ApplyStageLegacy;
+
         EnsureListSizes();
+
         if (controller.CurrentIndex >= 0)
-            ApplyStage(controller.CurrentIndex, controller.CurrentStage, controller.duration, controller.ease);
+        {
+            // Apply instantly to current stage on enable
+            ApplyInstant(controller.CurrentIndex);
+        }
     }
 
     void OnDisable()
     {
-        if (controller) controller.OnStageChanged -= ApplyStage;
+        if (controller != null)
+        {
+            controller.OnStageChangedDetailed -= ApplyStageDetailed;
+            controller.OnStageChanged -= ApplyStageLegacy;
+        }
     }
 
     void OnValidate()
@@ -87,7 +129,7 @@ public class MotionStateDriver : MonoBehaviour
         EnsureListSizes();
     }
 
-    // --------- Ensure tracks match stage count ---------
+    // ---------------- Sizes / defaults ----------------
     void EnsureListSizes()
     {
         int count = controller && controller.stages != null ? controller.stages.Count : 0;
@@ -101,12 +143,12 @@ public class MotionStateDriver : MonoBehaviour
         }
 
         Vector3 curLocal = rt ? rt.localPosition : Vector3.zero;
-        Vector2 curAnch = rt ? rt.anchoredPosition : Vector2.zero;
+        Vector2 curAnch  = rt ? rt.anchoredPosition : Vector2.zero;
         Vector3 curEuler = rt ? rt.localEulerAngles : Vector3.zero;
-        float curScale = rt ? rt.localScale.x : 1f;
-        Vector2 curSize = rt ? rt.sizeDelta : new Vector2(100, 100);
-        float curAlpha = cg ? cg.alpha : 1f;
-        Color curColor = graphic ? graphic.color : (targetRenderer ? GetRendererColor(targetRenderer) : Color.white);
+        float curScale   = rt ? rt.localScale.x : 1f;
+        Vector2 curSize  = rt ? rt.sizeDelta : new Vector2(100, 100);
+        float curAlpha   = cg ? cg.alpha : 1f;
+        Color curColor   = graphic ? graphic.color : (targetRenderer ? GetRendererColor(targetRenderer) : Color.white);
 
         if (useAnchoredPosition) Fit(anchoredPosPerStage, curAnch); else Fit(localPosPerStage, curLocal);
         if (useEuler)            Fit(eulerPerStage, curEuler);
@@ -116,62 +158,117 @@ public class MotionStateDriver : MonoBehaviour
         if (useColor)            Fit(colorPerStage, curColor);
     }
 
-    // --------- Apply tweens on stage change ---------
-    public void ApplyStage(int index, StageDef def, float globalDuration, Ease globalEase)
+    // ---------------- Event adapters ----------------
+    // Old event (no 'from' info) – we treat it as "from = current (unknown)" so only wildcard overrides would match.
+    void ApplyStageLegacy(int toIndex, StageDef toDef, float globalDuration, Ease globalEase)
+    {
+        ApplyStageInternal(fromIndex: -999, toIndex, toDef, globalDuration, globalEase);
+    }
+
+    // New detailed event
+    void ApplyStageDetailed(int fromIndex, int toIndex, StageDef toDef, float globalDuration, Ease globalEase)
+    {
+        ApplyStageInternal(fromIndex, toIndex, toDef, globalDuration, globalEase);
+    }
+
+    // ---------------- Core apply with per-transition overrides ----------------
+    void ApplyStageInternal(int fromIndex, int toIndex, StageDef toDef, float globalDuration, Ease globalEase)
     {
         if (!rt) return;
 
-        float d = overrideDuration ? duration : globalDuration;
-        Ease  e = overrideEase ? ease : globalEase;
+        // 1) Compute effective timing from highest to lowest priority:
+        //    (A) First matching TransitionOverride  → (B) per-driver override → (C) controller default
+        float effDuration = overrideDuration ? duration : globalDuration;
+        Ease  effEase     = overrideEase     ? ease     : globalEase;
+        float effDelay    = startDelay;
 
+        var ov = FindFirstMatchingOverride(fromIndex, toIndex);
+        if (ov != null)
+        {
+            if (ov.overrideDuration) effDuration = ov.duration;
+            if (ov.overrideEase)     effEase     = ov.ease;
+            if (ov.overrideDelay)    effDelay    = ov.delay;
+        }
+
+        // 2) Kill existing tweens on my targets
         DOTween.Kill(rt);
         if (cg) DOTween.Kill(cg);
         if (graphic) DOTween.Kill(graphic);
 
-        // Position
-        if (useAnchoredPosition && useAnchoredPos && anchoredPosPerStage.Count > index)
-            rt.DOAnchorPos(anchoredPosPerStage[index], d).SetEase(e);
-        else if (!useAnchoredPosition && useLocalPos && localPosPerStage.Count > index)
-            rt.DOLocalMove(localPosPerStage[index], d).SetEase(e);
-
-        // Rotation
-        if (useEuler && eulerPerStage.Count > index)
-            rt.DOLocalRotate(eulerPerStage[index], d).SetEase(e);
-
-        // Size
-        if (useSizeDelta && sizePerStage.Count > index)
-            rt.DOSizeDelta(sizePerStage[index], d).SetEase(e);
-
-        // Scale (uniform)
-        if (useUniformScale && uniformScalePerStage.Count > index)
-            rt.DOScale(uniformScalePerStage[index], d).SetEase(e);
-
-        // Alpha
-        if (useAlpha && cg && alphaPerStage.Count > index)
-            cg.DOFade(alphaPerStage[index], d).SetEase(e);
-
-        // Color
-        if (useColor && colorPerStage.Count > index)
+        // Helper applies delay/looping consistently
+        Tween WithTiming(Tween t)
         {
-            var target = colorPerStage[index];
+            if (t == null) return null;
+            if (effDelay > 0f) t.SetDelay(effDelay);
+            if (enableLoop) t.SetLoops(loopCount, loopType);
+            return t;
+        }
 
+        // 3) Start tweens to the "toIndex" values
+        if (useAnchoredPosition && useAnchoredPos && anchoredPosPerStage.Count > toIndex)
+            WithTiming(rt.DOAnchorPos(anchoredPosPerStage[toIndex], effDuration).SetEase(effEase));
+        else if (!useAnchoredPosition && useLocalPos && localPosPerStage.Count > toIndex)
+            WithTiming(rt.DOLocalMove(localPosPerStage[toIndex], effDuration).SetEase(effEase));
+
+        if (useEuler && eulerPerStage.Count > toIndex)
+            WithTiming(rt.DOLocalRotate(eulerPerStage[toIndex], effDuration).SetEase(effEase));
+
+        if (useSizeDelta && sizePerStage.Count > toIndex)
+            WithTiming(rt.DOSizeDelta(sizePerStage[toIndex], effDuration).SetEase(effEase));
+
+        if (useUniformScale && uniformScalePerStage.Count > toIndex)
+            WithTiming(rt.DOScale(uniformScalePerStage[toIndex], effDuration).SetEase(effEase));
+
+        if (useAlpha && cg && alphaPerStage.Count > toIndex)
+            WithTiming(cg.DOFade(alphaPerStage[toIndex], effDuration).SetEase(effEase));
+
+        if (useColor && colorPerStage.Count > toIndex)
+        {
+            var target = colorPerStage[toIndex];
             if (graphic)
-            {
-                graphic.DOColor(target, d).SetEase(e);
-            }
+                WithTiming(graphic.DOColor(target, effDuration).SetEase(effEase));
             else if (targetRenderer)
             {
-                // Try _BaseColor first (URP), then _Color
                 var mat = targetRenderer.material;
                 if (mat.HasProperty("_BaseColor"))
-                    DOTween.To(() => mat.GetColor("_BaseColor"), c => mat.SetColor("_BaseColor", c), target, d).SetEase(e);
+                    WithTiming(DOTween.To(() => mat.GetColor("_BaseColor"), c => mat.SetColor("_BaseColor", c), target, effDuration).SetEase(effEase));
                 else if (mat.HasProperty("_Color"))
-                    DOTween.To(() => mat.color, c => mat.color = c, target, d).SetEase(e);
+                    WithTiming(DOTween.To(() => mat.color, c => mat.color = c, target, effDuration).SetEase(effEase));
             }
         }
     }
 
-    // --------- (Optional) Instant apply for editor preview ---------
+    TransitionOverride FindFirstMatchingOverride(int fromIndex, int toIndex)
+    {
+        if (transitionOverrides == null || transitionOverrides.Count == 0) return null;
+
+        // Priority order:
+        // 1) Exact from & exact to
+        // 2) Exact from & any to (-1)
+        // 3) Any from (-1) & exact to
+        // 4) Any from (-1) & any to (-1)
+        TransitionOverride best = null; int bestScore = -1;
+
+        foreach (var ov in transitionOverrides)
+        {
+            bool fromMatch = (ov.fromIndex == -1) || (ov.fromIndex == fromIndex);
+            bool toMatch   = (ov.toIndex   == -1) || (ov.toIndex   == toIndex);
+            if (!fromMatch || !toMatch) continue;
+
+            int score = 0;
+            if (ov.fromIndex != -1) score += 2;
+            if (ov.toIndex   != -1) score += 1;
+
+            if (score > bestScore)
+            {
+                best = ov;
+                bestScore = score;
+                if (bestScore == 3) break; // exact/ exact found
+            }
+        }
+        return best;
+    }
+
     public void ApplyInstant(int index)
     {
         if (!rt) return;
@@ -206,7 +303,6 @@ public class MotionStateDriver : MonoBehaviour
         }
     }
 
-    // Utility to read renderer color
     static Color GetRendererColor(Renderer r)
     {
         if (!r) return Color.white;
