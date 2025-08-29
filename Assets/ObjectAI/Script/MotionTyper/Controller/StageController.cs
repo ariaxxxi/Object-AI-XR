@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Events;
 
 [Serializable]
 public class StageDef
@@ -14,10 +15,10 @@ public class StageDef
 public enum MotionType
 {
     None = 0,
-    BouncyJumpAppearAndFloating, // (old systemDotToIcon)
-    ShrinkDown,                  // (old systemIconToDot)
-    StopFloating,                // (old systemPillToPanel)
-    StartFloating                // (old systemPanelToPill)
+    BouncyJumpAppearAndFloating, // system: start float (after jump)
+    ShrinkDown,                  // system: shrink to tiny
+    StopFloating,                // system: stop float (settle)
+    StartFloating                // system: resume float
 }
 
 [Serializable]
@@ -25,15 +26,21 @@ public class StageEdgeRule
 {
     [Tooltip("From stage index (0..N-1)")]
     public int from = 0;
+
     [Tooltip("To stage index (0..N-1)")]
     public int to = 1;
-    [Tooltip("Which motion to play when traversing this edge")]
+
+    [Header("Library Motion (optional)")]
     public MotionType motion = MotionType.None;
+
+    [Header("Custom Call (optional)")]
+    public UnityEvent onTraverse;   // call any function(s) here
 }
 
 public class StageController : MonoBehaviour
 {
-    [Header("Stages")]
+    
+    [Header("Stages (ordered)")]
     public List<StageDef> stages = new()
     {
         new StageDef{ id="dot",   rangeMin=0f, rangeMax=2f },
@@ -42,32 +49,30 @@ public class StageController : MonoBehaviour
         new StageDef{ id="panel", rangeMin=7f, rangeMax=10f },
     };
 
-    [Header("Transition Events")]
-    public List<StageEdgeRule> edges = new(); // e.g. add: 0->1, 1->0, 1->2, 2->1, 2->3, 3->2
-    public event System.Action<int,int,StageDef,float,DG.Tweening.Ease> OnStageChangedDetailed;
+    [Header("Edge Rules (free-form)")]
+    public List<StageEdgeRule> edges = new(); // ex: 0->1, 1->0, 1->2, 2->1, 2->3, 3->2
 
     [Header("Global Transition Settings")]
     public float duration = 1f;
     public Ease ease = Ease.InOutExpo;
 
-    public event Action<int, StageDef, float, Ease> OnStageChanged;
+    [Header("Scoped Motion Player (per controller)")]
+    public MotionPlayer motionPlayer; // <<< assign the MotionPlayer for THIS system
+
+    // Events for drivers (object-level)
+    public event Action<int, StageDef, float, Ease> OnStageChanged;                        // legacy
+    public event Action<int, int, StageDef, float, Ease> OnStageChangedDetailed;               // (from,to,...)
 
     public int CurrentIndex { get; private set; } = -1;
     public StageDef CurrentStage => (CurrentIndex >= 0 && CurrentIndex < stages.Count) ? stages[CurrentIndex] : null;
 
-    MotionPlayer motionPlayer;
-
-    void Awake()
-    {
-        motionPlayer = FindObjectOfType<MotionPlayer>();
-    }
-
     void OnEnable()
     {
-        if (stages.Count > 0) ApplyIndex(0); // initialize
+        // initialize to stage 0
+        if (stages.Count > 0) ApplyIndex(0);
     }
 
-    // -------- Public requests (from inputs) --------
+    // ------ Public API ------
     public void RequestStageIndex(int idx)
     {
         idx = Mathf.Clamp(idx, 0, Mathf.Max(0, stages.Count - 1));
@@ -83,7 +88,7 @@ public class StageController : MonoBehaviour
 
     public void Nudge(int delta) => RequestStageIndex(Mathf.Clamp(CurrentIndex + delta, 0, Mathf.Max(0, stages.Count - 1)));
 
-    // -------- Internals --------
+    // ------ Internals ------
     int ResolveIndex(float v)
     {
         for (int i = 0; i < stages.Count; i++)
@@ -99,44 +104,47 @@ public class StageController : MonoBehaviour
     {
         int prev = CurrentIndex;
         CurrentIndex = Mathf.Clamp(newIndex, 0, stages.Count - 1);
+        var toDef = stages[CurrentIndex];
 
-        // 1) Play motions along path (if any)
         if (prev >= 0 && prev != CurrentIndex)
-        {
-            PlayPath(prev, CurrentIndex);
-        }
+            PlayPath(prev, CurrentIndex); // triggers motions/events per edge
 
-        // 2) Broadcast to object drivers
-        var def = stages[CurrentIndex];
-        OnStageChanged?.Invoke(CurrentIndex, def, duration, ease);
-
-        OnStageChangedDetailed?.Invoke(prev, CurrentIndex, def, duration, ease);
-
+        // Notify drivers (object-level state tweening)
+        OnStageChanged?.Invoke(CurrentIndex, toDef, duration, ease);
+        OnStageChangedDetailed?.Invoke(prev, CurrentIndex, toDef, duration, ease);
     }
 
     void PlayPath(int from, int to)
     {
-        if (motionPlayer == null) motionPlayer = FindObjectOfType<MotionPlayer>();
-        if (edges == null || edges.Count == 0 || motionPlayer == null) return;
-
-        // BFS over the directed graph the user defined
         var path = FindPathBFS(from, to);
-        if (path != null && path.Count > 0)
+        if (path == null || path.Count == 0)
         {
-            foreach (var edge in path)
-                if (edge.motion != MotionType.None) motionPlayer.Play(edge.motion);
+            // Try direct edge once
+            var direct = edges.Find(e => e.from == from && e.to == to);
+            if (direct != null) ExecuteEdge(direct);
             return;
         }
 
-        // Fallback: try single direct edge (from->to) if user defined it
-        var direct = edges.Find(e => e.from == from && e.to == to);
-        if (direct != null && direct.motion != MotionType.None)
-            motionPlayer.Play(direct.motion);
+        foreach (var edge in path) ExecuteEdge(edge);
+    }
+
+    void ExecuteEdge(StageEdgeRule edge)
+    {
+        // 1) Library motion (optional)
+        if (motionPlayer && edge.motion != MotionType.None)
+            motionPlayer.Play(edge.motion);
+
+
+        // 2) Custom function(s) (optional)
+        edge.onTraverse?.Invoke();
+
+        // If neither motion nor event is set → DO NOTHING (default “inherit behavior”)
+        // That means floating or any ongoing behavior continues unchanged.
     }
 
     List<StageEdgeRule> FindPathBFS(int start, int goal)
     {
-        // Build adjacency map
+        // Build adjacency
         var adj = new Dictionary<int, List<StageEdgeRule>>();
         foreach (var e in edges)
         {
@@ -144,16 +152,16 @@ public class StageController : MonoBehaviour
             list.Add(e);
         }
 
-        var queue = new Queue<int>();
-        var cameFrom = new Dictionary<int, StageEdgeRule>(); // key=node, value=edge that got us here
+        var q = new Queue<int>();
+        var came = new Dictionary<int, StageEdgeRule>();
         var visited = new HashSet<int>();
 
-        queue.Enqueue(start);
+        q.Enqueue(start);
         visited.Add(start);
 
-        while (queue.Count > 0)
+        while (q.Count > 0)
         {
-            int cur = queue.Dequeue();
+            var cur = q.Dequeue();
             if (cur == goal) break;
 
             if (!adj.TryGetValue(cur, out var outs)) continue;
@@ -161,23 +169,53 @@ public class StageController : MonoBehaviour
             {
                 if (visited.Contains(e.to)) continue;
                 visited.Add(e.to);
-                cameFrom[e.to] = e;
-                queue.Enqueue(e.to);
+                came[e.to] = e;
+                q.Enqueue(e.to);
             }
         }
 
         if (!visited.Contains(goal)) return null;
 
-        // Reconstruct edges path: start -> ... -> goal
-        var result = new List<StageEdgeRule>();
+        // Reconstruct
+        var path = new List<StageEdgeRule>();
         int node = goal;
         while (node != start)
         {
-            var edge = cameFrom[node];
-            result.Add(edge);
+            var edge = came[node];
+            path.Add(edge);
             node = edge.from;
         }
-        result.Reverse();
-        return result;
+        path.Reverse();
+        return path;
     }
+    
+
+
+    #region Editor Preview (instant snap in editor)
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Instantly snap all MotionStateDrivers that point to THIS controller to the given stage index.
+    /// Works in edit & play mode; doesn’t traverse edges or play motions.
+    /// </summary>
+    public void PreviewInstant(int index)
+    {
+        if (stages == null || stages.Count == 0) return;
+        index = Mathf.Clamp(index, 0, stages.Count - 1);
+
+        var drivers = UnityEngine.Object.FindObjectsOfType<MotionStateDriver>(true);
+        foreach (var d in drivers)
+        {
+            if (!d) continue;
+            if (d.controller == this)
+                d.ApplyInstant(index);
+        }
+
+        // Keep internal pointer consistent in editor
+        CurrentIndex = index;
+    }
+#endif
+
+    #endregion
+
 }

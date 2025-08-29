@@ -3,13 +3,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class MotionPlayer : MonoBehaviour
 {
-    public SystemMovement movement; // assign or auto-find
-
-    void Awake()
-    {
-        if (!movement) movement = GetComponent<SystemMovement>();
-        if (!movement) movement = FindObjectOfType<SystemMovement>();
-    }
+    [Tooltip("Movement/motion component for THIS system/panel.")]
+    public SystemMovement movement; // assign in inspector (no global Find)
 
     public void Play(MotionType t)
     {
