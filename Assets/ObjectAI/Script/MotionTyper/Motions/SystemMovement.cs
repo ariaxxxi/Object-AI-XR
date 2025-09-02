@@ -8,37 +8,33 @@ public class SystemMovement : MonoBehaviour
     [Header("Target")]
     public Transform target;                 // defaults to this.transform
 
-    [Header("Durations")]
+    [Header("Appear + Grow + Throw")]
     public float growDuration = 0.35f;       // 0.1 -> 1
     public float throwDuration = 1.5f;       // total up + down
-    public float ssTime = 0.10f;             // squash/stretch step
-    public float settleToC_Duration = 0.6f;  // B -> C smooth settle
-    public float toA_Duration = 0.45f;       // B/C -> A shrink
+    private float ssTime = 0.10f;             // squash/stretch step
+    private float settleToC_Duration = 0.6f;  // B -> C smooth settle
+    private float toA_Duration = 0.45f;       // B/C -> A shrink
 
-    [Header("Throw Motion")]
     public float throwHeight = 0.1f;         // world units
-    public float arcForward = 0f;          // small forward arc
+    private float arcForward = 0f;          // small forward arc
 
-    [Header("Rotation / Style")]
     public float spinDegrees = 360f;         // y spin during ascent
-    public float tiltAngle = 6f;             // cute tilt on ascent
-    public float tiltTime = 0.25f;           // tilt easing time
+    float tiltAngle = 6f;             // cute tilt on ascent
+    float tiltTime = 0.25f;           // tilt easing time
 
-    [Header("Scale: Grow + Squash/Stretch")]
     public float growFrom = 0.1f;            // state A scale factor
     public float growTo = 1f;                // state B/C base scale
-    public float squashX = 1.10f;            // anticipation widen (kept subtle for round UI)
-    public float squashY = 0.90f;            // anticipation squash
-    public float stretchX = 0.95f;           // takeoff narrow (subtle)
-    public float stretchY = 1.05f;           // takeoff stretch (subtle)
+    private float squashX = 1.10f;            // anticipation widen (kept subtle for round UI)
+    private float squashY = 0.90f;            // anticipation squash
+    private float stretchX = 0.95f;           // takeoff narrow (subtle)
+    private float stretchY = 1.05f;           // takeoff stretch (subtle)
 
-    [Header("Landing")]
-    public float landingRebound = 0.0001f;     // small bounce height after landing
+    private float landingRebound = 0.0001f;     // small bounce height after landing
 
     [Header("Float Loop")]
     public float floatHeight = 0.01f;          // bob magnitude
     public float floatDuration = 0.7f;       // half-cycle (up or down)
-    public float hoverYawPerLoop = 20f;      // gentle yaw
+    public float hoverYawPerLoop = 10f;      // gentle yaw
 
     [Header("Icon↔Pill Subtle Morph (panel-level)")]
     public float morphScaleUp = 1.02f;
@@ -64,13 +60,15 @@ public class SystemMovement : MonoBehaviour
         startPos = target.position;
         startEuler = target.localEulerAngles;
         baseScale = target.localScale;
-        ApplyStateAInstant();
+        // ApplyStateAInstant();
     }
 
     // --------------------------- A -> B (Throw) ---------------------------
     [ContextMenu("Throw (A -> B)")]
     public void BouncyJumpAppearAndFloating()
     {
+        Debug.Log("BouncyJumpAppearAndFloating function called");
+
         KillAllTweens();
 
         Vector3 peakPos = startPos + Vector3.up * throwHeight + target.forward * arcForward;
@@ -122,7 +120,7 @@ public class SystemMovement : MonoBehaviour
 
         // 6) Start floating loop (becomes State B)
         seq.AppendCallback(() => StartFloatLoop());
-        seq.OnComplete(() => State = MotionState.B_Floating);
+        // seq.OnComplete(() => State = MotionState.B_Floating);
 
         seq.Play();
     }
@@ -148,7 +146,7 @@ public class SystemMovement : MonoBehaviour
         seq.Append(target.DOScale(overshoot, toA_Duration * 0.4f).SetEase(Ease.OutQuad));
         seq.Append(target.DOScale(baseScale * growFrom, 1f).SetEase(Ease.InOutExpo));
 
-        seq.OnComplete(() => State = MotionState.A_Tiny);
+        // seq.OnComplete(() => State = MotionState.A_Tiny);
         seq.Play();
     }
 
@@ -156,6 +154,7 @@ public class SystemMovement : MonoBehaviour
     [ContextMenu("To C (B -> C)")]
     public void StopFloating()
     {
+        Debug.Log("StopFloating function called");
         KillFloatLoops();
         if (seq != null && seq.IsActive()) seq.Kill(false);
         if (morphTween != null && morphTween.IsActive()) morphTween.Kill(false);
@@ -170,14 +169,14 @@ public class SystemMovement : MonoBehaviour
         // Ensure base scale remains at grown size (perfect circle)
         seq.Join(target.DOScale(baseScale * growTo, settleToC_Duration * 0.6f).SetEase(Ease.InOutQuad));
 
-        seq.OnComplete(() => State = MotionState.C_Still);
+        // seq.OnComplete(() => State = MotionState.C_Still);
         seq.Play();
     }
 
     [ContextMenu("BackToB (C -> B)")]
     public void StartFloating()
     {
-        if (State != MotionState.C_Still) return;
+        Debug.Log("StartFloating function called");
 
         KillAllTweens();
 
@@ -185,13 +184,15 @@ public class SystemMovement : MonoBehaviour
         seq.Append(target.DOMoveY(startPos.y, toA_Duration * 0.5f).SetEase(Ease.InOutQuad));
         seq.Join(target.DOLocalRotate(startEuler, toA_Duration * 0.5f, RotateMode.Fast).SetEase(Ease.InOutSine));
         seq.AppendCallback(() => StartFloatLoop());
-        seq.OnComplete(() => State = MotionState.B_Floating);
+        // seq.OnComplete(() => State = MotionState.B_Floating);
         seq.Play();
     }
 
     // --------------------------- NEW: Icon ↔ Pill (subtle morph only) -----
     // These are for StageController's Icon<->Pill edge. They DO NOT disrupt float/yaw loops.
     [ContextMenu("Subtle Morph (Icon -> Pill)")]
+
+
     public void SubtleMorphPulseUp()
     {
         SubtleMorphPulse(upwards: true);
@@ -243,6 +244,7 @@ public class SystemMovement : MonoBehaviour
         if (floatTween != null && floatTween.IsActive()) floatTween.Kill(false);
         if (yawTween != null && yawTween.IsActive()) yawTween.Kill(false);
         floatTween = null; yawTween = null;
+        Debug.Log("Kill float loop");
     }
 
     private void KillAllTweens()
@@ -259,6 +261,6 @@ public class SystemMovement : MonoBehaviour
         target.position = startPos;
         target.localEulerAngles = startEuler;
         target.localScale = baseScale * growFrom;
-        State = MotionState.A_Tiny;
+        // State = MotionState.A_Tiny;
     }
 }

@@ -8,9 +8,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/ObjectAI/Scene/Z_Back Log/AI-Object - AR - hard code.unity
     guid: 620d8f3b15ad546a880908a3356fb4ec
-  - enabled: 1
+  - enabled: 0
     path: Assets/ObjectAI/Scene/Music - AR.unity
     guid: 3eb1f54165008435286c88f34c8b71bd
+  - enabled: 1
+    path: Assets/ObjectAI/Scene/Plant - AR.unity
+    guid: 0527eaf94b7fe4e9582d5085c2e9c51d
   m_configObjects:
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: d1cd90f9d92ec482ca129ddc438a413c,
       type: 2}
