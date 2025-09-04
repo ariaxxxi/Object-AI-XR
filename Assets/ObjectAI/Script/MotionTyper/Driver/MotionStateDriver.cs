@@ -9,17 +9,40 @@ public class MotionStateDriver : MonoBehaviour
     public StageController controller;
 
     [Header("Targets (optional)")]
-    public RectTransform rt;
-    public CanvasGroup cg;
+    [HideInInspector] public RectTransform rt;
+    [HideInInspector] public CanvasGroup cg;
 
-    [Header("Global Timing (fallback)")]
+    [Header("Global Timing Overrides")]
     public bool overrideDuration;
     public float duration = 1f;
     public bool overrideEase;
     public Ease ease = Ease.InOutExpo;
     public float startDelay = 0f;
 
-    [Header("Track Toggles (ESSENTIALS)")]
+    [System.Serializable]
+    public class EdgeTimingOverride
+    {
+        public bool enabled = true;
+        [Tooltip("From stage index")]
+        public int from;
+        [Tooltip("To stage index")]
+        public int to;
+
+        [Header("Overrides")]
+        public bool useDuration;
+        public float duration = 1f;
+
+        public bool useEase;
+        public Ease ease = Ease.InOutExpo;
+
+        public bool useDelay;
+        public float delay = 0f;
+    }
+
+    [Header("Per-Edge Timing Overrides")]
+    public List<EdgeTimingOverride> edgeTimingOverrides = new();
+
+    [Header("Track Toggles (Essentials)")]
     public bool useAnchoredPosition;
     public bool useLocalPosition;
     public bool useEuler;
@@ -27,7 +50,7 @@ public class MotionStateDriver : MonoBehaviour
     public bool useSizeDelta;
     public bool useAlpha;
 
-    [Header("Per-Stage Values (auto-sized)")]
+    [Header("Per-Stage Values")]
     public List<Vector2> anchoredPosPerStage = new();
     public List<Vector3> localPosPerStage = new();
     public List<Vector3> eulerPerStage = new();
@@ -46,8 +69,8 @@ public class MotionStateDriver : MonoBehaviour
     void Awake()
     {
         if (string.IsNullOrEmpty(tweenId)) tweenId = "DRV_CORE_" + GetInstanceID();
-        if (!rt) rt = GetComponent<RectTransform>();
-        if (!cg && useAlpha) cg = GetComponent<CanvasGroup>();
+        rt = GetComponent<RectTransform>();
+        cg = GetComponent<CanvasGroup>();
     }
 
     void OnEnable()
@@ -74,8 +97,8 @@ public class MotionStateDriver : MonoBehaviour
     void OnValidate()
     {
         if (string.IsNullOrEmpty(tweenId)) tweenId = "DRV_CORE_" + GetInstanceID();
-        if (!rt) rt = GetComponent<RectTransform>();
-        if (!cg && useAlpha) cg = GetComponent<CanvasGroup>();
+        rt = GetComponent<RectTransform>();
+        cg = GetComponent<CanvasGroup>();
         EnsureListSizes();
     }
 
@@ -107,17 +130,46 @@ public class MotionStateDriver : MonoBehaviour
     }
 
     void ApplyStageLegacy(int toIndex, StageDef def, float globalDuration, Ease globalEase)
-        => ApplyStageInternal(toIndex, globalDuration, globalEase);
+        => ApplyStageInternal(-1, toIndex, globalDuration, globalEase);
 
     void ApplyStageDetailed(int fromIndex, int toIndex, StageDef def, float globalDuration, Ease globalEase)
-        => ApplyStageInternal(toIndex, globalDuration, globalEase);
+        => ApplyStageInternal(fromIndex, toIndex, globalDuration, globalEase);
 
-    void ApplyStageInternal(int toIndex, float globalDuration, Ease globalEase)
+    void ResolveTiming(int fromIndex, int toIndex, float globalDuration, Ease globalEase,
+                       out float effDuration, out Ease effEase, out float effDelay)
+    {
+        effDuration = overrideDuration ? duration : globalDuration;
+        effEase     = overrideEase     ? ease     : globalEase;
+        effDelay    = startDelay;
+
+        // Apply per-edge override if present
+        var o = FindEdgeOverride(fromIndex, toIndex);
+        if (o != null && o.enabled)
+        {
+            if (o.useDuration) effDuration = o.duration;
+            if (o.useEase)     effEase     = o.ease;
+            if (o.useDelay)    effDelay    = o.delay;
+        }
+    }
+
+    EdgeTimingOverride FindEdgeOverride(int fromIndex, int toIndex)
+    {
+        if (fromIndex < 0 || edgeTimingOverrides == null) return null;
+        for (int i = 0; i < edgeTimingOverrides.Count; i++)
+        {
+            var o = edgeTimingOverrides[i];
+            if (o != null && o.enabled && o.from == fromIndex && o.to == toIndex)
+                return o;
+        }
+        return null;
+    }
+
+    void ApplyStageInternal(int fromIndex, int toIndex, float globalDuration, Ease globalEase)
     {
         if (toIndex < 0) return;
 
-        float effDuration = overrideDuration ? duration : globalDuration;
-        Ease  effEase     = overrideEase     ? ease     : globalEase;
+        ResolveTiming(fromIndex, toIndex, globalDuration, globalEase,
+                      out float effDuration, out Ease effEase, out float effDelay);
 
         DOTween.Kill(tweenId, false);
 
@@ -125,7 +177,7 @@ public class MotionStateDriver : MonoBehaviour
         {
             if (t == null) return null;
             t.SetId(tweenId);
-            if (startDelay > 0f) t.SetDelay(startDelay);
+            if (effDelay > 0f) t.SetDelay(effDelay);
             return t;
         }
 

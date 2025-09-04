@@ -181,6 +181,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -377,6 +378,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -659,6 +661,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -937,6 +940,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -1125,12 +1129,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 57745026}
-  cg: {fileID: 0}
+  cg: {fileID: 57745028}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -1372,6 +1377,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -1513,6 +1519,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -1680,12 +1687,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1682461111}
   rt: {fileID: 212265515}
-  cg: {fileID: 0}
+  cg: {fileID: 212265517}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -1816,6 +1824,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -2204,6 +2213,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -2370,6 +2380,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -2562,6 +2573,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -2664,33 +2676,66 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stages:
   - id: dot
+    triggerBySlider: 1
     rangeMin: 0
     rangeMax: 2
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   - id: icon
+    triggerBySlider: 1
     rangeMin: 2
     rangeMax: 4
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   - id: pill
+    triggerBySlider: 1
     rangeMin: 4
     rangeMax: 7
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   - id: panel
+    triggerBySlider: 1
     rangeMin: 7
     rangeMax: 10
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   edges:
   - from: 0
     to: 1
+    useMotion: 0
     motion: 1
+    useCustomCall: 0
     onTraverse:
       m_PersistentCalls:
         m_Calls: []
   - from: 1
     to: 0
+    useMotion: 0
     motion: 2
+    useCustomCall: 0
     onTraverse:
       m_PersistentCalls:
         m_Calls: []
   duration: 1
   ease: 28
-  motionPlayer: {fileID: 855251190}
+  motionLibrary: {fileID: 0}
+  sliderInput: {fileID: 0}
 --- !u!4 &381627152
 Transform:
   m_ObjectHideFlags: 0
@@ -2759,12 +2804,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1682461111}
   rt: {fileID: 421112507}
-  cg: {fileID: 0}
+  cg: {fileID: 421112509}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -2897,6 +2943,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -3171,6 +3218,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -3337,7 +3385,6 @@ Transform:
   m_Children:
   - {fileID: 1682461110}
   - {fileID: 1716642807}
-  - {fileID: 1148720714}
   m_Father: {fileID: 456454263}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &474490626
@@ -3401,6 +3448,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -3537,12 +3585,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1682461111}
   rt: {fileID: 484070517}
-  cg: {fileID: 0}
+  cg: {fileID: 484070520}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 1
   useLocalPosition: 0
   useEuler: 0
@@ -3625,6 +3674,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -3717,6 +3767,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -3883,6 +3934,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -4067,6 +4119,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -4334,6 +4387,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -4450,7 +4504,7 @@ Transform:
   m_GameObject: {fileID: 724496689}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.768}
+  m_LocalPosition: {x: 0, y: 0, z: 0.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4823,6 +4877,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -4955,10 +5010,21 @@ MonoBehaviour:
   target: {fileID: 719799599}
   growDuration: 0.35
   throwDuration: 1.5
+  ssTime: 0.1
+  settleToC_Duration: 0.6
+  toA_Duration: 0.45
   throwHeight: 0.04
+  arcForward: 0
   spinDegrees: 360
+  tiltAngle: 6
+  tiltTime: 0.25
   growFrom: 0.1
   growTo: 1
+  squashX: 1.1
+  squashY: 0.9
+  stretchX: 0.95
+  stretchY: 1.05
+  landingRebound: 0.0001
   floatHeight: 0.006
   floatDuration: 0.7
   hoverYawPerLoop: 10
@@ -4966,6 +5032,10 @@ MonoBehaviour:
   morphDuration: 0.35
   morphUpEase: 6
   morphDownEase: 5
+  startPos: {x: 0, y: 0, z: 0}
+  startEuler: {x: 0, y: 0, z: 0}
+  baseScale: {x: 0, y: 0, z: 0}
+  <State>k__BackingField: 0
 --- !u!1 &909922711
 GameObject:
   m_ObjectHideFlags: 0
@@ -5027,6 +5097,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -5233,6 +5304,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -5425,6 +5497,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -5600,6 +5673,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -5772,6 +5846,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -6117,6 +6192,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -6142,52 +6218,6 @@ MonoBehaviour:
   - 1
   - 1
   tweenId: DRV_36130
---- !u!1 &1148720712
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1148720714}
-  - component: {fileID: 1148720716}
-  m_Layer: 0
-  m_Name: Input Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1148720714
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1148720712}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 466087005}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1148720716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1148720712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d131839b5cc444b5ae4ca2118d4d420, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 1682461111}
-  slider: {fileID: 1828190293}
 --- !u!1 &1168534623
 GameObject:
   m_ObjectHideFlags: 0
@@ -6335,6 +6365,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -6531,6 +6562,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -6624,6 +6656,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -6885,6 +6918,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -7079,6 +7113,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -7267,12 +7302,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1326986119}
-  cg: {fileID: 0}
+  cg: {fileID: 1326986121}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -7405,6 +7441,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -7578,6 +7615,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -7768,6 +7806,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -7958,6 +7997,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -8150,6 +8190,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -8280,6 +8321,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -8547,6 +8589,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -8640,6 +8683,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -8731,6 +8775,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -9034,6 +9079,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -9127,6 +9173,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -9308,6 +9355,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -9399,6 +9447,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -9588,12 +9637,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1638833060}
-  cg: {fileID: 0}
+  cg: {fileID: 1638833062}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 1
   useLocalPosition: 0
   useEuler: 0
@@ -9711,33 +9761,74 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stages:
   - id: dot
+    triggerBySlider: 1
     rangeMin: 0
     rangeMax: 2
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   - id: icon
+    triggerBySlider: 1
     rangeMin: 2
     rangeMax: 4
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   - id: pill
+    triggerBySlider: 1
     rangeMin: 4
     rangeMax: 7
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   - id: panel
+    triggerBySlider: 1
     rangeMin: 7
     rangeMax: 10
+    triggerByKey: 0
+    key: 0
+    triggerByManual: 0
+    onManualTrigger:
+      m_PersistentCalls:
+        m_Calls: []
   edges:
   - from: 0
     to: 1
+    useMotion: 1
     motion: 1
+    useCustomCall: 0
     onTraverse:
       m_PersistentCalls:
         m_Calls: []
   - from: 1
     to: 0
+    useMotion: 1
     motion: 2
+    useCustomCall: 0
+    onTraverse:
+      m_PersistentCalls:
+        m_Calls: []
+  - from: 2
+    to: 3
+    useMotion: 1
+    motion: 8
+    useCustomCall: 0
     onTraverse:
       m_PersistentCalls:
         m_Calls: []
   duration: 1
   ease: 28
-  motionPlayer: {fileID: 1716642808}
+  motionLibrary: {fileID: 1716642808}
+  sliderInput: {fileID: 1828190293}
 --- !u!1 &1694887888
 GameObject:
   m_ObjectHideFlags: 0
@@ -9799,6 +9890,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -9922,10 +10014,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1716642807}
-  - component: {fileID: 1716642809}
   - component: {fileID: 1716642808}
   m_Layer: 0
-  m_Name: Stage Motion
+  m_Name: Motion Library
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9955,36 +10046,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 1716642805}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fbc9b3eddb31495e88bdeefa94b2540, type: 3}
+  m_Script: {fileID: 11500000, guid: 58668bffd17a744ab899b30c2694307c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movement: {fileID: 1716642809}
---- !u!114 &1716642809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1716642805}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 705d2edef96f648eb8665fa28912f42a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 833523890}
+  target: {fileID: 990010991}
   growDuration: 0.35
   throwDuration: 1.5
   throwHeight: 0.04
   spinDegrees: 360
   growFrom: 0.1
   growTo: 1
-  floatHeight: 0.006
-  floatDuration: 0.7
+  floatHeight: 0.01
+  floatDuration: 1.2
   hoverYawPerLoop: 10
   morphScaleUp: 1.02
   morphDuration: 0.35
   morphUpEase: 6
   morphDownEase: 5
+  appearDuration: 0.3
+  disappearDuration: 0.3
+  wiggleHeight: 0.01
+  wiggleDuration: 0.5
+  bounceScale: 1.1
+  bounceDuration: 0.5
+  breatheScale: 1.03
+  breatheDuration: 1.6
 --- !u!1 &1753482567
 GameObject:
   m_ObjectHideFlags: 0
@@ -10038,12 +10124,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1682461111}
   rt: {fileID: 1753482568}
-  cg: {fileID: 0}
+  cg: {fileID: 1753482570}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -10174,6 +10261,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -10364,6 +10452,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -10655,12 +10744,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1682461111}
   rt: {fileID: 1809679399}
-  cg: {fileID: 0}
+  cg: {fileID: 1809679401}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -10791,6 +10881,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -11069,12 +11160,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1831367534}
-  cg: {fileID: 0}
+  cg: {fileID: 1831367536}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -11199,12 +11291,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1839705260}
-  cg: {fileID: 0}
+  cg: {fileID: 1839705262}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -11425,6 +11518,7 @@ MonoBehaviour:
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -11836,12 +11930,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1969649319}
-  cg: {fileID: 0}
+  cg: {fileID: 1969649321}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0
@@ -11998,12 +12093,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1682461111}
   rt: {fileID: 2080050310}
-  cg: {fileID: 0}
+  cg: {fileID: 2080050312}
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
+  edgeTimingOverrides: []
   useAnchoredPosition: 0
   useLocalPosition: 0
   useEuler: 0

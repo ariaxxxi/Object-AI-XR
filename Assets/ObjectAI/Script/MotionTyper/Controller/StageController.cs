@@ -3,22 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 [Serializable]
 public class StageDef
 {
     public string id = "dot";
+    [Header("Slider Trigger")] 
+    public bool triggerBySlider = true;
     public float rangeMin = 0f;
     public float rangeMax = 2f;
+
+    [Header("Key Trigger")] 
+    public bool triggerByKey = false;
+    public KeyCode key = KeyCode.None;
+
+    [Header("Manual Trigger")] 
+    public bool triggerByManual = false;
+    public UnityEngine.Events.UnityEvent onManualTrigger;
 }
 
 public enum MotionType
 {
     None = 0,
-    BouncyJumpAppearAndFloating, // system: start float (after jump)
+    ThrowUpAndStartFloat, // system: start float (after jump)
     ShrinkDown,                  // system: shrink to tiny
-    StopFloating,                // system: stop float (settle)
-    StartFloating                // system: resume float
+    StopFloatLoop,               // system: stop float (settle)
+    StartFloatLoop,              // system: resume float
+
+    // Extended library
+    Appear,
+    Disappear,
+    Wiggle,
+    Bounce,
+    StartBreatheLoop,
+    StopBreatheLoop
 }
 
 [Serializable]
@@ -31,16 +50,18 @@ public class StageEdgeRule
     public int to = 1;
 
     [Header("Library Motion (optional)")]
+    public bool useMotion = false;
     public MotionType motion = MotionType.None;
 
     [Header("Custom Call (optional)")]
+    public bool useCustomCall = false;
     public UnityEvent onTraverse;   // call any function(s) here
 }
 
 public class StageController : MonoBehaviour
 {
     
-    [Header("Stages (ordered)")]
+    [Header("Stages")]
     public List<StageDef> stages = new()
     {
         new StageDef{ id="dot",   rangeMin=0f, rangeMax=2f },
@@ -49,15 +70,19 @@ public class StageController : MonoBehaviour
         new StageDef{ id="panel", rangeMin=7f, rangeMax=10f },
     };
 
-    [Header("Edge Rules (free-form)")]
+    [Header("Transition Events")]
     public List<StageEdgeRule> edges = new(); // ex: 0->1, 1->0, 1->2, 2->1, 2->3, 3->2
 
     [Header("Global Transition Settings")]
     public float duration = 1f;
     public Ease ease = Ease.InOutExpo;
 
-    [Header("Scoped Motion Player (per controller)")]
-    public MotionPlayer motionPlayer; // <<< assign the MotionPlayer for THIS system
+    [Header("Scoped Motion Library (per controller)")]
+    public MotionLibrary motionLibrary; // <<< assign the MotionLibrary for THIS system
+
+    [Header("Slider Input (optional)")]
+    [Tooltip("If any stages use Slider trigger, assign the UI Slider to drive values.")]
+    public Slider sliderInput;
 
     // Events for drivers (object-level)
     public event Action<int, StageDef, float, Ease> OnStageChanged;                        // legacy
@@ -70,6 +95,32 @@ public class StageController : MonoBehaviour
     {
         // initialize to stage 0
         if (stages.Count > 0) ApplyIndex(0);
+
+        if (sliderInput)
+            sliderInput.onValueChanged.AddListener(OnSliderValueChanged);
+    }
+
+    void Update()
+    {
+        // Poll for any per-stage key triggers
+        for (int i = 0; i < stages.Count; i++)
+        {
+            var s = stages[i];
+            if (s.triggerByKey && s.key != KeyCode.None)
+            {
+                if (Input.GetKeyDown(s.key))
+                {
+                    if (i != CurrentIndex) ApplyIndex(i);
+                    break; // only trigger one per frame
+                }
+            }
+        }
+    }
+
+    void OnDisable()
+    {
+        if (sliderInput)
+            sliderInput.onValueChanged.RemoveListener(OnSliderValueChanged);
     }
 
     // ------ Public API ------
@@ -86,6 +137,8 @@ public class StageController : MonoBehaviour
         if (idx != CurrentIndex) ApplyIndex(idx);
     }
 
+    void OnSliderValueChanged(float v) => RequestStageByValue(v);
+
     public void Nudge(int delta) => RequestStageIndex(Mathf.Clamp(CurrentIndex + delta, 0, Mathf.Max(0, stages.Count - 1)));
 
     // ------ Internals ------
@@ -95,9 +148,59 @@ public class StageController : MonoBehaviour
         {
             var s = stages[i];
             bool last = (i == stages.Count - 1);
+            if (!s.triggerBySlider) continue; // only consider slider-driven stages
             if ((v >= s.rangeMin && v < s.rangeMax) || (last && v <= s.rangeMax)) return i;
         }
         return Mathf.Clamp(CurrentIndex, 0, Mathf.Max(0, stages.Count - 1));
+    }
+
+    /// <summary>
+    /// Trigger a stage by its string id (ManualCall or otherwise).
+    /// Returns true if a matching stage was found and applied.
+    /// </summary>
+    public bool TriggerStageById(string stageId)
+    {
+        if (string.IsNullOrEmpty(stageId) || stages == null) return false;
+        for (int i = 0; i < stages.Count; i++)
+        {
+            if (stages[i] != null && string.Equals(stages[i].id, stageId, StringComparison.Ordinal))
+            {
+                RequestStageIndex(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Manually trigger a stage by index, and invoke that stage's manual event if enabled.
+    /// </summary>
+    public void RequestStageIndexManual(int idx)
+    {
+        idx = Mathf.Clamp(idx, 0, Mathf.Max(0, stages.Count - 1));
+        if (idx != CurrentIndex) ApplyIndex(idx);
+        var s = (idx >= 0 && idx < stages.Count) ? stages[idx] : null;
+        if (s != null && s.triggerByManual)
+            s.onManualTrigger?.Invoke();
+    }
+
+    /// <summary>
+    /// Manually trigger a stage by id, and invoke that stage's manual event if enabled.
+    /// Returns true if found.
+    /// </summary>
+    public bool TriggerStageByIdManual(string stageId)
+    {
+        if (string.IsNullOrEmpty(stageId) || stages == null) return false;
+        for (int i = 0; i < stages.Count; i++)
+        {
+            var s = stages[i];
+            if (s != null && string.Equals(s.id, stageId, StringComparison.Ordinal))
+            {
+                RequestStageIndexManual(i);
+                return true;
+            }
+        }
+        return false;
     }
 
     void ApplyIndex(int newIndex)
@@ -130,13 +233,19 @@ public class StageController : MonoBehaviour
 
     void ExecuteEdge(StageEdgeRule edge)
     {
+        // Backward compatibility: If both toggles are false, treat as legacy (auto-detect).
+        bool legacy = !edge.useMotion && !edge.useCustomCall;
+
         // 1) Library motion (optional)
-        if (motionPlayer && edge.motion != MotionType.None)
-            motionPlayer.Play(edge.motion);
+        bool shouldPlayMotion = (legacy && edge.motion != MotionType.None) ||
+                                (edge.useMotion && edge.motion != MotionType.None);
+        if (motionLibrary && shouldPlayMotion)
+            motionLibrary.Play(edge.motion);
 
 
         // 2) Custom function(s) (optional)
-        edge.onTraverse?.Invoke();
+        if (legacy || edge.useCustomCall)
+            edge.onTraverse?.Invoke();
 
         // If neither motion nor event is set → DO NOTHING (default “inherit behavior”)
         // That means floating or any ongoing behavior continues unchanged.

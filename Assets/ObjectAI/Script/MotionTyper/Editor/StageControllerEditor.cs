@@ -9,7 +9,8 @@ public class StageControllerEditor : Editor
     SerializedProperty edgesProp;
     SerializedProperty durationProp;
     SerializedProperty easeProp;
-    SerializedProperty motionPlayerProp;
+    SerializedProperty motionLibraryProp;
+    SerializedProperty sliderInputProp;
 
     void OnEnable()
     {
@@ -17,7 +18,8 @@ public class StageControllerEditor : Editor
         edgesProp         = serializedObject.FindProperty("edges");
         durationProp      = serializedObject.FindProperty("duration");
         easeProp          = serializedObject.FindProperty("ease");
-        motionPlayerProp  = serializedObject.FindProperty("motionPlayer");
+        motionLibraryProp = serializedObject.FindProperty("motionLibrary");
+        sliderInputProp   = serializedObject.FindProperty("sliderInput");
     }
 
     public override void OnInspectorGUI()
@@ -69,7 +71,23 @@ public class StageControllerEditor : Editor
         }
 
         // Draw the default fields
-        EditorGUILayout.PropertyField(motionPlayerProp);
+        EditorGUILayout.PropertyField(motionLibraryProp);
+        EditorGUILayout.PropertyField(sliderInputProp);
+
+        // Warn if any stage uses Slider but no slider assigned
+        bool anySlider = false;
+        if (controller.stages != null)
+        {
+            for (int i = 0; i < controller.stages.Count; i++)
+            {
+                var s = controller.stages[i];
+                if (s != null && s.triggerBySlider) { anySlider = true; break; }
+            }
+        }
+        if (anySlider && sliderInputProp.objectReferenceValue == null)
+        {
+            EditorGUILayout.HelpBox("One or more stages use Slider trigger, but no Slider is assigned.", MessageType.Warning);
+        }
         EditorGUILayout.Space();
 
         EditorGUILayout.PropertyField(stagesProp, includeChildren: true);

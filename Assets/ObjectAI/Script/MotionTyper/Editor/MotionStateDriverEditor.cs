@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
+using DG.Tweening;
 
 [CustomEditor(typeof(MotionStateDriver))]
 public class MotionStateDriverEditor : Editor
@@ -15,18 +16,17 @@ public class MotionStateDriverEditor : Editor
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("controller"));
 
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Targets", EditorStyles.boldLabel);
-        d.rt = (RectTransform)EditorGUILayout.ObjectField("RectTransform", d.rt, typeof(RectTransform), true);
-        d.cg = (CanvasGroup)EditorGUILayout.ObjectField("CanvasGroup", d.cg, typeof(CanvasGroup), true);
+        // Targets are auto-bound on the component; no manual exposure in inspector.
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Global Timing (fallback)", EditorStyles.boldLabel);
         d.overrideDuration = EditorGUILayout.Toggle("Override Duration", d.overrideDuration);
         if (d.overrideDuration) d.duration = EditorGUILayout.FloatField("  Duration", d.duration);
         d.overrideEase = EditorGUILayout.Toggle("Override Ease", d.overrideEase);
-        if (d.overrideEase) d.ease = (DG.Tweening.Ease)EditorGUILayout.EnumPopup("  Ease", d.ease);
+        if (d.overrideEase) d.ease = (Ease)EditorGUILayout.EnumPopup("  Ease", d.ease);
         d.startDelay = EditorGUILayout.FloatField("Start Delay", d.startDelay);
+
+        DrawEdgeTimingOverrides();
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Track Toggles (Essentials)", EditorStyles.boldLabel);
@@ -37,13 +37,9 @@ public class MotionStateDriverEditor : Editor
         d.useSizeDelta        = EditorGUILayout.ToggleLeft("Size Delta (RectTransform)", d.useSizeDelta);
         d.useAlpha            = EditorGUILayout.ToggleLeft("CanvasGroup Alpha", d.useAlpha);
 
-        if (GUILayout.Button("Sync Lists To Stage Count"))
-        {
-            Undo.RecordObject(d, "Sync Lists");
-            d.EnsureListSizes();
-            EditorUtility.SetDirty(d);
-        }
+        // Removed: explicit sync button. Lists auto-size when needed.
 
+        // Stage-dependent lists UI (only shown if StageController present)
         if (d.controller == null || d.controller.stages == null || d.controller.stages.Count == 0)
         {
             EditorGUILayout.HelpBox("Assign a StageController with stages to edit per-stage values.", MessageType.Info);
@@ -53,25 +49,7 @@ public class MotionStateDriverEditor : Editor
 
         int count = d.controller.stages.Count;
 
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            if (GUILayout.Button("Capture All (Current Stage)"))
-            {
-                int idx = Mathf.Clamp(d.controller.CurrentIndex, 0, count - 1);
-                Undo.RecordObject(d, "Capture All (Current Stage)");
-                CaptureAll(d, idx);
-                EditorUtility.SetDirty(d);
-            }
-            if (GUILayout.Button("Apply Instant (Current Stage)"))
-            {
-                int idx = Mathf.Clamp(d.controller.CurrentIndex, 0, count - 1);
-                d.ApplyInstant(idx);
-                EditorUtility.SetDirty(d);
-                SceneView.RepaintAll();
-            }
-        }
-
-        // Draw only toggled tracks
+        // Draw per-stage values for enabled tracks
         if (d.useAnchoredPosition)
             DrawTrack("Anchored Position", count,
                 i => SafeGet(d.anchoredPosPerStage, i, d.rt ? d.rt.anchoredPosition : Vector2.zero),
@@ -123,7 +101,80 @@ public class MotionStateDriverEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 
-    // Generic per-track drawer
+    void DrawEdgeTimingOverrides()
+    {
+        EditorGUILayout.Space(6);
+        EditorGUILayout.LabelField("Per-Edge Timing Overrides", EditorStyles.boldLabel);
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("+ Add Edge Override"))
+            {
+                Undo.RecordObject(d, "Add Edge Override");
+                d.edgeTimingOverrides.Add(new MotionStateDriver.EdgeTimingOverride());
+                EditorUtility.SetDirty(d);
+            }
+            if (d.controller == null || d.controller.stages == null || d.controller.stages.Count == 0)
+            {
+                EditorGUILayout.HelpBox("Assign a StageController to pick stage indices.", MessageType.None);
+            }
+        }
+
+        if (d.edgeTimingOverrides == null) return;
+
+        int removeAt = -1;
+        for (int i = 0; i < d.edgeTimingOverrides.Count; i++)
+        {
+            var o = d.edgeTimingOverrides[i];
+            if (o == null) { removeAt = i; continue; }
+
+            EditorGUILayout.Space(2);
+            using (new EditorGUILayout.VerticalScope("box"))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    o.enabled = EditorGUILayout.ToggleLeft("", o.enabled, GUILayout.Width(18));
+                    EditorGUILayout.LabelField($"Edge {i}", EditorStyles.boldLabel);
+                    if (GUILayout.Button("×", GUILayout.Width(22))) removeAt = i;
+                }
+
+                // From/To pickers
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (d.controller && d.controller.stages != null && d.controller.stages.Count > 0)
+                    {
+                        int max = d.controller.stages.Count - 1;
+                        o.from = Mathf.Clamp(EditorGUILayout.IntField("From Stage", o.from), 0, max);
+                        o.to   = Mathf.Clamp(EditorGUILayout.IntField("To Stage",   o.to),   0, max);
+                    }
+                    else
+                    {
+                        o.from = EditorGUILayout.IntField("From Stage", o.from);
+                        o.to   = EditorGUILayout.IntField("To Stage",   o.to);
+                    }
+                }
+
+                // Overrides
+                o.useDuration = EditorGUILayout.ToggleLeft("Override Duration", o.useDuration);
+                if (o.useDuration) o.duration = EditorGUILayout.FloatField("  Duration", o.duration);
+
+                o.useEase = EditorGUILayout.ToggleLeft("Override Ease", o.useEase);
+                if (o.useEase) o.ease = (Ease)EditorGUILayout.EnumPopup("  Ease", o.ease);
+
+                o.useDelay = EditorGUILayout.ToggleLeft("Override Delay", o.useDelay);
+                if (o.useDelay) o.delay = EditorGUILayout.FloatField("  Delay", o.delay);
+            }
+        }
+
+        if (removeAt >= 0)
+        {
+            Undo.RecordObject(d, "Remove Edge Override");
+            d.edgeTimingOverrides.RemoveAt(removeAt);
+            EditorUtility.SetDirty(d);
+        }
+    }
+
+    // ------- per-track generic drawers (unchanged) -------
     void DrawTrack<T>(
         string title,
         int count,
@@ -172,25 +223,6 @@ public class MotionStateDriverEditor : Editor
         list[index] = value;
     }
 
-    static void CaptureAll(MotionStateDriver d, int idx)
-    {
-        d.EnsureListSizes();
-
-        if (d.rt)
-        {
-            if (d.useAnchoredPosition)
-                d.anchoredPosPerStage[idx] = d.rt.anchoredPosition;
-            if (d.useLocalPosition)
-                d.localPosPerStage[idx] = d.rt.localPosition;
-            if (d.useEuler)
-                d.eulerPerStage[idx] = d.rt.localEulerAngles;
-            if (d.useSizeDelta)
-                d.sizePerStage[idx] = d.rt.sizeDelta;
-            if (d.useUniformScale)
-                d.uniformScalePerStage[idx] = d.rt.localScale.x;
-        }
-        if (d.useAlpha && d.cg)
-            d.alphaPerStage[idx] = d.cg.alpha;
-    }
+    
 }
 #endif

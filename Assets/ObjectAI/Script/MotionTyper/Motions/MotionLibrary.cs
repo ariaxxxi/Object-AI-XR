@@ -1,14 +1,14 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class SystemMovement : MonoBehaviour
+public class MotionLibrary : MonoBehaviour
 {
     public enum MotionState { A_Tiny, B_Floating, C_Still }
 
     [Header("Target")]
     public Transform target;                 // defaults to this.transform
 
-    [Header("Appear + Grow + Throw")]
+    [Header("Throw up & Start Float ")]
     public float growDuration = 0.35f;       // 0.1 -> 1
     public float throwDuration = 1.5f;       // total up + down
     private float ssTime = 0.10f;             // squash/stretch step
@@ -63,12 +63,50 @@ public class SystemMovement : MonoBehaviour
         // ApplyStateAInstant();
     }
 
-    // --------------------------- A -> B (Throw) ---------------------------
-    [ContextMenu("Throw (A -> B)")]
-    public void BouncyJumpAppearAndFloating()
+    // --------------------------- Library Dispatcher -----------------------
+    public void Play(MotionType t)
     {
-        Debug.Log("BouncyJumpAppearAndFloating function called");
+        switch (t)
+        {
+            case MotionType.ThrowUpAndStartFloat:
+                ThrowUpAndStartFloat();
+                break;
+            case MotionType.ShrinkDown:
+                ShrinkDown();
+                break;
+            case MotionType.StopFloatLoop:
+                StopFloatLoop();
+                break;
+            case MotionType.StartFloatLoop:
+                StartFloatLoop();
+                break;
+            case MotionType.Appear:
+                Appear();
+                break;
+            case MotionType.Disappear:
+                Disappear();
+                break;
+            case MotionType.Wiggle:
+                Wiggle();
+                break;
+            case MotionType.Bounce:
+                Bounce();
+                break;
+            case MotionType.StartBreatheLoop:
+                StartBreatheLoop();
+                break;
+            case MotionType.StopBreatheLoop:
+                StopBreatheLoop();
+                break;
+            case MotionType.None:
+            default:
+                break;
+        }
+    }
 
+    // --------------------------- A -> B (Throw) ---------------------------
+    public void ThrowUpAndStartFloat()
+    {
         KillAllTweens();
 
         Vector3 peakPos = startPos + Vector3.up * throwHeight + target.forward * arcForward;
@@ -119,14 +157,93 @@ public class SystemMovement : MonoBehaviour
         seq.Append(target.DOMoveY(startPos.y, 0.12f).SetEase(Ease.InQuad));
 
         // 6) Start floating loop (becomes State B)
-        seq.AppendCallback(() => StartFloatLoop());
+        seq.AppendCallback(() => StartFloatLoopInternal());
         // seq.OnComplete(() => State = MotionState.B_Floating);
 
         seq.Play();
     }
 
+    // --------------------------- Simple Appear/Disappear ------------------
+    [Header("Appear / Disappear")]
+    public float appearDuration = 0.3f;
+    public float disappearDuration = 0.3f;
+
+    public void Appear()
+    {
+        KillAllTweens();
+        target.position = startPos;
+        target.localEulerAngles = startEuler;
+        target.localScale = baseScale * growFrom;
+        target.DOScale(baseScale * growTo, appearDuration).SetEase(Ease.OutQuad);
+    }
+
+    public void Disappear()
+    {
+        // shrink to tiny; keep position
+        if (seq != null && seq.IsActive()) seq.Kill(false);
+        target.DOScale(baseScale * growFrom, disappearDuration).SetEase(Ease.InOutQuad);
+    }
+
+    // --------------------------- One-shot Wiggle/Bounce --------------------
+    [Header("Wiggle / Bounce")]
+    public float wiggleHeight = 0.01f;
+    public float wiggleDuration = 0.5f; // total up+down time is 2x
+    public float bounceScale = 1.1f;
+    public float bounceDuration = 0.5f;
+
+    public void Wiggle()
+    {
+        // quick up and down around current Y
+        if (seq != null && seq.IsActive()) seq.Kill(false);
+        var s = DOTween.Sequence();
+        s.Append(target.DOMoveY(target.position.y + wiggleHeight, wiggleDuration * 0.5f).SetEase(Ease.OutSine));
+        s.Append(target.DOMoveY(target.position.y, wiggleDuration * 0.5f).SetEase(Ease.InSine));
+        seq = s.Play();
+    }
+
+    public void Bounce()
+    {
+        // Three-step pulse: 1.1 → 0.95 → 1.0 (relative to current)
+        if (morphTween != null && morphTween.IsActive()) morphTween.Kill(false);
+        Vector3 cur = target.localScale;
+        Vector3 up = cur * 1.10f;
+        Vector3 down = cur * 0.95f;
+        float upTime = bounceDuration * 0.4f;
+        float downTime = bounceDuration * 0.3f;
+        float backTime = bounceDuration - (upTime + downTime); // quick settle
+
+        var s = DOTween.Sequence();
+        s.Append(target.DOScale(up, upTime).SetEase(Ease.OutQuad));
+        s.Append(target.DOScale(down, downTime).SetEase(Ease.InQuad));
+        s.Append(target.DOScale(cur, backTime).SetEase(Ease.OutQuad));
+        morphTween = s.Play();
+    }
+
+    // --------------------------- Breathe loop -----------------------------
+    [Header("Breathe Loop")]
+    public float breatheScale = 1.03f;
+    public float breatheDuration = 1.6f; // up or down
+    private Tween breatheTween;
+
+    public void StartBreatheLoop()
+    {
+        StopBreatheLoop();
+        Vector3 cur = target.localScale;
+        Vector3 up = cur * breatheScale;
+        breatheTween = target.DOScale(up, breatheDuration)
+                              .SetEase(Ease.InOutSine)
+                              .SetLoops(-1, LoopType.Yoyo);
+    }
+
+    public void StopBreatheLoop()
+    {
+        if (breatheTween != null && breatheTween.IsActive()) breatheTween.Kill(false);
+        breatheTween = null;
+    }
+
+
+
     // --------------------------- B/C -> A (Round-friendly shrink) ---------
-    [ContextMenu("To A (B/C -> A)")]
     public void ShrinkDown()
     {
         // Stop float/yaw and any running sequence
@@ -151,10 +268,8 @@ public class SystemMovement : MonoBehaviour
     }
 
     // --------------------------- B -> C (settle & stop) --------------------
-    [ContextMenu("To C (B -> C)")]
-    public void StopFloating()
+    public void StopFloatLoop()
     {
-        Debug.Log("StopFloating function called");
         KillFloatLoops();
         if (seq != null && seq.IsActive()) seq.Kill(false);
         if (morphTween != null && morphTween.IsActive()) morphTween.Kill(false);
@@ -173,32 +288,24 @@ public class SystemMovement : MonoBehaviour
         seq.Play();
     }
 
-    [ContextMenu("BackToB (C -> B)")]
-    public void StartFloating()
+    public void StartFloatLoop()
     {
-        Debug.Log("StartFloating function called");
-
         KillAllTweens();
 
         seq = DOTween.Sequence();
         seq.Append(target.DOMoveY(startPos.y, toA_Duration * 0.5f).SetEase(Ease.InOutQuad));
         seq.Join(target.DOLocalRotate(startEuler, toA_Duration * 0.5f, RotateMode.Fast).SetEase(Ease.InOutSine));
-        seq.AppendCallback(() => StartFloatLoop());
+        seq.AppendCallback(() => StartFloatLoopInternal());
         // seq.OnComplete(() => State = MotionState.B_Floating);
         seq.Play();
     }
 
-    // --------------------------- NEW: Icon ↔ Pill (subtle morph only) -----
+    // --------------------------- Icon ↔ Pill (subtle morph only) ----------
     // These are for StageController's Icon<->Pill edge. They DO NOT disrupt float/yaw loops.
-    [ContextMenu("Subtle Morph (Icon -> Pill)")]
-
-
     public void SubtleMorphPulseUp()
     {
         SubtleMorphPulse(upwards: true);
     }
-
-    [ContextMenu("Subtle Morph (Pill -> Icon)")]
     public void SubtleMorphPulseDown()
     {
         SubtleMorphPulse(upwards: false);
@@ -226,7 +333,7 @@ public class SystemMovement : MonoBehaviour
     }
 
     // --------------------------- Loops & Helpers ---------------------------
-    private void StartFloatLoop()
+    private void StartFloatLoopInternal()
     {
         KillFloatLoops();
         // Bob up/down forever around the landing level
@@ -244,12 +351,12 @@ public class SystemMovement : MonoBehaviour
         if (floatTween != null && floatTween.IsActive()) floatTween.Kill(false);
         if (yawTween != null && yawTween.IsActive()) yawTween.Kill(false);
         floatTween = null; yawTween = null;
-        Debug.Log("Kill float loop");
     }
 
     private void KillAllTweens()
     {
         KillFloatLoops();
+        StopBreatheLoop();
         if (seq != null && seq.IsActive()) seq.Kill(false);
         if (morphTween != null && morphTween.IsActive()) morphTween.Kill(false);
         DOTween.Kill(target);
