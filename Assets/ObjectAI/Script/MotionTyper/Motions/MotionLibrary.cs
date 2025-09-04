@@ -214,8 +214,8 @@ public class MotionLibrary : MonoBehaviour
 
         var s = DOTween.Sequence();
         s.Append(target.DOScale(up, upTime).SetEase(Ease.OutQuad));
-        s.Append(target.DOScale(down, downTime).SetEase(Ease.InQuad));
-        s.Append(target.DOScale(cur, backTime).SetEase(Ease.OutQuad));
+        s.Append(target.DOScale(down, downTime).SetEase(Ease.OutQuad));
+        s.Append(target.DOScale(cur, backTime).SetEase(Ease.InQuad));
         morphTween = s.Play();
     }
 

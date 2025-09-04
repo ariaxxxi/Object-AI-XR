@@ -4994,7 +4994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fbc9b3eddb31495e88bdeefa94b2540, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movement: {fileID: 855251191}
 --- !u!114 &855251191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5007,35 +5006,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 705d2edef96f648eb8665fa28912f42a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 719799599}
-  growDuration: 0.35
-  throwDuration: 1.5
-  ssTime: 0.1
-  settleToC_Duration: 0.6
-  toA_Duration: 0.45
-  throwHeight: 0.04
-  arcForward: 0
-  spinDegrees: 360
-  tiltAngle: 6
-  tiltTime: 0.25
-  growFrom: 0.1
-  growTo: 1
-  squashX: 1.1
-  squashY: 0.9
-  stretchX: 0.95
-  stretchY: 1.05
-  landingRebound: 0.0001
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawPerLoop: 10
-  morphScaleUp: 1.02
-  morphDuration: 0.35
-  morphUpEase: 6
-  morphDownEase: 5
-  startPos: {x: 0, y: 0, z: 0}
-  startEuler: {x: 0, y: 0, z: 0}
-  baseScale: {x: 0, y: 0, z: 0}
-  <State>k__BackingField: 0
 --- !u!1 &909922711
 GameObject:
   m_ObjectHideFlags: 0
@@ -9804,7 +9774,7 @@ MonoBehaviour:
   - from: 0
     to: 1
     useMotion: 1
-    motion: 1
+    motion: 5
     useCustomCall: 0
     onTraverse:
       m_PersistentCalls:
@@ -11634,8 +11604,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d131839b5cc444b5ae4ca2118d4d420, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 381627151}
-  slider: {fileID: 732589056}
 --- !u!1 &1961278755
 GameObject:
   m_ObjectHideFlags: 0
