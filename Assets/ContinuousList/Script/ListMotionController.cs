@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems; // pointer over UI checks
 using UnityEngine.UI;
 using DG.Tweening; // Install DOTween (Demigiant) and set up
+using UnityEngine.Events;
 
 [DisallowMultipleComponent]
 public class ListMotionController : MonoBehaviour
@@ -28,6 +29,9 @@ public class ListMotionController : MonoBehaviour
     [Header("Items")]
     public List<ListItemView> items = new();
 
+    [Header("Events")]
+    public UnityEvent<int> onSnappedToIndex; // fired when a snap completes with highlighted index
+
     // Input area and camera removed for now; input always allowed
 
     // Internal state
@@ -45,6 +49,10 @@ public class ListMotionController : MonoBehaviour
 
     // Cached
     RectTransform _rect;
+
+    // Last snapped (highlighted) index
+    int _lastSnappedIndex = -1;
+    public int LastSnappedIndex => _lastSnappedIndex;
 
     void Awake()
     {
@@ -121,7 +129,6 @@ public class ListMotionController : MonoBehaviour
     }
 
 
-    // Area gating removed
 
     void ClampOffset()
     {
@@ -139,6 +146,7 @@ public class ListMotionController : MonoBehaviour
     void SnapToNearestStage()
     {
         float target = Mathf.Round(_offset / _step) * _step;
+        int targetIndex = Mathf.RoundToInt(target / _step);
 
         // If already aligned, nothing to do
         if (Mathf.Abs(target - _offset) < 1e-4f)
@@ -147,7 +155,14 @@ public class ListMotionController : MonoBehaviour
         KillSnap();
         // DOTween smooth snap using configurable curve (softer ease)
         float duration = Mathf.Max(0.01f, snapDuration);
-        _snapTween = DOVirtual.Float(_offset, target, duration, v => { _offset = v; });
+        _snapTween = DOVirtual.Float(_offset, target, duration, v => { _offset = v; })
+            .OnComplete(() =>
+            {
+                _lastSnappedIndex = targetIndex;
+                Debug.Log($"Snapped to index {_lastSnappedIndex}");
+                if (onSnappedToIndex != null)
+                    onSnappedToIndex.Invoke(_lastSnappedIndex);
+            });
         if (snapEaseType == Ease.OutBack)
             _snapTween.SetEase(Ease.OutBack, snapOvershoot);
         else
