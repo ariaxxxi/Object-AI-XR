@@ -29,6 +29,11 @@ public class ListMotionController : MonoBehaviour
     [Header("Items")]
     public List<ListItemView> items = new();
 
+    [Header("Title Item")]
+    public GameObject titleItem; // Assign the title item GameObject in the Inspector
+    public float titleScrollThreshold = 1.0f; // How much to scroll before title is fully gone
+    public float titleScrolledZOffset = 20f; // Target Z position when scrolled
+
     [Header("Events")]
     public UnityEvent<int> onSnappedToIndex; // fired when a snap completes with highlighted index
 
@@ -51,6 +56,8 @@ public class ListMotionController : MonoBehaviour
 
     // Cached
     RectTransform _rect;
+    CanvasGroup _titleCanvasGroup;
+    TitleBlurEffect _titleBlurEffect; // We will create this script next
 
     // Last snapped (highlighted) index
     int _lastSnappedIndex = -1;
@@ -67,6 +74,23 @@ public class ListMotionController : MonoBehaviour
         {
             if (items[i] == null) continue;
             items[i].index = i;
+        }
+
+        // Cache title item components
+        if (titleItem != null)
+        {
+            _titleCanvasGroup = titleItem.GetComponent<CanvasGroup>();
+            if (_titleCanvasGroup == null)
+            {
+                _titleCanvasGroup = titleItem.AddComponent<CanvasGroup>();
+            }
+            _titleBlurEffect = titleItem.GetComponent<TitleBlurEffect>();
+            if (_titleBlurEffect == null)
+            {
+                // We will create this script later.
+                // For now, we'll just log a warning if it's not attached.
+                Debug.LogWarning("TitleBlurEffect component not found on titleItem. Please attach it for blur effect.", titleItem);
+            }
         }
 
         RecomputeStep();
@@ -129,6 +153,20 @@ public class ListMotionController : MonoBehaviour
             _scrollSnapPending = true;
             _lastScrollTime = Time.unscaledTime;
         }
+    }
+
+    public void UpdateRawInput(float signedInt, bool isTouch)
+    {
+        // New scroll input cancels any existing snap tween
+        KillSnap();
+        
+        // Apply the raw input value, scaled by sensitivity and step
+        float delta = signedInt * scrollSensitivity * _step * 0.1f; // Adjusted scaling for raw input
+        _offset -= delta; // reversed direction to match typical scroll feel
+        ClampOffset();
+        
+        _scrollSnapPending = true;
+        _lastScrollTime = Time.unscaledTime;
     }
 
 
@@ -200,12 +238,14 @@ public class ListMotionController : MonoBehaviour
             if (topY > _edgeY)
             {
                 float delta = topY - _edgeY;
-                y = _edgeY - _itemHeight;
+                // The 'y' position is no longer adjusted here to anchor the top.
+                // squeezeT is still calculated to drive the visual squeeze effect.
                 squeezeT = Mathf.Clamp01(delta / _itemHeight);
             }
 
             it.SetYZ(y, z);
             it.SetEdgeSqueeze(squeezeT, _itemHeight);
+            it.SetContentAlphaBasedOnZ(z, zMid, zFront);
 
             // Outline alpha: item moving into A gains alpha with t; one leaving loses with t
             float alpha = 0f;
@@ -214,6 +254,33 @@ public class ListMotionController : MonoBehaviour
             else alpha = 0f;
 
             it.SetOutlineAlpha(alpha);
+        }
+
+        // Apply title item effects
+        if (titleItem != null)
+        {
+            float titleProgress = 0f;
+            if (titleScrollThreshold > 0)
+            {
+                titleProgress = Mathf.Clamp01(_offset / titleScrollThreshold);
+            }
+
+            // Z-axis movement
+            Vector3 titlePos = titleItem.transform.localPosition;
+            titlePos.z = Mathf.Lerp(0, titleScrolledZOffset, titleProgress);
+            titleItem.transform.localPosition = titlePos;
+
+            // Fade out
+            if (_titleCanvasGroup != null)
+            {
+                _titleCanvasGroup.alpha = Mathf.Lerp(1f, 0f, titleProgress);
+            }
+
+            // Blur effect
+            if (_titleBlurEffect != null)
+            {
+                _titleBlurEffect.BlurAmount = titleProgress; // Assuming BlurAmount is a property from 0 to 1
+            }
         }
     }
 
