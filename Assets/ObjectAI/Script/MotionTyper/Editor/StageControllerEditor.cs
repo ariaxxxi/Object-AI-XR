@@ -1,6 +1,8 @@
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
+using DG.Tweening;
+
 
 [CustomEditor(typeof(StageController))]
 public class StageControllerEditor : Editor
@@ -9,8 +11,12 @@ public class StageControllerEditor : Editor
     SerializedProperty edgesProp;
     SerializedProperty durationProp;
     SerializedProperty easeProp;
+    SerializedProperty overshootProp;
     SerializedProperty motionLibraryProp;
     SerializedProperty sliderInputProp;
+    SerializedProperty distanceTargetProp;
+    SerializedProperty distanceCameraProp;
+    SerializedProperty logDistanceProp;
 
     void OnEnable()
     {
@@ -18,8 +24,12 @@ public class StageControllerEditor : Editor
         edgesProp         = serializedObject.FindProperty("edges");
         durationProp      = serializedObject.FindProperty("duration");
         easeProp          = serializedObject.FindProperty("ease");
+        overshootProp     = serializedObject.FindProperty("overshoot");
         motionLibraryProp = serializedObject.FindProperty("motionLibrary");
         sliderInputProp   = serializedObject.FindProperty("sliderInput");
+        distanceTargetProp = serializedObject.FindProperty("distanceTarget");
+        distanceCameraProp = serializedObject.FindProperty("distanceCamera");
+        logDistanceProp = serializedObject.FindProperty("logDistance");
     }
 
     public override void OnInspectorGUI()
@@ -74,19 +84,34 @@ public class StageControllerEditor : Editor
         EditorGUILayout.PropertyField(motionLibraryProp);
         EditorGUILayout.PropertyField(sliderInputProp);
 
+        // Distance input (global)
+        EditorGUILayout.LabelField("Distance Input (optional)", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(distanceTargetProp, new GUIContent("Distance Target"));
+        EditorGUILayout.PropertyField(distanceCameraProp, new GUIContent("Distance Camera (optional)"));
+        EditorGUILayout.PropertyField(logDistanceProp, new GUIContent("Log Distance (debug)"));
+
         // Warn if any stage uses Slider but no slider assigned
         bool anySlider = false;
+        bool anyDistance = false;
         if (controller.stages != null)
         {
             for (int i = 0; i < controller.stages.Count; i++)
             {
                 var s = controller.stages[i];
-                if (s != null && s.triggerBySlider) { anySlider = true; break; }
+                if (s != null)
+                {
+                    if (s.triggerBySlider) anySlider = true;
+                    if (s.triggerByDistance) anyDistance = true;
+                }
             }
         }
         if (anySlider && sliderInputProp.objectReferenceValue == null)
         {
             EditorGUILayout.HelpBox("One or more stages use Slider trigger, but no Slider is assigned.", MessageType.Warning);
+        }
+        if (anyDistance && distanceTargetProp.objectReferenceValue == null)
+        {
+            EditorGUILayout.HelpBox("One or more stages use Distance trigger, but no Distance Target is assigned.", MessageType.Warning);
         }
         EditorGUILayout.Space();
 
@@ -98,6 +123,10 @@ public class StageControllerEditor : Editor
 
         EditorGUILayout.PropertyField(durationProp);
         EditorGUILayout.PropertyField(easeProp);
+        
+        EditorGUI.BeginDisabledGroup(easeProp.enumValueIndex != (int)Ease.InOutBack);
+        EditorGUILayout.PropertyField(overshootProp);
+        EditorGUI.EndDisabledGroup();
         EditorGUILayout.Space();
 
 

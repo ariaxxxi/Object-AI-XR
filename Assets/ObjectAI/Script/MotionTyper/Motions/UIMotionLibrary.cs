@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class MotionLibrary : MonoBehaviour
+public class UIMotionLibrary : MonoBehaviour
 {
     public enum MotionState { A_Tiny, B_Floating, C_Still }
 
@@ -12,7 +12,7 @@ public class MotionLibrary : MonoBehaviour
     public float growDuration = 0.35f;       // 0.1 -> 1
     public float throwDuration = 1.5f;       // total up + down
     private float ssTime = 0.10f;             // squash/stretch step
-    private float settleToC_Duration = 0.6f;  // B -> C smooth settle
+    private float settleToC_Duration = 0.2f;  // B -> C smooth settle
     private float toA_Duration = 0.45f;       // B/C -> A shrink
 
     public float throwHeight = 0.1f;         // world units
@@ -36,7 +36,7 @@ public class MotionLibrary : MonoBehaviour
     public float floatDuration = 0.7f;       // half-cycle (up or down)
     public float hoverYawPerLoop = 10f;      // gentle yaw
 
-    [Header("Icon↔Pill Subtle Morph (panel-level)")]
+    [Header("Subtle Morph")]
     public float morphScaleUp = 1.02f;
     public float morphDuration = 0.35f;
     public Ease morphUpEase = Ease.OutQuad;
@@ -263,7 +263,6 @@ public class MotionLibrary : MonoBehaviour
         seq.Append(target.DOScale(overshoot, toA_Duration * 0.4f).SetEase(Ease.OutQuad));
         seq.Append(target.DOScale(baseScale * growFrom, 1f).SetEase(Ease.InOutExpo));
 
-        // seq.OnComplete(() => State = MotionState.A_Tiny);
         seq.Play();
     }
 

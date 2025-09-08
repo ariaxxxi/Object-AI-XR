@@ -176,26 +176,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 12031647}
   cg: {fileID: 12031649}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 12031647}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -206,7 +202,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35612
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &12031649
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -373,33 +383,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 19211249}
   cg: {fileID: 19211251}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 19211249}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35624
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &19211251
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -558,7 +578,7 @@ RectTransform:
   m_Father: {fileID: 155655621}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -656,33 +676,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 33035029}
   cg: {fileID: 33035031}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 33035029}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35652
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &33035031
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -691,7 +725,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 33035028}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -935,27 +969,27 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 45219366}
   cg: {fileID: 45219368}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 45219366}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -965,7 +999,25 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35682
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &45219368
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -974,7 +1026,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 45219365}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1122,7 +1174,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 57745025}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd04ef78de5a3442398b142bec4bbeb0, type: 3}
   m_Name: 
@@ -1130,33 +1182,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 57745026}
   cg: {fileID: 57745028}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 57745026}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
-  useAlpha: 0
-  anchoredPosPerStage: []
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
-  alphaPerStage: []
+  alphaPerStage:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35694
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &57745028
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1165,7 +1231,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 57745025}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1372,26 +1438,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 93550707}
   cg: {fileID: 93550708}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 93550707}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 80, y: 16, z: 0}
   - {x: 80, y: 16, z: 0}
   - {x: -14, y: 16, z: 0}
   - {x: -14, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -1402,7 +1464,21 @@ MonoBehaviour:
   - 0
   - 1
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35712
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &93550712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1514,29 +1590,29 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 189112443}
   cg: {fileID: 189112447}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 189112443}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 120, y: 120}
   - {x: 120, y: 120}
+  - {x: 380, y: 120}
+  - {x: 380, y: 120}
+  - {x: 380, y: 120}
+  - {x: 380, y: 120}
   - {x: 380, y: 120}
   - {x: 380, y: 120}
   alphaPerStage:
@@ -1544,7 +1620,25 @@ MonoBehaviour:
   - 1
   - 1
   - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35722
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &189112445
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1579,11 +1673,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 189112443}
-  outlineImage: {fileID: 189112448}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &189112447
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1688,33 +1779,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 212265515}
   cg: {fileID: 212265517}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 212265515}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35738
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &212265517
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1819,33 +1916,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 220380016}
   cg: {fileID: 220380018}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 220380016}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35750
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &220380018
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2111,7 +2218,7 @@ RectTransform:
   m_Father: {fileID: 1037295320}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2153,6 +2260,190 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235335793}
   m_CullTransparentMesh: 1
+--- !u!1 &264941155
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 264941156}
+  - component: {fileID: 264941160}
+  - component: {fileID: 264941159}
+  - component: {fileID: 264941158}
+  - component: {fileID: 264941161}
+  m_Layer: 5
+  m_Name: Bar Fill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &264941156
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264941155}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1638833060}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 110, y: 110}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &264941158
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264941155}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &264941159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264941155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.74509805, g: 0.9607843, b: 0.5529412, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 0c27c8c8715a9456d9eef0e69e25cca0, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &264941160
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264941155}
+  m_CullTransparentMesh: 1
+--- !u!114 &264941161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264941155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd04ef78de5a3442398b142bec4bbeb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 381627151}
+  rt: {fileID: 264941156}
+  cg: {fileID: 264941158}
+  tf: {fileID: 264941156}
+  useLocalPosition: 0
+  useEuler: 0
+  useUniformScale: 0
+  useSizeDelta: 0
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
+  localPosPerStage: []
+  eulerPerStage: []
+  scalePerStage: []
+  sizePerStage: []
+  alphaPerStage:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides:
+  - enabled: 1
+    from: 5
+    to: 6
+    useDuration: 1
+    duration: 4
+    useEase: 1
+    ease: 1
+    useDelay: 0
+    delay: 0
+  tweenId: DRV_CORE_-3200
+  dynamicTracks:
+  - rid: 2765338992770547713
+  - rid: 2765338992770547714
+  references:
+    version: 2
+    RefIds:
+    - rid: 2765338992770547713
+      type: {class: FloatTrack, ns: , asm: Assembly-CSharp}
+      data:
+        displayName: Float
+        target: {fileID: 264941159}
+        memberName: fillAmount
+        enabled: 1
+        values:
+        - 0.157
+        - 0.157
+        - 0.157
+        - 0.157
+        - 0.157
+        - 0.157
+        - 1
+        - 1
+    - rid: 2765338992770547714
+      type: {class: ColorTrack, ns: , asm: Assembly-CSharp}
+      data:
+        displayName: Color
+        target: {fileID: 264941159}
+        memberName: color
+        enabled: 1
+        values:
+        - {r: 1, g: 0.40784314, b: 0.21960784, a: 1}
+        - {r: 1, g: 0.40784314, b: 0.21960784, a: 1}
+        - {r: 1, g: 0.40784314, b: 0.21960784, a: 1}
+        - {r: 1, g: 0.40784314, b: 0.21960784, a: 1}
+        - {r: 1, g: 0.40784314, b: 0.21960784, a: 1}
+        - {r: 1, g: 0.40784314, b: 0.21960784, a: 1}
+        - {r: 0.74509805, g: 0.9607843, b: 0.5529412, a: 1}
+        - {r: 0.74509805, g: 0.9607843, b: 0.5529412, a: 1}
 --- !u!1 &267080497
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,33 +2499,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 267080498}
   cg: {fileID: 267080500}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 267080498}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35782
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &267080500
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2375,33 +2676,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 309266292}
   cg: {fileID: 309266294}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 309266292}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35798
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &309266294
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2410,7 +2725,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309266291}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -2568,33 +2883,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 313879889}
   cg: {fileID: 313879891}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 313879889}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35810
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &313879891
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2603,7 +2932,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313879888}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -2645,6 +2974,140 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 313879888}
   m_CullTransparentMesh: 1
+--- !u!1 &353802045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 353802046}
+  - component: {fileID: 353802048}
+  - component: {fileID: 353802047}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &353802046
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 353802045}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2030477143}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &353802047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 353802045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Button
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 24
+  m_fontSizeBase: 24
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &353802048
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 353802045}
+  m_CullTransparentMesh: 1
 --- !u!1 &381627150
 GameObject:
   m_ObjectHideFlags: 0
@@ -2681,40 +3144,152 @@ MonoBehaviour:
     rangeMax: 2
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 1
+    distanceThreshold: 2
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
   - id: icon
     triggerBySlider: 1
     rangeMin: 2
     rangeMax: 4
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 1
+    distanceThreshold: 1.4
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
   - id: pill
     triggerBySlider: 1
     rangeMin: 4
     rangeMax: 7
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 1
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
   - id: panel
-    triggerBySlider: 1
+    triggerBySlider: 0
     rangeMin: 7
     rangeMax: 10
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 1
+    button: {fileID: 2030477144}
+    triggerByDistance: 0
+    distanceThreshold: 0.6
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+  - id: back to pill
+    triggerBySlider: 0
+    rangeMin: 7
+    rangeMax: 10
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 1
+    triggerStageIndex: 3
+    triggerStageDelay: 3
+  - id: start adding water
+    triggerBySlider: 0
+    rangeMin: 7
+    rangeMax: 10
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 1
+    triggerStageIndex: 4
+    triggerStageDelay: 1
+  - id: finish water
+    triggerBySlider: 0
+    rangeMin: 7
+    rangeMax: 10
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 1
+    triggerStageIndex: 5
+    triggerStageDelay: 1
+  - id: smiley face
+    triggerBySlider: 0
+    rangeMin: 7
+    rangeMax: 10
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 1
+    triggerStageIndex: 6
+    triggerStageDelay: 4
   edges:
   - from: 0
     to: 1
@@ -2734,8 +3309,12 @@ MonoBehaviour:
         m_Calls: []
   duration: 1
   ease: 28
-  motionLibrary: {fileID: 0}
-  sliderInput: {fileID: 0}
+  overshoot: 1.70158
+  motionLibrary: {fileID: 855251190}
+  sliderInput: {fileID: 732589056}
+  distanceTarget: {fileID: 227713718}
+  distanceCamera: {fileID: 1961278762}
+  logDistance: 0
 --- !u!4 &381627152
 Transform:
   m_ObjectHideFlags: 0
@@ -2805,33 +3384,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 421112507}
   cg: {fileID: 421112509}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 421112507}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35828
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &421112509
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2938,26 +3523,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 432277881}
   cg: {fileID: 432277885}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 432277881}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
@@ -2968,7 +3549,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35840
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &432277883
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3003,11 +3598,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 432277881}
-  outlineImage: {fileID: 432277886}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &432277885
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3213,27 +3805,27 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 461138328}
   cg: {fileID: 461138330}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 461138328}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -3243,7 +3835,25 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35868
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &461138330
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3252,7 +3862,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 461138327}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -3442,45 +4052,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 474490627}
-  cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  cg: {fileID: 474490629}
+  tf: {fileID: 474490627}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
-  useAlpha: 0
-  anchoredPosPerStage: []
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 263, y: -313, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
-  alphaPerStage: []
+  alphaPerStage:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35884
---- !u!114 &474490629
-MonoBehaviour:
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
+--- !u!225 &474490629
+CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 474490626}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &484070516
 GameObject:
   m_ObjectHideFlags: 0
@@ -3586,33 +4211,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 484070517}
   cg: {fileID: 484070520}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 1
-  useLocalPosition: 0
+  tf: {fileID: 484070517}
+  useLocalPosition: 1
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage:
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: -122, y: 0}
-  - {x: -122, y: 0}
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -122, y: 0, z: 0}
   - {x: -122, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35898
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &502707458
 GameObject:
   m_ObjectHideFlags: 0
@@ -3669,29 +4300,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 502707459}
   cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 502707459}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -198, y: -232, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35904
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &502707461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3704,9 +4345,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
 --- !u!1 &550840775
 GameObject:
   m_ObjectHideFlags: 0
@@ -3762,33 +4400,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 550840776}
   cg: {fileID: 550840778}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 550840776}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35912
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &550840778
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3797,7 +4449,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550840775}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -3870,7 +4522,6 @@ Transform:
   m_Children:
   - {fileID: 381627152}
   - {fileID: 855251189}
-  - {fileID: 1899027303}
   m_Father: {fileID: 913858639}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &626278548
@@ -3929,37 +4580,55 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 626278549}
   cg: {fileID: 626278553}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 626278549}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 240, y: 120}
   - {x: 240, y: 120}
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35928
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &626278551
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3994,11 +4663,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 626278549}
-  outlineImage: {fileID: 626278554}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &626278553
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4007,7 +4673,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 626278548}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -4114,37 +4780,47 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 633667014}
   cg: {fileID: 633667015}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 633667014}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 1
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: -66, z: 0}
   - {x: 0, y: -66, z: 0}
   - {x: 0, y: -66, z: 0}
   - {x: 0, y: -66, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.1
-  - 1
-  - 1
-  - 1
+  scalePerStage:
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
   sizePerStage: []
   alphaPerStage:
   - 0
   - 1
   - 1
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35946
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &655045114
 GameObject:
   m_ObjectHideFlags: 0
@@ -4174,35 +4850,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0ff3bcd0b34f43aa85cc4ad326ac96f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  systems:
-  - controller: {fileID: 1682461111}
-    target: {fileID: 990010991}
-    cameraOverride: {fileID: 0}
-    dotIndex: 0
-    iconIndex: 1
-    pillIndex: 2
-    responseTime: 0.25
-    hysteresis: 0
-    label: System
-    logChanges: 0
-  - controller: {fileID: 381627151}
-    target: {fileID: 227713718}
-    cameraOverride: {fileID: 0}
-    dotIndex: 0
-    iconIndex: 1
-    pillIndex: 2
-    responseTime: 0.25
-    hysteresis: 0
-    label: System
-    logChanges: 0
-  sharedCamera: {fileID: 1961278762}
-  runEveryFrame: 1
-  checkInterval: 0.05
-  showOnScreen: 0
-  screenOrigin: {x: 16, y: 16}
-  lineHeight: 60
-  pillMax: 1
-  iconMax: 1.4
 --- !u!4 &655045116
 Transform:
   m_ObjectHideFlags: 0
@@ -4382,33 +5029,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 695045585}
   cg: {fileID: 695045586}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 695045585}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 80, y: -20, z: 0}
   - {x: 80, y: -20, z: 0}
   - {x: -14, y: -20, z: 0}
   - {x: -14, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 1
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_35964
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &719799598
 GameObject:
   m_ObjectHideFlags: 0
@@ -4442,6 +5099,7 @@ RectTransform:
   - {fileID: 1638833060}
   - {fileID: 1819918172}
   - {fileID: 1370977995}
+  - {fileID: 783212186}
   m_Father: {fileID: 988670575}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -4504,7 +5162,7 @@ Transform:
   m_GameObject: {fileID: 724496689}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.12}
+  m_LocalPosition: {x: -0.025, y: 0, z: -0.106}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4527,7 +5185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &732589055
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4634,7 +5292,7 @@ RectTransform:
   m_Father: {fileID: 1551146603}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4764,6 +5422,328 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 756257009}
   m_CullTransparentMesh: 1
+--- !u!1 &762244515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 762244516}
+  - component: {fileID: 762244519}
+  - component: {fileID: 762244518}
+  - component: {fileID: 762244517}
+  m_Layer: 5
+  m_Name: Button - green
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &762244516
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762244515}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1007838240}
+  m_Father: {fileID: 1793794499}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 261, y: -564}
+  m_SizeDelta: {x: 300, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &762244517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762244515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 762244518}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &762244518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762244515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.74509805, g: 0.9607843, b: 0.5529412, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &762244519
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 762244515}
+  m_CullTransparentMesh: 1
+--- !u!1 &783212185
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 783212186}
+  - component: {fileID: 783212189}
+  - component: {fileID: 783212188}
+  - component: {fileID: 783212187}
+  - component: {fileID: 783212190}
+  m_Layer: 5
+  m_Name: Text -refreshed
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &783212186
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783212185}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 719799599}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 41, y: 9}
+  m_SizeDelta: {x: 210.16, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &783212187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783212185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd04ef78de5a3442398b142bec4bbeb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 381627151}
+  rt: {fileID: 783212186}
+  cg: {fileID: 783212190}
+  tf: {fileID: 783212186}
+  useLocalPosition: 0
+  useEuler: 0
+  useUniformScale: 0
+  useSizeDelta: 0
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
+  localPosPerStage: []
+  eulerPerStage: []
+  scalePerStage: []
+  sizePerStage: []
+  alphaPerStage:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
+  tweenId: DRV_CORE_-25340
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &783212188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783212185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: I'm refreshed
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 0ccc27c3e2e984c24956c786ef04648d, type: 2}
+  m_sharedMaterial: {fileID: 4141509060589302932, guid: 0ccc27c3e2e984c24956c786ef04648d,
+    type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 30
+  m_fontSizeBase: 30
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &783212189
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783212185}
+  m_CullTransparentMesh: 1
+--- !u!225 &783212190
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783212185}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &833523889
 GameObject:
   m_ObjectHideFlags: 0
@@ -4872,33 +5852,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 837763647}
   cg: {fileID: 837763649}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 837763647}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36012
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &837763649
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4958,10 +5948,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 855251189}
-  - component: {fileID: 855251191}
   - component: {fileID: 855251190}
   m_Layer: 0
-  m_Name: Stage Motion
+  m_Name: Motion Lib
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4991,21 +5980,31 @@ MonoBehaviour:
   m_GameObject: {fileID: 855251188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fbc9b3eddb31495e88bdeefa94b2540, type: 3}
+  m_Script: {fileID: 11500000, guid: f6ebc0f0e35aa461a88c33f10a03c62f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &855251191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 855251188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 705d2edef96f648eb8665fa28912f42a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  target: {fileID: 988670575}
+  growDuration: 0.35
+  throwDuration: 1.5
+  throwHeight: 0.05
+  spinDegrees: 360
+  growFrom: 0.1
+  growTo: 1
+  floatHeight: 0.006
+  floatDuration: 0.7
+  hoverYawPerLoop: 10
+  morphScaleUp: 1.02
+  morphDuration: 0.35
+  morphUpEase: 6
+  morphDownEase: 5
+  appearDuration: 0.3
+  disappearDuration: 0.3
+  wiggleHeight: 0.01
+  wiggleDuration: 0.5
+  bounceScale: 1.1
+  bounceDuration: 0.5
+  breatheScale: 1.03
+  breatheDuration: 1.6
 --- !u!1 &909922711
 GameObject:
   m_ObjectHideFlags: 0
@@ -5062,37 +6061,55 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 909922712}
   cg: {fileID: 909922716}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 909922712}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 240, y: 120}
   - {x: 240, y: 120}
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36032
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &909922714
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5127,11 +6144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 909922712}
-  outlineImage: {fileID: 909922717}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &909922716
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5140,7 +6154,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 909922711}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -5207,7 +6221,7 @@ Transform:
   m_GameObject: {fileID: 913858638}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.391, y: -0.0264, z: 0.6}
+  m_LocalPosition: {x: -0.457, y: -0.174, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5269,33 +6283,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 921668919}
   cg: {fileID: 921668921}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 921668919}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36052
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &921668921
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5462,37 +6486,55 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 932637857}
   cg: {fileID: 932637861}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 932637857}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 240, y: 120}
   - {x: 240, y: 120}
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36064
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &932637859
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5527,11 +6569,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 932637857}
-  outlineImage: {fileID: 932637862}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &932637861
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5540,7 +6579,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 932637856}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -5638,26 +6677,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 980689844}
   cg: {fileID: 980689849}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 980689844}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
@@ -5668,7 +6703,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36080
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &980689846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5703,11 +6752,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 980689844}
-  outlineImage: {fileID: 980689850}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &980689849
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5811,37 +6857,55 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 988670575}
   cg: {fileID: 988670577}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 988670575}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 1
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: -66, z: 0}
   - {x: 0, y: -66, z: 0}
   - {x: 0, y: -66, z: 0}
   - {x: 0, y: -66, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.1
-  - 1
-  - 1
-  - 1
+  scalePerStage:
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
   sizePerStage: []
   alphaPerStage:
   - 0
   - 1
   - 1
   - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36096
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &988670577
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5976,6 +7040,140 @@ MonoBehaviour:
   targetCamera: {fileID: 1961278762}
   rotationSpeed: 5
   flipY: 1
+--- !u!1 &1007838239
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1007838240}
+  - component: {fileID: 1007838242}
+  - component: {fileID: 1007838241}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1007838240
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007838239}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 762244516}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1007838241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007838239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Button
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 24
+  m_fontSizeBase: 24
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1007838242
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007838239}
+  m_CullTransparentMesh: 1
 --- !u!1 &1037295319
 GameObject:
   m_ObjectHideFlags: 0
@@ -6137,11 +7335,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 1147332478}
-  outlineImage: {fileID: 1147332480}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!114 &1147332485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6157,26 +7352,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1147332478}
   cg: {fileID: 1147332479}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1147332478}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 120, y: 120}
   - {x: 120, y: 120}
@@ -6187,7 +7378,21 @@ MonoBehaviour:
   - 1
   - 1
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36130
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1168534623
 GameObject:
   m_ObjectHideFlags: 0
@@ -6330,26 +7535,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1184364104}
   cg: {fileID: 1184364106}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1184364104}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -6360,7 +7561,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36152
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1184364106
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6482,6 +7697,7 @@ GameObject:
   - component: {fileID: 1193703840}
   - component: {fileID: 1193703841}
   - component: {fileID: 1193703842}
+  - component: {fileID: 1193703843}
   m_Layer: 5
   m_Name: Panel - Age
   m_TagString: Untagged
@@ -6526,30 +7742,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1193703840}
-  cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  cg: {fileID: 1193703843}
+  tf: {fileID: 1193703840}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
-  useAlpha: 0
-  anchoredPosPerStage: []
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -198, y: -232, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
-  alphaPerStage: []
+  alphaPerStage:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36164
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &1193703842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6562,9 +7796,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
+--- !u!225 &1193703843
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193703839}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1256977969
 GameObject:
   m_ObjectHideFlags: 0
@@ -6621,37 +7864,55 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1256977970}
   cg: {fileID: 1256977974}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1256977970}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 120, y: 120}
+  - {x: 240, y: 120}
+  - {x: 240, y: 120}
   - {x: 240, y: 120}
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36172
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &1256977972
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6686,11 +7947,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 1256977970}
-  outlineImage: {fileID: 1256977975}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &1256977974
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6699,7 +7957,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1256977969}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -6883,26 +8141,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1292228421}
   cg: {fileID: 1292228423}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1292228421}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -6913,7 +8167,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36198
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1292228423
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7078,26 +8346,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1313053104}
   cg: {fileID: 1313053106}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1313053104}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -7108,7 +8372,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36210
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1313053106
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7273,33 +8551,39 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1326986119}
   cg: {fileID: 1326986121}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1326986119}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36222
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1326986121
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7406,26 +8690,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1328206762}
   cg: {fileID: 1328206766}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1328206762}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
@@ -7436,7 +8716,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36234
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &1328206764
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7471,11 +8765,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 1328206762}
-  outlineImage: {fileID: 1328206767}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &1328206766
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7580,33 +8871,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1370977995}
   cg: {fileID: 1370977997}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1370977995}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 80, y: -20, z: 0}
   - {x: 80, y: -20, z: 0}
   - {x: -14, y: -20, z: 0}
   - {x: -14, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 1
   - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36250
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1370977997
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7771,33 +9076,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1371678822}
   cg: {fileID: 1371678824}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1371678822}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36262
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1371678824
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7962,33 +9277,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1393965391}
   cg: {fileID: 1393965393}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1393965391}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36274
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1393965393
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7997,7 +9326,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1393965390}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -8155,33 +9484,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1428710147}
   cg: {fileID: 1428710149}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1428710147}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36286
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1428710149
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8190,7 +9533,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1428710146}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -8286,33 +9629,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1435510215}
   cg: {fileID: 1435510217}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1435510215}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36298
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1435510217
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8456,7 +9809,7 @@ RectTransform:
   m_Father: {fileID: 277301164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8554,29 +9907,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1497007753}
   cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1497007753}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 263, y: -313, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36318
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &1497007755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8589,9 +9952,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
 --- !u!1 &1504209998
 GameObject:
   m_ObjectHideFlags: 0
@@ -8648,29 +10008,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1504209999}
   cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1504209999}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 177, y: 217, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36326
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &1504210001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8683,9 +10053,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
 --- !u!1 &1524474219
 GameObject:
   m_ObjectHideFlags: 0
@@ -8740,33 +10107,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1524474220}
   cg: {fileID: 1524474222}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1524474220}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36334
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1524474222
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -8775,7 +10156,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524474219}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -8999,6 +10380,7 @@ GameObject:
   - component: {fileID: 1568710491}
   - component: {fileID: 1568710492}
   - component: {fileID: 1568710493}
+  - component: {fileID: 1568710494}
   m_Layer: 5
   m_Name: Panel - light
   m_TagString: Untagged
@@ -9043,30 +10425,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1568710491}
-  cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  cg: {fileID: 1568710494}
+  tf: {fileID: 1568710491}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
-  useAlpha: 0
-  anchoredPosPerStage: []
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 177, y: 217, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
-  alphaPerStage: []
+  alphaPerStage:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36358
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &1568710493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9079,9 +10479,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
+--- !u!225 &1568710494
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568710490}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1570547064
 GameObject:
   m_ObjectHideFlags: 0
@@ -9137,45 +10546,60 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 381627151}
   rt: {fileID: 1570547065}
-  cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  cg: {fileID: 1570547067}
+  tf: {fileID: 1570547065}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
-  useAlpha: 0
-  anchoredPosPerStage: []
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -259, y: 117, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
-  alphaPerStage: []
+  alphaPerStage:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36366
---- !u!114 &1570547067
-MonoBehaviour:
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
+--- !u!225 &1570547067
+CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1570547064}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1591027269
 GameObject:
   m_ObjectHideFlags: 0
@@ -9320,29 +10744,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1612247498}
   cg: {fileID: 0}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1612247498}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -259, y: 117, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36384
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &1612247500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9355,9 +10789,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d8aeaa3279c9466a9cb0f3984e47b38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floatHeight: 0.006
-  floatDuration: 0.7
-  hoverYawDegrees: 10
 --- !u!1 &1621708540
 GameObject:
   m_ObjectHideFlags: 0
@@ -9412,27 +10843,27 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1621708541}
   cg: {fileID: 1621708543}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1621708541}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -9442,7 +10873,25 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36392
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1621708543
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -9451,7 +10900,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1621708540}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -9586,6 +11035,8 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 57745026}
+  - {fileID: 2066712808}
+  - {fileID: 264941156}
   m_Father: {fileID: 719799599}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -9608,33 +11059,60 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1638833060}
   cg: {fileID: 1638833062}
+  tf: {fileID: 1638833060}
+  useLocalPosition: 1
+  useEuler: 0
+  useUniformScale: 0
+  useSizeDelta: 0
+  useAlpha: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
+  localPosPerStage:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: -122, y: 0, z: 0}
+  - {x: -122, y: 0, z: 0}
+  - {x: -122, y: 0, z: 0}
+  - {x: -122, y: 0, z: 0}
+  - {x: -122, y: 0, z: 0}
+  - {x: -122, y: 0, z: 0}
+  eulerPerStage: []
+  scalePerStage: []
+  sizePerStage: []
+  alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
   edgeTimingOverrides: []
-  useAnchoredPosition: 1
-  useLocalPosition: 0
-  useEuler: 0
-  useUniformScale: 0
-  useSizeDelta: 0
-  useAlpha: 0
-  anchoredPosPerStage:
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
-  - {x: -122, y: 0}
-  - {x: -122, y: 0}
-  localPosPerStage:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: -122, y: 0, z: 0}
-  - {x: -122, y: 0, z: 0}
-  eulerPerStage: []
-  uniformScalePerStage: []
-  sizePerStage: []
-  alphaPerStage: []
   tweenId: DRV_36404
+  dynamicTracks:
+  - rid: 2765338992770547712
+  references:
+    version: 2
+    RefIds:
+    - rid: 2765338992770547712
+      type: {class: ColorTrack, ns: , asm: Assembly-CSharp}
+      data:
+        displayName: Color
+        target: {fileID: 1638833063}
+        memberName: color
+        enabled: 1
+        values:
+        - {r: 1, g: 0.4117647, b: 0.21568628, a: 1}
+        - {r: 1, g: 0.4117647, b: 0.21568628, a: 1}
+        - {r: 1, g: 0.4117647, b: 0.21568628, a: 1}
+        - {r: 1, g: 0.4117647, b: 0.21568628, a: 1}
+        - {r: 1, g: 0.4117647, b: 0.21568628, a: 1}
+        - {r: 1, g: 0.4117647, b: 0.21568628, a: 0}
+        - {r: 1, g: 0.4117647, b: 0.21568628, a: 0}
+        - {r: 0.74509805, g: 0.9607843, b: 0.5529412, a: 1}
 --- !u!225 &1638833062
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -9660,7 +11138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.4117647, b: 0.21568628, a: 1}
+  m_Color: {r: 0.74509805, g: 0.9607843, b: 0.5529412, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9736,45 +11214,81 @@ MonoBehaviour:
     rangeMax: 2
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 1
+    distanceThreshold: 2
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
   - id: icon
     triggerBySlider: 1
     rangeMin: 2
     rangeMax: 4
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 1
+    distanceThreshold: 1.4
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
   - id: pill
     triggerBySlider: 1
     rangeMin: 4
     rangeMax: 7
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 1
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
   - id: panel
     triggerBySlider: 1
     rangeMin: 7
     rangeMax: 10
     triggerByKey: 0
     key: 0
-    triggerByManual: 0
-    onManualTrigger:
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 1
+    button: {fileID: 762244517}
+    triggerByDistance: 0
+    distanceThreshold: 0.6
+    triggerByCustom: 0
+    onCustomTrigger:
       m_PersistentCalls:
         m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
   edges:
   - from: 0
     to: 1
     useMotion: 1
-    motion: 5
+    motion: 1
     useCustomCall: 0
     onTraverse:
       m_PersistentCalls:
@@ -9797,8 +11311,12 @@ MonoBehaviour:
         m_Calls: []
   duration: 1
   ease: 28
+  overshoot: 1.70158
   motionLibrary: {fileID: 1716642808}
   sliderInput: {fileID: 1828190293}
+  distanceTarget: {fileID: 990010991}
+  distanceCamera: {fileID: 1961278762}
+  logDistance: 0
 --- !u!1 &1694887888
 GameObject:
   m_ObjectHideFlags: 0
@@ -9855,26 +11373,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1694887889}
   cg: {fileID: 1694887893}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1694887889}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
@@ -9885,7 +11399,21 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36422
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &1694887891
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9920,11 +11448,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 1694887889}
-  outlineImage: {fileID: 1694887894}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!225 &1694887893
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10016,18 +11541,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1716642805}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58668bffd17a744ab899b30c2694307c, type: 3}
+  m_Script: {fileID: 11500000, guid: f6ebc0f0e35aa461a88c33f10a03c62f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 990010991}
+  target: {fileID: 633667014}
   growDuration: 0.35
   throwDuration: 1.5
-  throwHeight: 0.04
+  throwHeight: 0.05
   spinDegrees: 360
   growFrom: 0.1
   growTo: 1
-  floatHeight: 0.01
-  floatDuration: 1.2
+  floatHeight: 0.006
+  floatDuration: 0.7
   hoverYawPerLoop: 10
   morphScaleUp: 1.02
   morphDuration: 0.35
@@ -10095,33 +11620,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1753482568}
   cg: {fileID: 1753482570}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1753482568}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36446
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1753482570
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10226,33 +11757,47 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1765529870}
   cg: {fileID: 1765529872}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1765529870}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   - {x: 48, y: -20, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36458
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1765529872
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10261,7 +11806,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1765529869}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -10417,27 +11962,27 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1785729426}
   cg: {fileID: 1785729428}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1785729426}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   - {x: 48, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -10447,7 +11992,25 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36470
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1785729428
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10456,7 +12019,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1785729425}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -10635,7 +12198,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -10654,6 +12217,8 @@ RectTransform:
   m_Children:
   - {fileID: 1828190292}
   - {fileID: 732589055}
+  - {fileID: 762244516}
+  - {fileID: 2030477143}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10715,33 +12280,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1809679399}
   cg: {fileID: 1809679401}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1809679399}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36492
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1809679401
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10846,27 +12417,27 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1819918172}
   cg: {fileID: 1819918174}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1819918172}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
-  useSizeDelta: 1
+  useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 80, y: 16, z: 0}
   - {x: 80, y: 16, z: 0}
   - {x: -14, y: 16, z: 0}
   - {x: -14, y: 16, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
+  - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -10876,7 +12447,25 @@ MonoBehaviour:
   - 0
   - 1
   - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36504
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1819918174
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10885,7 +12474,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1819918171}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -11003,7 +12592,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1828190292
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11131,33 +12720,39 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1831367534}
   cg: {fileID: 1831367536}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1831367534}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36522
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1831367536
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11262,33 +12857,39 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1839705260}
   cg: {fileID: 1839705262}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1839705260}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36534
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1839705262
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11351,6 +12952,7 @@ GameObject:
   - component: {fileID: 1869393201}
   - component: {fileID: 1869393200}
   - component: {fileID: 1869393199}
+  - component: {fileID: 1869393202}
   m_Layer: 5
   m_Name: Bar Fill
   m_TagString: Untagged
@@ -11427,6 +13029,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869393196}
   m_CullTransparentMesh: 1
+--- !u!114 &1869393202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869393196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f38cbc20ae7a04954838fbb86083a767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 381627151}
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  tweenId: DRV_DYN_-57644
 --- !u!1 &1882752703
 GameObject:
   m_ObjectHideFlags: 0
@@ -11483,33 +13104,43 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1882752704}
   cg: {fileID: 1882752706}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1882752704}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -57, y: 0, z: 0}
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36556
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1882752706
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11560,50 +13191,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1882752703}
   m_CullTransparentMesh: 1
---- !u!1 &1899027302
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1899027303}
-  - component: {fileID: 1899027304}
-  m_Layer: 0
-  m_Name: Input Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1899027303
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1899027302}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 568972262}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1899027304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1899027302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d131839b5cc444b5ae4ca2118d4d420, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1961278755
 GameObject:
   m_ObjectHideFlags: 0
@@ -11899,33 +13486,39 @@ MonoBehaviour:
   controller: {fileID: 381627151}
   rt: {fileID: 1969649319}
   cg: {fileID: 1969649321}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 1969649319}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36590
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &1969649321
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11976,6 +13569,127 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1969649318}
   m_CullTransparentMesh: 1
+--- !u!1 &2030477142
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2030477143}
+  - component: {fileID: 2030477146}
+  - component: {fileID: 2030477145}
+  - component: {fileID: 2030477144}
+  m_Layer: 5
+  m_Name: Button - orange
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2030477143
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030477142}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 353802046}
+  m_Father: {fileID: 1793794499}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -261, y: -564}
+  m_SizeDelta: {x: 300, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2030477144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030477142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 2030477145}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2030477145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030477142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.4117647, b: 0.21568628, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2030477146
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030477142}
+  m_CullTransparentMesh: 1
 --- !u!1 &2032917242
 GameObject:
   m_ObjectHideFlags: 0
@@ -12008,6 +13722,151 @@ Transform:
   - {fileID: 1961278756}
   m_Father: {fileID: 724496691}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2066712807
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2066712808}
+  - component: {fileID: 2066712812}
+  - component: {fileID: 2066712811}
+  - component: {fileID: 2066712810}
+  - component: {fileID: 2066712809}
+  m_Layer: 5
+  m_Name: icon-smile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2066712808
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066712807}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1638833060}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 40, y: 35}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2066712809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066712807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd04ef78de5a3442398b142bec4bbeb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 381627151}
+  rt: {fileID: 2066712808}
+  cg: {fileID: 2066712810}
+  tf: {fileID: 2066712808}
+  useLocalPosition: 0
+  useEuler: 0
+  useUniformScale: 0
+  useSizeDelta: 0
+  useAlpha: 1
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
+  localPosPerStage:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: -133, y: 0, z: 0}
+  - {x: 0, y: 410, z: 0}
+  eulerPerStage: []
+  scalePerStage: []
+  sizePerStage: []
+  alphaPerStage:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
+  tweenId: DRV_36492
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
+--- !u!225 &2066712810
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066712807}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &2066712811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066712807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: b131c9d622c4148d18822b47c446e719, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2066712812
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066712807}
+  m_CullTransparentMesh: 1
 --- !u!1 &2080050309
 GameObject:
   m_ObjectHideFlags: 0
@@ -12062,33 +13921,39 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 2080050310}
   cg: {fileID: 2080050312}
-  overrideDuration: 0
-  duration: 1
-  overrideEase: 0
-  ease: 19
-  startDelay: 0
-  edgeTimingOverrides: []
-  useAnchoredPosition: 0
+  tf: {fileID: 2080050310}
   useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 0
-  anchoredPosPerStage: []
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
   tweenId: DRV_36606
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!225 &2080050312
 CanvasGroup:
   m_ObjectHideFlags: 0

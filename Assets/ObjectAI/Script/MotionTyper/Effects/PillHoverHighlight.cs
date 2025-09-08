@@ -5,20 +5,24 @@ public class PillHoverHighlight : MonoBehaviour
 {
     [Header("References")]
     public Camera cam;
-    public Transform pillTarget;      // the pill object with a collider
-    public Image outlineImage;        // UI outline (world-space canvas element)
+    // pillTarget is now the GameObject this script is attached to
+    // outlineImage is now automatically found on the same GameObject
 
     [Header("Alpha Settings")]
     public float defaultAlpha = 100f / 255f; // ~0.59
     public float highlightAlpha = 1f;       // 255/255
-    public float fadeSpeed = 5f;            // how fast to lerp
+    private float fadeSpeed = 5f;            // how fast to lerp
 
     private Color outlineColor;
     private bool isHovered;
+    private Image outlineImage;
 
     void Awake()
     {
         if (!cam) cam = Camera.main;
+        
+        // Get the outline image from the same GameObject
+        outlineImage = GetComponent<Image>();
         if (outlineImage) {
             outlineColor = outlineImage.color;
             outlineColor.a = defaultAlpha;
@@ -28,7 +32,7 @@ public class PillHoverHighlight : MonoBehaviour
 
     void Update()
     {
-        if (!cam || !pillTarget || !outlineImage) return;
+        if (!cam || !outlineImage) return;
 
         // Ray from camera center
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
@@ -36,7 +40,7 @@ public class PillHoverHighlight : MonoBehaviour
         // If pill has a collider, check distance
         if (Physics.Raycast(ray, out RaycastHit hit, 10f))
         {
-            isHovered = (hit.transform == pillTarget);
+            isHovered = (hit.transform == transform);
         }
         else
         {

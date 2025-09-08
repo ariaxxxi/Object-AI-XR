@@ -79,10 +79,13 @@ public class MotionStateDriverDynamic : MonoBehaviour
         float effDur = overrideDuration ? duration : globalDuration;
         Ease  effEase= overrideEase     ? ease     : globalEase;
 
+        bool useOvershoot = effEase == Ease.InOutBack && controller != null;
+        float overshoot = useOvershoot ? controller.overshoot : 0f;
+
         foreach (var t in tracks)
         {
             if (t == null || !t.enabled) continue;
-            t.ApplyTween(toIndex, effDur, effEase, tweenId, startDelay);
+            t.ApplyTween(toIndex, effDur, effEase, tweenId, startDelay, useOvershoot, overshoot);
         }
     }
 
@@ -110,7 +113,7 @@ public abstract class TrackBase
     public abstract Type ValueType { get; }
     public abstract int Count { get; }
     public abstract void EnsureSize(int stageCount);
-    public abstract void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay);
+    public abstract void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot);
     public abstract void ApplyInstant(int idx);
     public abstract void BuildAccessors();
 }
@@ -143,12 +146,20 @@ public class FloatTrack : TrackBase
         ReflectionAccessors.BuildFloat(target, memberName, out getter, out setter);
     }
 
-    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay)
+    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot)
     {
         if (setter == null || idx < 0 || idx >= values.Count) return;
         float to = values[idx];
-        DOTween.To(() => getter != null ? getter() : to, x => setter(x), to, duration)
-               .SetEase(ease).SetDelay(delay).SetId(tweenId);
+        var tween = DOTween.To(() => getter != null ? getter() : to, x => setter(x), to, duration)
+                      .SetDelay(delay).SetId(tweenId);
+        if (useOvershoot)
+        {
+            tween.SetEase(ease, overshoot);
+        }
+        else
+        {
+            tween.SetEase(ease);
+        }
     }
 
     public override void ApplyInstant(int idx)
@@ -188,12 +199,20 @@ public class ColorTrack : TrackBase
         ReflectionAccessors.BuildColor(target, memberName, out getter, out setter);
     }
 
-    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay)
+    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot)
     {
         if (setter == null || idx < 0 || idx >= values.Count) return;
         var to = values[idx];
-        DOTween.To(() => getter != null ? getter() : to, c => setter(c), to, duration)
-               .SetEase(ease).SetDelay(delay).SetId(tweenId);
+        var tween = DOTween.To(() => getter != null ? getter() : to, c => setter(c), to, duration)
+                      .SetDelay(delay).SetId(tweenId);
+        if (useOvershoot)
+        {
+            tween.SetEase(ease, overshoot);
+        }
+        else
+        {
+            tween.SetEase(ease);
+        }
     }
 
     public override void ApplyInstant(int idx)
@@ -233,12 +252,20 @@ public class Vector3Track : TrackBase
         ReflectionAccessors.BuildVector3(target, memberName, out getter, out setter);
     }
 
-    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay)
+    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot)
     {
         if (setter == null || idx < 0 || idx >= values.Count) return;
         var to = values[idx];
-        DOTween.To(() => getter != null ? getter() : to, v => setter(v), to, duration)
-               .SetEase(ease).SetDelay(delay).SetId(tweenId);
+        var tween = DOTween.To(() => getter != null ? getter() : to, v => setter(v), to, duration)
+                      .SetDelay(delay).SetId(tweenId);
+        if (useOvershoot)
+        {
+            tween.SetEase(ease, overshoot);
+        }
+        else
+        {
+            tween.SetEase(ease);
+        }
     }
 
     public override void ApplyInstant(int idx)

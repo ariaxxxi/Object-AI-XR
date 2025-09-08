@@ -18,9 +18,30 @@ public class StageDef
     public bool triggerByKey = false;
     public KeyCode key = KeyCode.None;
 
-    [Header("Manual Trigger")] 
-    public bool triggerByManual = false;
-    public UnityEngine.Events.UnityEvent onManualTrigger;
+    [Header("Touch Trigger")] 
+    public bool triggerByTouch = false;
+    [Tooltip("If true, triggers only on touch/mouse begin; otherwise any touch held.")]
+    public bool touchOnBeginOnly = true;
+
+    [Header("Button Trigger")] 
+    public bool triggerByButton = false;
+    public UnityEngine.UI.Button button;
+
+    [Header("Distance Trigger")] 
+    public bool triggerByDistance = false;
+    [Tooltip("Distance threshold in world units.")]
+    public float distanceThreshold = 1f;
+
+    [Header("Custom Trigger")] 
+    public bool triggerByCustom = false;
+    public UnityEngine.Events.UnityEvent onCustomTrigger;
+
+    [Header("Stage Trigger")]
+    public bool triggerByStage = false;
+    [Tooltip("The Index of the stage that, when triggered, will trigger this stage.")]
+    public int triggerStageIndex = -1;
+    [Tooltip("Delay in seconds before this stage is triggered after the source stage is triggered.")]
+    public float triggerStageDelay = 0f;
 }
 
 public enum MotionType
@@ -76,13 +97,26 @@ public class StageController : MonoBehaviour
     [Header("Global Transition Settings")]
     public float duration = 1f;
     public Ease ease = Ease.InOutExpo;
+    [Tooltip("Overshoot amplitude for InOutBack ease. Ignored for other ease types.")]
+    public float overshoot = 1.70158f;
 
-    [Header("Scoped Motion Library (per controller)")]
-    public MotionLibrary motionLibrary; // <<< assign the MotionLibrary for THIS system
+    [Header("UI Motion Library (optional) (per controller)")]
+    public UIMotionLibrary motionLibrary; // <<< assign the UIMotionLibrary for THIS system
 
-    [Header("Slider Input (optional)")]
+    [Header("Slider Input (optional) (per controller)")]
     [Tooltip("If any stages use Slider trigger, assign the UI Slider to drive values.")]
     public Slider sliderInput;
+
+    [Header("Distance Input (optional) (per controller)")]
+    [Tooltip("Shared target transform for all stages that use Distance trigger.")]
+    public Transform distanceTarget;
+    [Tooltip("Camera used for distance measurement; if null, falls back to Camera.main.")]
+    public Camera distanceCamera;
+
+
+    [Header("Debug")] 
+    [Tooltip("When enabled, logs the distance between the chosen camera and distance target each frame a distance trigger is evaluated.")]
+    public bool logDistance;
 
     // Events for drivers (object-level)
     public event Action<int, StageDef, float, Ease> OnStageChanged;                        // legacy
@@ -91,6 +125,11 @@ public class StageController : MonoBehaviour
     public int CurrentIndex { get; private set; } = -1;
     public StageDef CurrentStage => (CurrentIndex >= 0 && CurrentIndex < stages.Count) ? stages[CurrentIndex] : null;
 
+    private Dictionary<int, Coroutine> _activeStageTriggers = new Dictionary<int, Coroutine>();
+    private readonly List<(UnityEngine.UI.Button btn, UnityEngine.Events.UnityAction act)> _buttonSubscriptions = new List<(UnityEngine.UI.Button btn, UnityEngine.Events.UnityAction act)>();
+    // Track whether we were previously inside each stage's distance threshold to fire only on enter
+    private readonly List<bool> _distWasInside = new List<bool>();
+
     void OnEnable()
     {
         // initialize to stage 0
@@ -98,11 +137,84 @@ public class StageController : MonoBehaviour
 
         if (sliderInput)
             sliderInput.onValueChanged.AddListener(OnSliderValueChanged);
+        // subscribe to per-stage button presses
+        SubscribeButtonTriggers();
+
+        // Initialize distance state to current condition to avoid immediate enter-trigger
+        InitializeDistanceStates();
     }
 
     void Update()
     {
-        // Poll for any per-stage key triggers
+        if (stages == null || stages.Count == 0) return;
+
+        // 1) Touch triggers
+        for (int i = 0; i < stages.Count; i++)
+        {
+            var s = stages[i];
+            if (!s.triggerByTouch) continue;
+
+            bool touchBegan = Input.touchSupported ? AnyTouchBegan() : Input.GetMouseButtonDown(0);
+            bool touchHeld  = Input.touchSupported ? (Input.touchCount > 0) : Input.GetMouseButton(0);
+            bool fire = s.touchOnBeginOnly ? touchBegan : touchHeld;
+            if (fire)
+            {
+                if (i != CurrentIndex) ApplyIndex(i);
+                return; // only trigger one per frame
+            }
+        }
+
+        // 2) Distance triggers (fire once on entering threshold; pick most specific)
+        {
+            bool anyDistanceStage = false;
+            for (int i = 0; i < stages.Count; i++) { if (stages[i].triggerByDistance) { anyDistanceStage = true; break; } }
+            if (anyDistanceStage && distanceTarget != null)
+            {
+                var cam = distanceCamera != null ? distanceCamera : Camera.main;
+                if (cam != null)
+                {
+                    float dist = Vector3.Distance(cam.transform.position, distanceTarget.position);
+                    if (logDistance)
+                    {
+                        string camName = cam ? cam.name : "<no camera>";
+                        string tgtName = distanceTarget ? distanceTarget.name : "<no target>";
+                        Debug.Log($"[StageController] Distance {camName} -> {tgtName} = {dist:0.###}");
+                    }
+
+                    // Ensure state list matches stage count
+                    while (_distWasInside.Count < stages.Count) _distWasInside.Add(false);
+                    if (_distWasInside.Count > stages.Count) _distWasInside.RemoveRange(stages.Count, _distWasInside.Count - stages.Count);
+
+                    int enterIdx = -1;
+                    float enterBestThreshold = float.PositiveInfinity;
+                    for (int i = 0; i < stages.Count; i++)
+                    {
+                        var s = stages[i];
+                        if (!s.triggerByDistance) { _distWasInside[i] = false; continue; }
+                        bool nowInside = dist <= s.distanceThreshold;
+                        bool wasInside = _distWasInside[i];
+                        if (!wasInside && nowInside)
+                        {
+                            // entering this stage's threshold this frame
+                            if (s.distanceThreshold < enterBestThreshold)
+                            {
+                                enterBestThreshold = s.distanceThreshold;
+                                enterIdx = i;
+                            }
+                        }
+                        _distWasInside[i] = nowInside;
+                    }
+
+                    if (enterIdx >= 0)
+                    {
+                        if (enterIdx != CurrentIndex) ApplyIndex(enterIdx);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // 3) Key triggers
         for (int i = 0; i < stages.Count; i++)
         {
             var s = stages[i];
@@ -111,16 +223,75 @@ public class StageController : MonoBehaviour
                 if (Input.GetKeyDown(s.key))
                 {
                     if (i != CurrentIndex) ApplyIndex(i);
-                    break; // only trigger one per frame
+                    return; // only trigger one per frame
                 }
             }
         }
+    }
+
+    bool AnyTouchBegan()
+    {
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            if (Input.GetTouch(i).phase == TouchPhase.Began) return true;
+        }
+        return false;
+    }
+
+    void SubscribeButtonTriggers()
+    {
+        _buttonSubscriptions.Clear();
+        if (stages == null) return;
+        for (int i = 0; i < stages.Count; i++)
+        {
+            var s = stages[i];
+            if (s != null && s.triggerByButton && s.button != null)
+            {
+                int idx = i; // capture local
+                UnityEngine.Events.UnityAction act = () => RequestStageIndex(idx);
+                s.button.onClick.AddListener(act);
+                _buttonSubscriptions.Add((s.button, act));
+            }
+        }
+    }
+
+    void UnsubscribeButtonTriggers()
+    {
+        foreach (var p in _buttonSubscriptions)
+        {
+            if (p.btn != null && p.act != null)
+                p.btn.onClick.RemoveListener(p.act);
+        }
+        _buttonSubscriptions.Clear();
     }
 
     void OnDisable()
     {
         if (sliderInput)
             sliderInput.onValueChanged.RemoveListener(OnSliderValueChanged);
+        // unsubscribe button listeners
+        UnsubscribeButtonTriggers();
+    }
+
+    void InitializeDistanceStates()
+    {
+        if (stages == null) return;
+        while (_distWasInside.Count < stages.Count) _distWasInside.Add(false);
+        if (_distWasInside.Count > stages.Count) _distWasInside.RemoveRange(stages.Count, _distWasInside.Count - stages.Count);
+
+        if (distanceTarget == null) { for (int i = 0; i < _distWasInside.Count; i++) _distWasInside[i] = false; return; }
+        var cam = distanceCamera != null ? distanceCamera : Camera.main;
+        if (cam == null) { for (int i = 0; i < _distWasInside.Count; i++) _distWasInside[i] = false; return; }
+
+        float dist = Vector3.Distance(cam.transform.position, distanceTarget.position);
+        for (int i = 0; i < stages.Count; i++)
+        {
+            var s = stages[i];
+            if (s != null && s.triggerByDistance)
+                _distWasInside[i] = dist <= s.distanceThreshold;
+            else
+                _distWasInside[i] = false;
+        }
     }
 
     // ------ Public API ------
@@ -173,19 +344,19 @@ public class StageController : MonoBehaviour
     }
 
     /// <summary>
-    /// Manually trigger a stage by index, and invoke that stage's manual event if enabled.
+    /// Manually trigger a stage by index, and invoke that stage's custom event if enabled.
     /// </summary>
     public void RequestStageIndexManual(int idx)
     {
         idx = Mathf.Clamp(idx, 0, Mathf.Max(0, stages.Count - 1));
         if (idx != CurrentIndex) ApplyIndex(idx);
         var s = (idx >= 0 && idx < stages.Count) ? stages[idx] : null;
-        if (s != null && s.triggerByManual)
-            s.onManualTrigger?.Invoke();
+        if (s != null && s.triggerByCustom)
+            s.onCustomTrigger?.Invoke();
     }
 
     /// <summary>
-    /// Manually trigger a stage by id, and invoke that stage's manual event if enabled.
+    /// Manually trigger a stage by id, and invoke that stage's custom event if enabled.
     /// Returns true if found.
     /// </summary>
     public bool TriggerStageByIdManual(string stageId)
@@ -215,6 +386,58 @@ public class StageController : MonoBehaviour
         // Notify drivers (object-level state tweening)
         OnStageChanged?.Invoke(CurrentIndex, toDef, duration, ease);
         OnStageChangedDetailed?.Invoke(prev, CurrentIndex, toDef, duration, ease);
+
+        // Check for stage-based triggers
+        CheckAndTriggerDependentStages(CurrentIndex);
+    }
+
+    private void CheckAndTriggerDependentStages(int triggeredStageIndex)
+    {
+        for (int i = 0; i < stages.Count; i++)
+        {
+            if (i == triggeredStageIndex) continue; // Don't trigger self
+
+            var dependentStage = stages[i];
+            if (dependentStage.triggerByStage && dependentStage.triggerStageIndex == triggeredStageIndex)
+            {
+                // If this stage is already scheduled to be triggered, cancel the previous trigger.
+                if (_activeStageTriggers.TryGetValue(i, out var existingCoroutine))
+                {
+                    if (existingCoroutine != null)
+                    {
+                        StopCoroutine(existingCoroutine);
+                    }
+                    _activeStageTriggers.Remove(i);
+                }
+                
+                var newCoroutine = StartCoroutine(DelayedStageTrigger(i, dependentStage.triggerStageDelay));
+                _activeStageTriggers[i] = newCoroutine;
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator DelayedStageTrigger(int stageIndexToTrigger, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Ensure the stage index is still valid and the controller hasn't been destroyed or disabled.
+        if (this == null || !this.isActiveAndEnabled || stageIndexToTrigger < 0 || stageIndexToTrigger >= stages.Count)
+        {
+            _activeStageTriggers.Remove(stageIndexToTrigger);
+            yield break;
+        }
+        
+        // Check if the stage is not already active before triggering.
+        if (CurrentIndex != stageIndexToTrigger)
+        {
+            ApplyIndex(stageIndexToTrigger);
+        }
+
+        // Clean up the dictionary entry
+        if (_activeStageTriggers.ContainsKey(stageIndexToTrigger))
+        {
+            _activeStageTriggers.Remove(stageIndexToTrigger);
+        }
     }
 
     void PlayPath(int from, int to)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -8,11 +9,34 @@ public class MotionStateDriver : MonoBehaviour
     [Header("Controller")]
     public StageController controller;
 
-    [Header("Targets (optional)")]
+    [Header("Targets")]
     [HideInInspector] public RectTransform rt;
     [HideInInspector] public CanvasGroup cg;
+    [HideInInspector] public Transform tf;
+
+    [Header("Motion Track Toggles")]
+    public bool useLocalPosition;
+    public bool useEuler;
+    public bool useUniformScale;
+    public bool useSizeDelta;
+    public bool useAlpha;
+    public bool useTransform3DPosition;
+    public bool useTransform3DRotation;
+    public bool useTransform3DScale;
+
+    [Header("Per-Stage Values")]
+    public List<Vector3> localPosPerStage = new();
+    public List<Vector3> eulerPerStage = new();
+    public List<Vector3> scalePerStage = new();
+    public List<Vector2> sizePerStage = new();
+    public List<float>   alphaPerStage = new();
+    public List<Vector3> transform3DPositionPerStage = new();
+    public List<Vector3> transform3DRotationPerStage = new();
+    public List<Vector3> transform3DScalePerStage = new();
+
 
     [Header("Global Timing Overrides")]
+    public bool showGlobalTimingOverrides;
     public bool overrideDuration;
     public float duration = 1f;
     public bool overrideEase;
@@ -42,28 +66,19 @@ public class MotionStateDriver : MonoBehaviour
     [Header("Per-Edge Timing Overrides")]
     public List<EdgeTimingOverride> edgeTimingOverrides = new();
 
-    [Header("Track Toggles (Essentials)")]
-    public bool useAnchoredPosition;
-    public bool useLocalPosition;
-    public bool useEuler;
-    public bool useUniformScale;
-    public bool useSizeDelta;
-    public bool useAlpha;
 
-    [Header("Per-Stage Values")]
-    public List<Vector2> anchoredPosPerStage = new();
-    public List<Vector3> localPosPerStage = new();
-    public List<Vector3> eulerPerStage = new();
-    public List<float>   uniformScalePerStage = new();
-    public List<Vector2> sizePerStage = new();
-    public List<float>   alphaPerStage = new();
 
     [SerializeField] string tweenId;
+
+    [Header("Dynamic Tracks (optional)")]
+    [Tooltip("Additional user-defined tracks driven by stages. Uses the same timing and easing as above.")]
+    [SerializeReference] public List<TrackBase> dynamicTracks = new();
 
     void Reset()
     {
         rt = GetComponent<RectTransform>();
         cg = GetComponent<CanvasGroup>();
+        tf = GetComponent<Transform>();
     }
 
     void Awake()
@@ -71,6 +86,12 @@ public class MotionStateDriver : MonoBehaviour
         if (string.IsNullOrEmpty(tweenId)) tweenId = "DRV_CORE_" + GetInstanceID();
         rt = GetComponent<RectTransform>();
         cg = GetComponent<CanvasGroup>();
+        tf = GetComponent<Transform>();
+        // Prepare dynamic track accessors at runtime
+        if (dynamicTracks != null)
+        {
+            foreach (var t in dynamicTracks) t?.BuildAccessors();
+        }
     }
 
     void OnEnable()
@@ -99,6 +120,12 @@ public class MotionStateDriver : MonoBehaviour
         if (string.IsNullOrEmpty(tweenId)) tweenId = "DRV_CORE_" + GetInstanceID();
         rt = GetComponent<RectTransform>();
         cg = GetComponent<CanvasGroup>();
+        tf = GetComponent<Transform>();
+        // Keep dynamic track accessors up to date in editor
+        if (dynamicTracks != null)
+        {
+            foreach (var t in dynamicTracks) t?.BuildAccessors();
+        }
         EnsureListSizes();
     }
 
@@ -114,19 +141,29 @@ public class MotionStateDriver : MonoBehaviour
             if (list.Count > count) list.RemoveRange(count, list.Count - count);
         }
 
-        Vector2 curAnch = rt ? rt.anchoredPosition : Vector2.zero;
         Vector3 curLoc  = rt ? rt.localPosition : Vector3.zero;
         Vector3 curRot  = rt ? rt.localEulerAngles : Vector3.zero;
-        float curScale  = rt ? rt.localScale.x : 1f;
+        Vector3 curScale = rt ? rt.localScale : Vector3.one;
         Vector2 curSize = rt ? rt.sizeDelta : new Vector2(100, 100);
         float curA      = cg ? cg.alpha : 1f;
+        Vector3 cur3DPos = tf ? tf.localPosition : Vector3.zero;
+        Vector3 cur3DRot = tf ? tf.localEulerAngles : Vector3.zero;
+        Vector3 cur3DScale = tf ? tf.localScale : Vector3.one;
 
-        if (useAnchoredPosition) Fit(anchoredPosPerStage, curAnch);
         if (useLocalPosition)    Fit(localPosPerStage,   curLoc);
         if (useEuler)            Fit(eulerPerStage,      curRot);
-        if (useUniformScale)     Fit(uniformScalePerStage, curScale);
+        if (useUniformScale)     Fit(scalePerStage,      curScale);
         if (useSizeDelta)        Fit(sizePerStage,       curSize);
         if (useAlpha)            Fit(alphaPerStage,      curA);
+        if (useTransform3DPosition) Fit(transform3DPositionPerStage, cur3DPos);
+        if (useTransform3DRotation) Fit(transform3DRotationPerStage, cur3DRot);
+        if (useTransform3DScale)    Fit(transform3DScalePerStage,    cur3DScale);
+
+        // Ensure dynamic tracks have values per stage
+        if (dynamicTracks != null)
+        {
+            foreach (var t in dynamicTracks) t?.EnsureSize(count);
+        }
     }
 
     void ApplyStageLegacy(int toIndex, StageDef def, float globalDuration, Ease globalEase)
@@ -181,31 +218,82 @@ public class MotionStateDriver : MonoBehaviour
             return t;
         }
 
-        if (useAnchoredPosition && rt && anchoredPosPerStage.Count > toIndex)
-            Wrap(rt.DOAnchorPos(anchoredPosPerStage[toIndex], effDuration).SetEase(effEase));
+        // Check for InOutBack ease to apply overshoot
+        if (effEase == Ease.InOutBack && controller != null)
+        {
+            float overshoot = controller.overshoot;
+            if (useLocalPosition && rt && localPosPerStage.Count > toIndex)
+                Wrap(rt.DOLocalMove(localPosPerStage[toIndex], effDuration).SetEase(effEase, overshoot));
 
-        if (useLocalPosition && rt && localPosPerStage.Count > toIndex)
-            Wrap(rt.DOLocalMove(localPosPerStage[toIndex], effDuration).SetEase(effEase));
+            if (useEuler && rt && eulerPerStage.Count > toIndex)
+                Wrap(rt.DOLocalRotate(eulerPerStage[toIndex], effDuration).SetEase(effEase, overshoot));
 
-        if (useEuler && rt && eulerPerStage.Count > toIndex)
-            Wrap(rt.DOLocalRotate(eulerPerStage[toIndex], effDuration).SetEase(effEase));
+            if (useSizeDelta && rt && sizePerStage.Count > toIndex)
+                Wrap(rt.DOSizeDelta(sizePerStage[toIndex], effDuration).SetEase(effEase, overshoot));
 
-        if (useSizeDelta && rt && sizePerStage.Count > toIndex)
-            Wrap(rt.DOSizeDelta(sizePerStage[toIndex], effDuration).SetEase(effEase));
+            if (useUniformScale && rt && scalePerStage.Count > toIndex)
+                Wrap(rt.DOScale(scalePerStage[toIndex], effDuration).SetEase(effEase, overshoot));
 
-        if (useUniformScale && rt && uniformScalePerStage.Count > toIndex)
-            Wrap(rt.DOScale(uniformScalePerStage[toIndex], effDuration).SetEase(effEase));
+            if (useAlpha && cg && alphaPerStage.Count > toIndex)
+                Wrap(cg.DOFade(alphaPerStage[toIndex], effDuration).SetEase(effEase, overshoot));
 
-        if (useAlpha && cg && alphaPerStage.Count > toIndex)
-            Wrap(cg.DOFade(alphaPerStage[toIndex], effDuration).SetEase(effEase));
+            if (useTransform3DPosition && tf && transform3DPositionPerStage.Count > toIndex)
+                Wrap(tf.DOLocalMove(transform3DPositionPerStage[toIndex], effDuration).SetEase(effEase, overshoot));
+            if (useTransform3DRotation && tf && transform3DRotationPerStage.Count > toIndex)
+                Wrap(tf.DOLocalRotate(transform3DRotationPerStage[toIndex], effDuration).SetEase(effEase, overshoot));
+            if (useTransform3DScale && tf && transform3DScalePerStage.Count > toIndex)
+                Wrap(tf.DOScale(transform3DScalePerStage[toIndex], effDuration).SetEase(effEase, overshoot));
+
+            // Apply dynamic tracks with overshoot
+            if (dynamicTracks != null)
+            {
+                foreach (var t in dynamicTracks)
+                {
+                    if (t == null || !t.enabled) continue;
+                    t.ApplyTween(toIndex, effDuration, effEase, tweenId, effDelay, true, overshoot);
+                }
+            }
+        }
+        else
+        {
+            if (useLocalPosition && rt && localPosPerStage.Count > toIndex)
+                Wrap(rt.DOLocalMove(localPosPerStage[toIndex], effDuration).SetEase(effEase));
+
+            if (useEuler && rt && eulerPerStage.Count > toIndex)
+                Wrap(rt.DOLocalRotate(eulerPerStage[toIndex], effDuration).SetEase(effEase));
+
+            if (useSizeDelta && rt && sizePerStage.Count > toIndex)
+                Wrap(rt.DOSizeDelta(sizePerStage[toIndex], effDuration).SetEase(effEase));
+
+            if (useUniformScale && rt && scalePerStage.Count > toIndex)
+                Wrap(rt.DOScale(scalePerStage[toIndex], effDuration).SetEase(effEase));
+
+            if (useAlpha && cg && alphaPerStage.Count > toIndex)
+                Wrap(cg.DOFade(alphaPerStage[toIndex], effDuration).SetEase(effEase));
+
+            if (useTransform3DPosition && tf && transform3DPositionPerStage.Count > toIndex)
+                Wrap(tf.DOLocalMove(transform3DPositionPerStage[toIndex], effDuration).SetEase(effEase));
+            if (useTransform3DRotation && tf && transform3DRotationPerStage.Count > toIndex)
+                Wrap(tf.DOLocalRotate(transform3DRotationPerStage[toIndex], effDuration).SetEase(effEase));
+            if (useTransform3DScale && tf && transform3DScalePerStage.Count > toIndex)
+                Wrap(tf.DOScale(transform3DScalePerStage[toIndex], effDuration).SetEase(effEase));
+
+            // Apply dynamic tracks without overshoot
+            if (dynamicTracks != null)
+            {
+                foreach (var t in dynamicTracks)
+                {
+                    if (t == null || !t.enabled) continue;
+                    t.ApplyTween(toIndex, effDuration, effEase, tweenId, effDelay, false, 0f);
+                }
+            }
+        }
     }
 
     public void ApplyInstant(int index)
     {
         if (index < 0) return;
 
-        if (useAnchoredPosition && rt && anchoredPosPerStage.Count > index)
-            rt.anchoredPosition = anchoredPosPerStage[index];
         if (useLocalPosition && rt && localPosPerStage.Count > index)
             rt.localPosition = localPosPerStage[index];
 
@@ -215,10 +303,27 @@ public class MotionStateDriver : MonoBehaviour
         if (useSizeDelta && rt && sizePerStage.Count > index)
             rt.sizeDelta = sizePerStage[index];
 
-        if (useUniformScale && rt && uniformScalePerStage.Count > index)
-            rt.localScale = Vector3.one * uniformScalePerStage[index];
+        if (useUniformScale && rt && scalePerStage.Count > index)
+            rt.localScale = scalePerStage[index];
 
         if (useAlpha && cg && alphaPerStage.Count > index)
             cg.alpha = alphaPerStage[index];
+
+        if (useTransform3DPosition && tf && transform3DPositionPerStage.Count > index)
+            tf.localPosition = transform3DPositionPerStage[index];
+        if (useTransform3DRotation && tf && transform3DRotationPerStage.Count > index)
+            tf.localEulerAngles = transform3DRotationPerStage[index];
+        if (useTransform3DScale && tf && transform3DScalePerStage.Count > index)
+            tf.localScale = transform3DScalePerStage[index];
+
+        // Apply dynamic tracks instantly
+        if (dynamicTracks != null)
+        {
+            foreach (var t in dynamicTracks)
+            {
+                if (t == null || !t.enabled) continue;
+                t.ApplyInstant(index);
+            }
+        }
     }
 }
