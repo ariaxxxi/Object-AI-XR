@@ -11,10 +11,13 @@ public class ListItemView : MonoBehaviour
     RectTransform outlineRect;
     Image outlineImage;
     CanvasGroup contentGroup;
+    RectTransform bgRect;
+    Image bgImage;
 
     [HideInInspector] public int index; // assigned by controller
 
-    const float MinOutlineAlpha = 0.2f; // clamp range is [0.2, 1]
+    const float MinOutlineAlpha = 0.1f; // clamp range is [0.2, 1]
+    float _contentAlphaFromZ = 1f; // Stores alpha based on Z-position
 
     // Public accessors (not shown in Inspector)
     public RectTransform Rect
@@ -94,6 +97,39 @@ public class ListItemView : MonoBehaviour
         }
     }
 
+    RectTransform BGRect
+    {
+        get
+        {
+            if (bgRect == null)
+            {
+                Transform t = null;
+                var direct = transform.Find("BG");
+                if (direct != null) t = direct;
+                else
+                {
+                    var all = GetComponentsInChildren<Transform>(true);
+                    foreach (var tr in all)
+                    {
+                        if (tr != null && tr.name == "BG") { t = tr; break; }
+                    }
+                }
+
+                if (t != null)
+                {
+                    bgRect = t.GetComponent<RectTransform>();
+                    bgImage = t.GetComponent<Image>();
+                    Debug.Log($"Successfully found BG object for {gameObject.name}", this);
+                }
+                else
+                {
+                    Debug.LogWarning($"Could not find BG object for {gameObject.name}", this);
+                }
+            }
+            return bgRect;
+        }
+    }
+
     void Awake()
     {
         // Ensure auto references are set
@@ -106,8 +142,10 @@ public class ListItemView : MonoBehaviour
         }
         if (contentGroup == null)
         {
-            var _ = ContentGroup;
+            var __ = ContentGroup;
         }
+        // Resolve BG on awake to trigger debug log immediately
+        var ___ = BGRect;
     }
 
     void Reset()
@@ -152,6 +190,19 @@ public class ListItemView : MonoBehaviour
         g.alpha = a;
     }
 
+    public void SetContentAlphaBasedOnZ(float currentZ, float zMid, float zFront)
+    {
+        // Calculate the interpolation factor 't' based on the current Z position
+        float t = 0f;
+        if (zFront != zMid) // Avoid division by zero
+        {
+            t = Mathf.Clamp01((currentZ - zMid) / (zFront - zMid));
+        }
+        
+        // Map [0,1] → [0.2,1] and store it
+        _contentAlphaFromZ = Mathf.Lerp(0.1f, 1f, t);
+    }
+
     public void SetEdgeSqueeze(float normalized, float itemHeight)
     {
         float t = Mathf.Clamp01(normalized);
@@ -168,10 +219,25 @@ public class ListItemView : MonoBehaviour
             outlineImage.pixelsPerUnitMultiplier = Mathf.Lerp(1f, 2f, t);
         }
 
+        if (bgRect != null)
+        {
+            var size = bgRect.sizeDelta;
+            size.y = Mathf.Lerp(itemHeight, 0f, t);
+            bgRect.sizeDelta = size;
+        }
+
+        if (bgImage != null)
+        {
+            bgImage.pixelsPerUnitMultiplier = Mathf.Lerp(5f, 10f, t);
+        }
+
         var cg = ContentGroup;
         if (cg != null)
         {
-            cg.alpha = 1f - Mathf.Clamp01(t * 3f);
+            // Calculate alpha based on edge squeeze (fade out at top)
+            float edgeAlpha = 1f - Mathf.Clamp01(t * 3f);
+            // Final alpha is the product of Z-based alpha and edge-squeeze alpha
+            cg.alpha = _contentAlphaFromZ * edgeAlpha;
         }
     }
 }
