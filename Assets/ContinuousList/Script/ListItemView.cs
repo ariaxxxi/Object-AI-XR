@@ -8,6 +8,9 @@ public class ListItemView : MonoBehaviour
     RectTransform rect;
     Transform depthTarget;
     CanvasGroup outlineGroup;
+    RectTransform outlineRect;
+    Image outlineImage;
+    CanvasGroup contentGroup;
 
     [HideInInspector] public int index; // assigned by controller
 
@@ -55,10 +58,39 @@ public class ListItemView : MonoBehaviour
 
                 if (t != null)
                 {
+                    outlineRect = t.GetComponent<RectTransform>();
+                    outlineImage = t.GetComponent<Image>();
                     outlineGroup = t.GetComponent<CanvasGroup>();
                 }
             }
             return outlineGroup;
+        }
+    }
+
+    CanvasGroup ContentGroup
+    {
+        get
+        {
+            if (contentGroup == null)
+            {
+                Transform t = null;
+                var direct = transform.Find("Content");
+                if (direct != null) t = direct;
+                else
+                {
+                    var all = GetComponentsInChildren<Transform>(true);
+                    foreach (var tr in all)
+                    {
+                        if (tr != null && tr.name == "Content") { t = tr; break; }
+                    }
+                }
+
+                if (t != null)
+                {
+                    contentGroup = t.GetComponent<CanvasGroup>();
+                }
+            }
+            return contentGroup;
         }
     }
 
@@ -72,6 +104,10 @@ public class ListItemView : MonoBehaviour
             // resolve on awake
             var _ = OutlineGroup;
         }
+        if (contentGroup == null)
+        {
+            var _ = ContentGroup;
+        }
     }
 
     void Reset()
@@ -80,6 +116,9 @@ public class ListItemView : MonoBehaviour
         rect = GetComponent<RectTransform>();
         depthTarget = transform;
         outlineGroup = null; // will be resolved via property lookup
+        outlineRect = null;
+        outlineImage = null;
+        contentGroup = null;
     }
 
     public void SetYZ(float y, float z)
@@ -111,5 +150,28 @@ public class ListItemView : MonoBehaviour
         float a = Mathf.Lerp(MinOutlineAlpha, 1f, t);
 
         g.alpha = a;
+    }
+
+    public void SetEdgeSqueeze(float normalized, float itemHeight)
+    {
+        float t = Mathf.Clamp01(normalized);
+
+        if (outlineRect != null)
+        {
+            var size = outlineRect.sizeDelta;
+            size.y = Mathf.Lerp(itemHeight, 0f, t);
+            outlineRect.sizeDelta = size;
+        }
+
+        if (outlineImage != null)
+        {
+            outlineImage.pixelsPerUnitMultiplier = Mathf.Lerp(1f, 2f, t);
+        }
+
+        var cg = ContentGroup;
+        if (cg != null)
+        {
+            cg.alpha = 1f - Mathf.Clamp01(t * 3f);
+        }
     }
 }

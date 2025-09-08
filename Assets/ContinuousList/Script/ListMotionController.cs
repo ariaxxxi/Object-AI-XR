@@ -37,6 +37,8 @@ public class ListMotionController : MonoBehaviour
     // Internal state
     float _offset;            // continuous scroll offset (0..(count-1)*step)
     float _step;              // itemHeight + gap
+    float _itemHeight;        // cached item height
+    float _edgeY;             // top edge for squeeze behavior
     Tweener _snapTween;       // DOTween tween for snapping
     // Scroll snapping state
     bool _scrollSnapPending;
@@ -83,8 +85,9 @@ public class ListMotionController : MonoBehaviour
                 break;
             }
         }
-
-        _step = itemH + gap;
+        _itemHeight = itemH;
+        _step = _itemHeight + gap;
+        _edgeY = _itemHeight * 3f + gap * 2f;
     }
 
     void Update()
@@ -191,7 +194,18 @@ public class ListMotionController : MonoBehaviour
 
             float y = Mathf.Lerp(p0.y, p1.y, t);
             float z = Mathf.Lerp(p0.z, p1.z, t);
+
+            float topY = y + _itemHeight;
+            float squeezeT = 0f;
+            if (topY > _edgeY)
+            {
+                float delta = topY - _edgeY;
+                y = _edgeY - _itemHeight;
+                squeezeT = Mathf.Clamp01(delta / _itemHeight);
+            }
+
             it.SetYZ(y, z);
+            it.SetEdgeSqueeze(squeezeT, _itemHeight);
 
             // Outline alpha: item moving into A gains alpha with t; one leaving loses with t
             float alpha = 0f;
