@@ -7,6 +7,7 @@ Shader "Custom/TitleBlur"
         _BlurAmount ("Blur Amount", Range(0, 1)) = 0
         // Expose the max blur radius for easier tuning in the Inspector
         _MaxBlurRadius ("Max Blur Radius", Int) = 20 
+        _Spread ("Blur Spread", Range(0.25, 3)) = 1
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -75,6 +76,7 @@ Shader "Custom/TitleBlur"
             float4 _MainTex_TexelSize;
             float _BlurAmount;
             int _MaxBlurRadius; // Maximum pixel radius for the blur
+            float _Spread;      // Multiplier for sample spacing (controls perceived spread)
 
             v2f vert (appdata_t v)
             {
@@ -110,26 +112,38 @@ Shader "Custom/TitleBlur"
                 int radius = (int)(_BlurAmount * _MaxBlurRadius);
                 if (radius < 1) radius = 1; // Ensure radius is at least 1
 
-                half4 blurredColor = half4(0,0,0,0);
-                int sampleCount = 0;
+                // Gaussian parameters (sigma proportional to radius)
+                float sigma = max(0.5, radius * 0.5);
+                float invTwoSigma2 = 0.5 / (sigma * sigma);
 
+                half4 blurredColor = half4(0,0,0,0);
+                float weightSum = 0.0;
+
+                // 2D Gaussian kernel sampling
+                [loop]
                 for (int x = -radius; x <= radius; ++x)
                 {
+                    [loop]
                     for (int y = -radius; y <= radius; ++y)
                     {
-                        // Simple box blur: all samples have equal weight
-                        float2 offset = float2(x * _MainTex_TexelSize.x, y * _MainTex_TexelSize.y);
-                        // Sample the raw texture, then apply color/tint later
-                        blurredColor += tex2D(_MainTex, IN.texcoord + offset);
-                        sampleCount++;
+                        float2 offset = float2(x * _MainTex_TexelSize.x * _Spread,
+                                               y * _MainTex_TexelSize.y * _Spread);
+                        float r2 = (float)(x*x + y*y);
+                        float w = exp(-r2 * invTwoSigma2); // Gaussian weight
+                        blurredColor += tex2D(_MainTex, IN.texcoord + offset) * w;
+                        weightSum += w;
                     }
                 }
-                
-                // Average the samples
-                blurredColor /= sampleCount;
-                
+
+                // Normalize
+                blurredColor /= max(weightSum, 1e-5);
+
                 // Apply original color and tint to the blurred texture
                 blurredColor = (blurredColor + _TextureSampleAdd) * IN.color;
+
+                #ifdef UNITY_UI_CLIP_RECT
+                blurredColor.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+                #endif
                 
                 // Lerp between original color and blurred color based on _BlurAmount
                 return lerp(originalColor, blurredColor, _BlurAmount);

@@ -18,6 +18,10 @@ public class ListItemView : MonoBehaviour
 
     const float MinOutlineAlpha = 0.1f; // clamp range is [0.2, 1]
     float _contentAlphaFromZ = 1f; // Stores alpha based on Z-position
+    [Header("Smoothing")]
+    [Tooltip("Higher values make outline alpha ease more slowly to target (smoother). Units are 1/seconds in an exponential ease.")]
+    [Range(1f, 20f)] public float outlineAlphaSmoothing = 8f;
+    float _outlineVisualAlpha = MinOutlineAlpha;
 
     // Public accessors (not shown in Inspector)
     public RectTransform Rect
@@ -185,9 +189,14 @@ public class ListItemView : MonoBehaviour
 
         // Map [0,1] → [0.2,1]
         float t = Mathf.Clamp01(normalized);
-        float a = Mathf.Lerp(MinOutlineAlpha, 1f, t);
+        float target = Mathf.Lerp(MinOutlineAlpha, 1f, t);
 
-        g.alpha = a;
+        // Exponential smoothing toward target using unscaled deltaTime
+        float dt = Mathf.Max(0f, Time.unscaledDeltaTime);
+        float k = 1f - Mathf.Exp(-outlineAlphaSmoothing * dt);
+        _outlineVisualAlpha = Mathf.Lerp(_outlineVisualAlpha, target, k);
+
+        g.alpha = _outlineVisualAlpha;
     }
 
     public void SetContentAlphaBasedOnZ(float currentZ, float zMid, float zFront)
@@ -197,6 +206,8 @@ public class ListItemView : MonoBehaviour
         if (zFront != zMid) // Avoid division by zero
         {
             t = Mathf.Clamp01((currentZ - zMid) / (zFront - zMid));
+            // Apply a curve so content fades out quicker when moving away from front
+            t = t * t; // quadratic curve: reduces faster as z moves back
         }
         
         // Map [0,1] → [0.2,1] and store it
@@ -206,12 +217,17 @@ public class ListItemView : MonoBehaviour
     public void SetEdgeSqueeze(float normalized, float itemHeight)
     {
         float t = Mathf.Clamp01(normalized);
+        float newH = Mathf.Lerp(itemHeight, 0f, t);
+        float centerOffset = 0.5f * (itemHeight - newH); // shift up to keep top anchored
 
         if (outlineRect != null)
         {
             var size = outlineRect.sizeDelta;
-            size.y = Mathf.Lerp(itemHeight, 0f, t);
+            size.y = newH;
             outlineRect.sizeDelta = size;
+            var ap = outlineRect.anchoredPosition;
+            ap.y = centerOffset;
+            outlineRect.anchoredPosition = ap;
         }
 
         if (outlineImage != null)
@@ -222,8 +238,11 @@ public class ListItemView : MonoBehaviour
         if (bgRect != null)
         {
             var size = bgRect.sizeDelta;
-            size.y = Mathf.Lerp(itemHeight, 0f, t);
+            size.y = newH;
             bgRect.sizeDelta = size;
+            var ap = bgRect.anchoredPosition;
+            ap.y = centerOffset;
+            bgRect.anchoredPosition = ap;
         }
 
         if (bgImage != null)
@@ -235,7 +254,7 @@ public class ListItemView : MonoBehaviour
         if (cg != null)
         {
             // Calculate alpha based on edge squeeze (fade out at top)
-            float edgeAlpha = 1f - Mathf.Clamp01(t * 3f);
+            float edgeAlpha = 1f - Mathf.Clamp01(t * 5f); // fade out quicker with squeeze
             // Final alpha is the product of Z-based alpha and edge-squeeze alpha
             cg.alpha = _contentAlphaFromZ * edgeAlpha;
         }

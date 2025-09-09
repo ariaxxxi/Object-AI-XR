@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_TitleBlur
-  m_Shader: {fileID: 4800000, guid: 384799ce27c0141749004bed5e3df8c0, type: 3}
+  m_Name: Custom_TitleBlur 1
+  m_Shader: {fileID: 4800000, guid: 997580a0d0c58427ca6b594c304a2c93, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -31,9 +31,7 @@ Material:
     m_Floats:
     - _BlurAmount: 0
     - _ColorMask: 15
-    - _KernelSize: 42.2
     - _MaxBlurRadius: 20
-    - _Spread: 73.8
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0

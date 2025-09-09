@@ -222,6 +222,8 @@ public class ListMotionController : MonoBehaviour
         if (_step > Mathf.Epsilon) t = Mathf.Clamp01((_offset - baseK) / _step);
 
         // For each item, compute pose at stage k (t=0) and k+1 (t=1), then lerp
+        // Determine the currently "selected" item as the one closest to the A position
+        int selectedIndex = Mathf.Clamp(Mathf.RoundToInt(_offset / _step), 0, Mathf.Max(0, items.Count - 1));
         for (int i = 0; i < items.Count; i++)
         {
             var it = items[i];
@@ -238,8 +240,9 @@ public class ListMotionController : MonoBehaviour
             if (topY > _edgeY)
             {
                 float delta = topY - _edgeY;
-                // The 'y' position is no longer adjusted here to anchor the top.
-                // squeezeT is still calculated to drive the visual squeeze effect.
+                // Move the item down so its top is pinned to the edge
+                y -= delta;
+                // Drive squeeze based on how far beyond the edge the top would have gone
                 squeezeT = Mathf.Clamp01(delta / _itemHeight);
             }
 
@@ -247,11 +250,8 @@ public class ListMotionController : MonoBehaviour
             it.SetEdgeSqueeze(squeezeT, _itemHeight);
             it.SetContentAlphaBasedOnZ(z, zMid, zFront);
 
-            // Outline alpha: item moving into A gains alpha with t; one leaving loses with t
-            float alpha = 0f;
-            if (i == k) alpha = 1f - t;        // currently at A, fading out
-            else if (i == k + 1) alpha = t;    // moving into A, fading in
-            else alpha = 0f;
+            // Outline alpha: hard-select the closest item; others at min alpha
+            float alpha = (i == selectedIndex) ? 1f : 0f;
 
             it.SetOutlineAlpha(alpha);
         }
