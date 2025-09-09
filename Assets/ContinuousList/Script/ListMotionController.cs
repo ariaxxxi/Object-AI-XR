@@ -29,6 +29,11 @@ public class ListMotionController : MonoBehaviour
     [Header("Items")]
     public List<ListItemView> items = new();
 
+    [Header("Title Item")]
+    public GameObject titleItem; // Assign the title item GameObject in the Inspector
+    public float titleScrollThreshold = 1.0f; // How much to scroll before title is fully gone
+    public float titleScrolledZOffset = 20f; // Target Z position when scrolled
+
     [Header("Events")]
     public UnityEvent<int> onSnappedToIndex; // fired when a snap completes with highlighted index
 
@@ -37,6 +42,8 @@ public class ListMotionController : MonoBehaviour
     // Internal state
     float _offset;            // continuous scroll offset (0..(count-1)*step)
     float _step;              // itemHeight + gap
+    float _itemHeight;        // cached item height
+    float _edgeY;             // top edge for squeeze behavior
     Tweener _snapTween;       // DOTween tween for snapping
     // Scroll snapping state
     bool _scrollSnapPending;
@@ -49,6 +56,8 @@ public class ListMotionController : MonoBehaviour
 
     // Cached
     RectTransform _rect;
+    CanvasGroup _titleCanvasGroup;
+    TitleBlurEffect _titleBlurEffect; // We will create this script next
 
     // Last snapped (highlighted) index
     int _lastSnappedIndex = -1;
@@ -67,6 +76,23 @@ public class ListMotionController : MonoBehaviour
             items[i].index = i;
         }
 
+        // Cache title item components
+        if (titleItem != null)
+        {
+            _titleCanvasGroup = titleItem.GetComponent<CanvasGroup>();
+            if (_titleCanvasGroup == null)
+            {
+                _titleCanvasGroup = titleItem.AddComponent<CanvasGroup>();
+            }
+            _titleBlurEffect = titleItem.GetComponent<TitleBlurEffect>();
+            if (_titleBlurEffect == null)
+            {
+                // We will create this script later.
+                // For now, we'll just log a warning if it's not attached.
+                Debug.LogWarning("TitleBlurEffect component not found on titleItem. Please attach it for blur effect.", titleItem);
+            }
+        }
+
         RecomputeStep();
         ApplyLayoutImmediate();
     }
@@ -83,8 +109,9 @@ public class ListMotionController : MonoBehaviour
                 break;
             }
         }
-
-        _step = itemH + gap;
+        _itemHeight = itemH;
+        _step = _itemHeight + gap;
+        _edgeY = _itemHeight * 3f + gap * 2f;
     }
 
     void Update()
@@ -126,6 +153,20 @@ public class ListMotionController : MonoBehaviour
             _scrollSnapPending = true;
             _lastScrollTime = Time.unscaledTime;
         }
+    }
+
+    public void UpdateRawInput(float signedInt, bool isTouch)
+    {
+        // New scroll input cancels any existing snap tween
+        KillSnap();
+        
+        // Apply the raw input value, scaled by sensitivity and step
+        float delta = signedInt * scrollSensitivity * _step * 0.1f; // Adjusted scaling for raw input
+        _offset -= delta; // reversed direction to match typical scroll feel
+        ClampOffset();
+        
+        _scrollSnapPending = true;
+        _lastScrollTime = Time.unscaledTime;
     }
 
 
@@ -181,6 +222,8 @@ public class ListMotionController : MonoBehaviour
         if (_step > Mathf.Epsilon) t = Mathf.Clamp01((_offset - baseK) / _step);
 
         // For each item, compute pose at stage k (t=0) and k+1 (t=1), then lerp
+        // Determine the currently "selected" item as the one closest to the A position
+        int selectedIndex = Mathf.Clamp(Mathf.RoundToInt(_offset / _step), 0, Mathf.Max(0, items.Count - 1));
         for (int i = 0; i < items.Count; i++)
         {
             var it = items[i];
@@ -191,15 +234,53 @@ public class ListMotionController : MonoBehaviour
 
             float y = Mathf.Lerp(p0.y, p1.y, t);
             float z = Mathf.Lerp(p0.z, p1.z, t);
-            it.SetYZ(y, z);
 
-            // Outline alpha: item moving into A gains alpha with t; one leaving loses with t
-            float alpha = 0f;
-            if (i == k) alpha = 1f - t;        // currently at A, fading out
-            else if (i == k + 1) alpha = t;    // moving into A, fading in
-            else alpha = 0f;
+            float topY = y + _itemHeight;
+            float squeezeT = 0f;
+            if (topY > _edgeY)
+            {
+                float delta = topY - _edgeY;
+                // Move the item down so its top is pinned to the edge
+                y -= delta;
+                // Drive squeeze based on how far beyond the edge the top would have gone
+                squeezeT = Mathf.Clamp01(delta / _itemHeight);
+            }
+
+            it.SetYZ(y, z);
+            it.SetEdgeSqueeze(squeezeT, _itemHeight);
+            it.SetContentAlphaBasedOnZ(z, zMid, zFront);
+
+            // Outline alpha: hard-select the closest item; others at min alpha
+            float alpha = (i == selectedIndex) ? 1f : 0f;
 
             it.SetOutlineAlpha(alpha);
+        }
+
+        // Apply title item effects
+        if (titleItem != null)
+        {
+            float titleProgress = 0f;
+            if (titleScrollThreshold > 0)
+            {
+                titleProgress = Mathf.Clamp01(_offset / titleScrollThreshold);
+            }
+
+            // Z-axis movement
+            Vector3 titlePos = titleItem.transform.localPosition;
+            titlePos.z = Mathf.Lerp(0, titleScrolledZOffset, titleProgress);
+            titleItem.transform.localPosition = titlePos;
+
+            // Fade out
+            if (_titleCanvasGroup != null)
+            {
+                _titleCanvasGroup.alpha = Mathf.Lerp(1f, 0f, titleProgress);
+            }
+
+            // Blur effect
+            if (_titleBlurEffect != null)
+            {
+                _titleBlurEffect.BlurAmount = titleProgress; // Assuming BlurAmount is a property from 0 to 1
+            }
         }
     }
 
