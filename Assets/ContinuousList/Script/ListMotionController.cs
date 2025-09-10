@@ -28,6 +28,8 @@ public class ListMotionController : MonoBehaviour
 
     [Header("Items")]
     public List<ListItemView> items = new();
+    [Tooltip("Automatically collect child ListItemView components (reversed: top->bottom becomes last->first).")]
+    public bool autoCollectChildren = false;
 
     [Header("Title Item")]
     public GameObject titleItem; // Assign the title item GameObject in the Inspector
@@ -77,11 +79,22 @@ public class ListMotionController : MonoBehaviour
     int _lastTickIndex = -1;
     float _lastTickTime = -999f;
 
+    [Header("Bounce At Bottom")]
+    public bool bounceAtBottom = true;
+    [Tooltip("Maximum visual overshoot in pixels when pushing past the last item.")]
+    public float bounceMaxOvershoot = 40f;
+    [Tooltip("Resistance when overscrolling (0..1, higher = stiffer).")]
+    [Range(0.1f, 1f)] public float bounceResistance = 0.5f;
+    [Tooltip("Time to bounce back once released (seconds).")]
+    public float bounceBackDuration = 0.25f;
+    public Ease bounceBackEase = Ease.OutBack;
+    Tweener _bounceTween;
+
     void Awake()
     {
         _rect = GetComponent<RectTransform>();
-
-        // Auto-collect removed; assign items manually in Inspector
+        // Optional auto-collect of child items (reverse hierarchy order)
+        if (autoCollectChildren) AutoCollectItems();
 
         // Index assignment
         for (int i = 0; i < items.Count; i++)
@@ -116,6 +129,32 @@ public class ListMotionController : MonoBehaviour
         _audio.playOnAwake = false;
         _audio.loop = false;
         _audio.spatialBlend = 0f;
+    }
+
+    void OnValidate()
+    {
+        if (autoCollectChildren) { AutoCollectItems(); RecomputeStep(); }
+    }
+
+    void AutoCollectItems()
+    {
+        if (items == null) items = new List<ListItemView>();
+        items.Clear();
+        // Collect direct children in reverse sibling order so bottom-most becomes index 0
+        int childCount = transform.childCount;
+        for (int i = childCount - 1; i >= 0; i--)
+        {
+            var child = transform.GetChild(i);
+            var view = child.GetComponent<ListItemView>();
+            if (view != null) items.Add(view);
+        }
+
+        // Assign indices
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i] == null) continue;
+            items[i].index = i;
+        }
     }
 
     void RecomputeStep()
@@ -159,6 +198,9 @@ public class ListMotionController : MonoBehaviour
 
         // Play tick when the nearest index changes
         PlayScrollTickIfNeeded();
+
+        // Bounce back if overscrolled at bottom and input has settled
+        EnsureBounceBack();
     }
 
     void HandleInput()
@@ -169,11 +211,12 @@ public class ListMotionController : MonoBehaviour
         {
             // New scroll input cancels any existing snap tween
             KillSnap();
+            KillBounce();
             float delta = scrollY * scrollSensitivity * _step * 0.2f;
             // Apply dragPixelsPerUnit to touchpad scroll as requested (higher = slower)
             delta /= Mathf.Max(1f, dragPixelsPerUnit);
             _offset -= delta; // reversed direction
-            ClampOffset();
+            SoftClampOffset();
             _scrollSnapPending = true;
             _lastScrollTime = Time.unscaledTime;
         }
@@ -202,10 +245,38 @@ public class ListMotionController : MonoBehaviour
         _offset = Mathf.Clamp(_offset, 0f, max);
     }
 
+    void SoftClampOffset()
+    {
+        if (!clampToBounds)
+            return;
+        float max = Mathf.Max(0, (items.Count - 1) * _step);
+        if (_offset <= max)
+        {
+            // within bounds or top side
+            _offset = Mathf.Clamp(_offset, 0f, max);
+            return;
+        }
+        if (!bounceAtBottom)
+        {
+            _offset = max;
+            return;
+        }
+        // Apply resisted overscroll beyond bottom
+        float over = _offset - max;
+        over = Mathf.Min(over, bounceMaxOvershoot);
+        _offset = max + over * (1f - Mathf.Clamp01(bounceResistance));
+    }
+
     void KillSnap()
     {
         if (_snapTween != null && _snapTween.IsActive()) _snapTween.Kill(false);
         _snapTween = null;
+    }
+
+    void KillBounce()
+    {
+        if (_bounceTween != null && _bounceTween.IsActive()) _bounceTween.Kill(false);
+        _bounceTween = null;
     }
 
     void SnapToNearestStage()
@@ -233,6 +304,24 @@ public class ListMotionController : MonoBehaviour
         else
             _snapTween.SetEase(snapEaseType);
 
+    }
+
+    void EnsureBounceBack()
+    {
+        if (!bounceAtBottom || !clampToBounds) return;
+        float max = Mathf.Max(0, (items.Count - 1) * _step);
+        if (_offset <= max + 0.01f) return; // not overscrolled
+        // if input has settled briefly, bounce back to max
+        if (Time.unscaledTime - _lastScrollTime > 0.03f)
+        {
+            KillSnap();
+            if (_bounceTween == null || !_bounceTween.IsActive())
+            {
+                float start = _offset;
+                _bounceTween = DOVirtual.Float(start, max, Mathf.Max(0.01f, bounceBackDuration), v => _offset = v)
+                    .SetEase(bounceBackEase);
+            }
+        }
     }
 
     void PlayScrollTickIfNeeded()
@@ -268,6 +357,9 @@ public class ListMotionController : MonoBehaviour
         if (_step > Mathf.Epsilon) t = Mathf.Clamp01((_offset - baseK) / _step);
 
         // For each item, compute pose at stage k (t=0) and k+1 (t=1), then lerp
+        // Selection: only change when an item is exactly at posA (zFront),
+        // which occurs when crossing a step boundary → use floor index.
+        int selectedIndex = Mathf.Clamp(Mathf.FloorToInt(_offset / _step), 0, Mathf.Max(0, items.Count - 1));
         for (int i = 0; i < items.Count; i++)
         {
             var it = items[i];
@@ -294,8 +386,7 @@ public class ListMotionController : MonoBehaviour
             it.SetEdgeSqueeze(squeezeT, _itemHeight);
             it.SetContentAlphaBasedOnZ(z, zMid, zFront);
 
-            // Outline alpha: only highlight the item exactly at front (z == zFront)
-            float alpha = Mathf.Abs(z - zFront) <= 1e-4f ? 1f : 0f;
+            float alpha = (i == selectedIndex) ? 1f : 0f;
 
             it.SetOutlineAlpha(alpha);
         }
