@@ -37,6 +37,15 @@ public class ListMotionController : MonoBehaviour
     [Header("Events")]
     public UnityEvent<int> onSnappedToIndex; // fired when a snap completes with highlighted index
 
+    [Header("Scroll Sounds")]
+    public bool clickSoundEnabled = true;
+    public AudioClip clickClip;
+    [Range(0f,1f)] public float clickVolume = 0.5f;
+    [Tooltip("Random pitch variation (+/-) for each tick.")]
+    [Range(0f,0.5f)] public float clickPitchJitter = 0.05f;
+    [Tooltip("Minimum time between ticks (seconds)")]
+    [Range(0f,0.2f)] public float minTickInterval = 0.03f;
+
     // Input area and camera removed for now; input always allowed
 
     // Internal state
@@ -62,6 +71,11 @@ public class ListMotionController : MonoBehaviour
     // Last snapped (highlighted) index
     int _lastSnappedIndex = -1;
     public int LastSnappedIndex => _lastSnappedIndex;
+
+    // Sound state
+    AudioSource _audio;
+    int _lastTickIndex = -1;
+    float _lastTickTime = -999f;
 
     void Awake()
     {
@@ -95,6 +109,13 @@ public class ListMotionController : MonoBehaviour
 
         RecomputeStep();
         ApplyLayoutImmediate();
+
+        // Prepare audio (optional)
+        _audio = GetComponent<AudioSource>();
+        if (_audio == null) _audio = gameObject.AddComponent<AudioSource>();
+        _audio.playOnAwake = false;
+        _audio.loop = false;
+        _audio.spatialBlend = 0f;
     }
 
     void RecomputeStep()
@@ -135,6 +156,9 @@ public class ListMotionController : MonoBehaviour
             SnapToNearestStage();
         }
         ApplyLayoutImmediate(); // pure function of _offset
+
+        // Play tick when the nearest index changes
+        PlayScrollTickIfNeeded();
     }
 
     void HandleInput()
@@ -209,6 +233,28 @@ public class ListMotionController : MonoBehaviour
         else
             _snapTween.SetEase(snapEaseType);
 
+    }
+
+    void PlayScrollTickIfNeeded()
+    {
+        if (!clickSoundEnabled || clickClip == null || _step <= Mathf.Epsilon) return;
+        int selectedIndex = Mathf.Clamp(Mathf.RoundToInt(_offset / _step), 0, Mathf.Max(0, items.Count - 1));
+        if (selectedIndex != _lastTickIndex)
+        {
+            // Rate-limit to avoid double-fire in the same frame
+            if (Time.unscaledTime - _lastTickTime >= minTickInterval)
+            {
+                _lastTickTime = Time.unscaledTime;
+                _lastTickIndex = selectedIndex;
+                if (_audio != null)
+                {
+                    float basePitch = 1f;
+                    float jitter = (clickPitchJitter > 0f) ? UnityEngine.Random.Range(-clickPitchJitter, clickPitchJitter) : 0f;
+                    _audio.pitch = basePitch + jitter;
+                    _audio.PlayOneShot(clickClip, clickVolume);
+                }
+            }
+        }
     }
 
     void ApplyLayoutImmediate()
