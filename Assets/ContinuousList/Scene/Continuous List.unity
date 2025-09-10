@@ -359,6 +359,11 @@ MonoBehaviour:
   onSnappedToIndex:
     m_PersistentCalls:
       m_Calls: []
+  clickSoundEnabled: 1
+  clickClip: {fileID: 8300000, guid: 51b99096fbf944bf1af0608f51692f93, type: 3}
+  clickVolume: 0.5
+  clickPitchJitter: 0.05
+  minTickInterval: 0.03
 --- !u!1 &40504645
 GameObject:
   m_ObjectHideFlags: 0
@@ -883,6 +888,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  outlineAlphaSmoothing: 8
 --- !u!1 &261921198
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,6 +941,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  outlineAlphaSmoothing: 8
 --- !u!225 &261921201
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1118,7 +1125,6 @@ MonoBehaviour:
   ease: 19
   startDelay: 0
   edgeTimingOverrides: []
-  tweenId: DRV_36492
   dynamicTracks: []
   references:
     version: 2
@@ -1365,7 +1371,6 @@ MonoBehaviour:
   ease: 19
   startDelay: 0
   edgeTimingOverrides: []
-  tweenId: DRV_36492
   dynamicTracks: []
   references:
     version: 2
@@ -2576,6 +2581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  outlineAlphaSmoothing: 8
 --- !u!225 &826534902
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2900,6 +2906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  outlineAlphaSmoothing: 8
 --- !u!1 &1167158643
 GameObject:
   m_ObjectHideFlags: 0
@@ -3050,6 +3057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
+  outlineAlphaSmoothing: 8
 --- !u!225 &1173919158
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4184,7 +4192,6 @@ MonoBehaviour:
   ease: 19
   startDelay: 0
   edgeTimingOverrides: []
-  tweenId: DRV_36492
   dynamicTracks: []
   references:
     version: 2
@@ -4901,7 +4908,6 @@ MonoBehaviour:
   ease: 19
   startDelay: 0
   edgeTimingOverrides: []
-  tweenId: DRV_36492
   dynamicTracks: []
   references:
     version: 2
@@ -5186,7 +5192,6 @@ MonoBehaviour:
   ease: 19
   startDelay: 0
   edgeTimingOverrides: []
-  tweenId: DRV_36492
   dynamicTracks: []
   references:
     version: 2

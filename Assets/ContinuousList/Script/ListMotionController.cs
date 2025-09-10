@@ -268,8 +268,6 @@ public class ListMotionController : MonoBehaviour
         if (_step > Mathf.Epsilon) t = Mathf.Clamp01((_offset - baseK) / _step);
 
         // For each item, compute pose at stage k (t=0) and k+1 (t=1), then lerp
-        // Determine the currently "selected" item as the one closest to the A position
-        int selectedIndex = Mathf.Clamp(Mathf.RoundToInt(_offset / _step), 0, Mathf.Max(0, items.Count - 1));
         for (int i = 0; i < items.Count; i++)
         {
             var it = items[i];
@@ -296,8 +294,8 @@ public class ListMotionController : MonoBehaviour
             it.SetEdgeSqueeze(squeezeT, _itemHeight);
             it.SetContentAlphaBasedOnZ(z, zMid, zFront);
 
-            // Outline alpha: hard-select the closest item; others at min alpha
-            float alpha = (i == selectedIndex) ? 1f : 0f;
+            // Outline alpha: only highlight the item exactly at front (z == zFront)
+            float alpha = Mathf.Abs(z - zFront) <= 1e-4f ? 1f : 0f;
 
             it.SetOutlineAlpha(alpha);
         }
