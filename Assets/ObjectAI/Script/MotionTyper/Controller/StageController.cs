@@ -42,6 +42,31 @@ public class StageDef
     public int triggerStageIndex = -1;
     [Tooltip("Delay in seconds before this stage is triggered after the source stage is triggered.")]
     public float triggerStageDelay = 0f;
+
+    [Header("Timing Overrides (on enter)")]
+    [Tooltip("Override transition duration when entering THIS stage.")]
+    public bool overrideDuration = false;
+    public float duration = 1f;
+
+    [Tooltip("Override transition ease when entering THIS stage.")]
+    public bool overrideEase = false;
+    public Ease ease = Ease.InOutExpo;
+
+    [Tooltip("Delay driver notifications when entering THIS stage (seconds)." )]
+    public bool useDelay = false;
+    public float delay = 0f;
+
+    [Header("AE-style Ease Override (on enter)")]
+    [Tooltip("Override easing using After Effects-style speed & influence.")]
+    public bool useAEEase = false;
+    [Tooltip("Outgoing speed from start key (arbitrary units → tangent).")]
+    public float aeStartSpeed = 1f;
+    [Range(0,100)] public float aeStartInfluence = 33f;
+    [Tooltip("Incoming speed to end key (arbitrary units → tangent).")]
+    public float aeEndSpeed = 1f;
+    [Range(0,100)] public float aeEndInfluence = 33f;
+    [Tooltip("Scales speed to tangent; tune to taste.")]
+    public float aeTangentScale = 1f;
 }
 
 public enum MotionType
@@ -127,6 +152,7 @@ public class StageController : MonoBehaviour
 
     private Dictionary<int, Coroutine> _activeStageTriggers = new Dictionary<int, Coroutine>();
     private readonly List<(UnityEngine.UI.Button btn, UnityEngine.Events.UnityAction act)> _buttonSubscriptions = new List<(UnityEngine.UI.Button btn, UnityEngine.Events.UnityAction act)>();
+    private Coroutine _pendingDriverNotify;
     // Track whether we were previously inside each stage's distance threshold to fire only on enter
     private readonly List<bool> _distWasInside = new List<bool>();
 
@@ -383,12 +409,45 @@ public class StageController : MonoBehaviour
         if (prev >= 0 && prev != CurrentIndex)
             PlayPath(prev, CurrentIndex); // triggers motions/events per edge
 
-        // Notify drivers (object-level state tweening)
-        OnStageChanged?.Invoke(CurrentIndex, toDef, duration, ease);
-        OnStageChangedDetailed?.Invoke(prev, CurrentIndex, toDef, duration, ease);
+        // Resolve per-stage timing overrides
+        float effDuration = toDef != null && toDef.overrideDuration ? toDef.duration : duration;
+        Ease  effEase     = toDef != null && toDef.overrideEase     ? toDef.ease     : ease;
+        float effDelay    = toDef != null && toDef.useDelay         ? toDef.delay    : 0f;
+
+        // Cancel any pending driver notifications
+        if (_pendingDriverNotify != null)
+        {
+            StopCoroutine(_pendingDriverNotify);
+            _pendingDriverNotify = null;
+        }
+
+        if (effDelay > 0f)
+        {
+            _pendingDriverNotify = StartCoroutine(NotifyDriversAfterDelay(effDelay, prev, CurrentIndex, toDef, effDuration, effEase));
+        }
+        else
+        {
+            NotifyDrivers(prev, CurrentIndex, toDef, effDuration, effEase);
+        }
 
         // Check for stage-based triggers
         CheckAndTriggerDependentStages(CurrentIndex);
+    }
+
+    System.Collections.IEnumerator NotifyDriversAfterDelay(float delaySeconds, int prevIndex, int curIndex, StageDef def, float effDuration, Ease effEase)
+    {
+        yield return new WaitForSeconds(delaySeconds);
+        // Ensure still in same stage
+        if (this == null || !isActiveAndEnabled) yield break;
+        if (curIndex != CurrentIndex) yield break;
+        NotifyDrivers(prevIndex, curIndex, def, effDuration, effEase);
+        _pendingDriverNotify = null;
+    }
+
+    void NotifyDrivers(int prevIndex, int curIndex, StageDef def, float effDuration, Ease effEase)
+    {
+        OnStageChanged?.Invoke(curIndex, def, effDuration, effEase);
+        OnStageChangedDetailed?.Invoke(prevIndex, curIndex, def, effDuration, effEase);
     }
 
     private void CheckAndTriggerDependentStages(int triggeredStageIndex)

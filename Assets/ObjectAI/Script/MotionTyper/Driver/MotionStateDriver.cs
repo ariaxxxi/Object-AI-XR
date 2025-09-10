@@ -167,10 +167,10 @@ public class MotionStateDriver : MonoBehaviour
     }
 
     void ApplyStageLegacy(int toIndex, StageDef def, float globalDuration, Ease globalEase)
-        => ApplyStageInternal(-1, toIndex, globalDuration, globalEase);
+        => ApplyStageInternal(-1, toIndex, def, globalDuration, globalEase);
 
     void ApplyStageDetailed(int fromIndex, int toIndex, StageDef def, float globalDuration, Ease globalEase)
-        => ApplyStageInternal(fromIndex, toIndex, globalDuration, globalEase);
+        => ApplyStageInternal(fromIndex, toIndex, def, globalDuration, globalEase);
 
     void ResolveTiming(int fromIndex, int toIndex, float globalDuration, Ease globalEase,
                        out float effDuration, out Ease effEase, out float effDelay)
@@ -201,7 +201,7 @@ public class MotionStateDriver : MonoBehaviour
         return null;
     }
 
-    void ApplyStageInternal(int fromIndex, int toIndex, float globalDuration, Ease globalEase)
+    void ApplyStageInternal(int fromIndex, int toIndex, StageDef def, float globalDuration, Ease globalEase)
     {
         if (toIndex < 0) return;
 
@@ -218,8 +218,15 @@ public class MotionStateDriver : MonoBehaviour
             return t;
         }
 
-        // Check for InOutBack ease to apply overshoot
-        if (effEase == Ease.InOutBack && controller != null)
+        // Optional AE-style custom curve
+        AnimationCurve customCurve = BuildAEEaseCurve(def);
+
+        // Helper to apply either custom curve or Ease
+        Tween ApplyEase(Tween tw, Ease e, AnimationCurve curve)
+            => (curve != null) ? tw.SetEase(curve) : tw.SetEase(e);
+
+        // Check for InOutBack ease to apply overshoot (ignored when custom curve is used)
+        if (customCurve == null && effEase == Ease.InOutBack && controller != null)
         {
             float overshoot = controller.overshoot;
             if (useLocalPosition && rt && localPosPerStage.Count > toIndex)
@@ -250,33 +257,33 @@ public class MotionStateDriver : MonoBehaviour
                 foreach (var t in dynamicTracks)
                 {
                     if (t == null || !t.enabled) continue;
-                    t.ApplyTween(toIndex, effDuration, effEase, tweenId, effDelay, true, overshoot);
+                    t.ApplyTween(toIndex, effDuration, effEase, tweenId, effDelay, true, overshoot, customCurve);
                 }
             }
         }
         else
         {
             if (useLocalPosition && rt && localPosPerStage.Count > toIndex)
-                Wrap(rt.DOLocalMove(localPosPerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(rt.DOLocalMove(localPosPerStage[toIndex], effDuration), effEase, customCurve));
 
             if (useEuler && rt && eulerPerStage.Count > toIndex)
-                Wrap(rt.DOLocalRotate(eulerPerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(rt.DOLocalRotate(eulerPerStage[toIndex], effDuration), effEase, customCurve));
 
             if (useSizeDelta && rt && sizePerStage.Count > toIndex)
-                Wrap(rt.DOSizeDelta(sizePerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(rt.DOSizeDelta(sizePerStage[toIndex], effDuration), effEase, customCurve));
 
             if (useUniformScale && rt && scalePerStage.Count > toIndex)
-                Wrap(rt.DOScale(scalePerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(rt.DOScale(scalePerStage[toIndex], effDuration), effEase, customCurve));
 
             if (useAlpha && cg && alphaPerStage.Count > toIndex)
-                Wrap(cg.DOFade(alphaPerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(cg.DOFade(alphaPerStage[toIndex], effDuration), effEase, customCurve));
 
             if (useTransform3DPosition && tf && transform3DPositionPerStage.Count > toIndex)
-                Wrap(tf.DOLocalMove(transform3DPositionPerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(tf.DOLocalMove(transform3DPositionPerStage[toIndex], effDuration), effEase, customCurve));
             if (useTransform3DRotation && tf && transform3DRotationPerStage.Count > toIndex)
-                Wrap(tf.DOLocalRotate(transform3DRotationPerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(tf.DOLocalRotate(transform3DRotationPerStage[toIndex], effDuration), effEase, customCurve));
             if (useTransform3DScale && tf && transform3DScalePerStage.Count > toIndex)
-                Wrap(tf.DOScale(transform3DScalePerStage[toIndex], effDuration).SetEase(effEase));
+                Wrap(ApplyEase(tf.DOScale(transform3DScalePerStage[toIndex], effDuration), effEase, customCurve));
 
             // Apply dynamic tracks without overshoot
             if (dynamicTracks != null)
@@ -284,7 +291,7 @@ public class MotionStateDriver : MonoBehaviour
                 foreach (var t in dynamicTracks)
                 {
                     if (t == null || !t.enabled) continue;
-                    t.ApplyTween(toIndex, effDuration, effEase, tweenId, effDelay, false, 0f);
+                    t.ApplyTween(toIndex, effDuration, effEase, tweenId, effDelay, false, 0f, customCurve);
                 }
             }
         }
@@ -325,5 +332,23 @@ public class MotionStateDriver : MonoBehaviour
                 t.ApplyInstant(index);
             }
         }
+    }
+
+    static AnimationCurve BuildAEEaseCurve(StageDef def)
+    {
+        if (def == null || !def.useAEEase) return null;
+        float tScale = Mathf.Max(0.01f, def.aeTangentScale);
+        float outTan0 = def.aeStartSpeed * tScale;
+        float inTan1  = def.aeEndSpeed   * tScale;
+
+        var k0 = new Keyframe(0f, 0f, 0f, outTan0);
+        var k1 = new Keyframe(1f, 1f, inTan1, 0f);
+#if UNITY_2018_1_OR_NEWER
+        k0.weightedMode = WeightedMode.Both;
+        k1.weightedMode = WeightedMode.Both;
+        k0.outWeight = Mathf.Clamp01(def.aeStartInfluence / 100f);
+        k1.inWeight  = Mathf.Clamp01(def.aeEndInfluence   / 100f);
+#endif
+        return new AnimationCurve(k0, k1);
     }
 }

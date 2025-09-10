@@ -67,11 +67,11 @@ public class MotionStateDriverDynamic : MonoBehaviour
     }
 
     void ApplyStageLegacy(int toIndex, StageDef def, float globalDuration, Ease globalEase)
-        => ApplyStageInternal(toIndex, globalDuration, globalEase);
+        => ApplyStageInternal(toIndex, def, globalDuration, globalEase);
     void ApplyStageDetailed(int fromIndex, int toIndex, StageDef def, float globalDuration, Ease globalEase)
-        => ApplyStageInternal(toIndex, globalDuration, globalEase);
+        => ApplyStageInternal(toIndex, def, globalDuration, globalEase);
 
-    void ApplyStageInternal(int toIndex, float globalDuration, Ease globalEase)
+    void ApplyStageInternal(int toIndex, StageDef def, float globalDuration, Ease globalEase)
     {
         if (toIndex < 0) return;
         DOTween.Kill(tweenId, false);
@@ -82,10 +82,14 @@ public class MotionStateDriverDynamic : MonoBehaviour
         bool useOvershoot = effEase == Ease.InOutBack && controller != null;
         float overshoot = useOvershoot ? controller.overshoot : 0f;
 
+        // Build optional AE-style curve
+        var customCurve = BuildAEEaseCurve(def);
+        if (customCurve != null) useOvershoot = false; // ignore overshoot when using custom curve
+
         foreach (var t in tracks)
         {
             if (t == null || !t.enabled) continue;
-            t.ApplyTween(toIndex, effDur, effEase, tweenId, startDelay, useOvershoot, overshoot);
+            t.ApplyTween(toIndex, effDur, effEase, tweenId, startDelay, useOvershoot, overshoot, customCurve);
         }
     }
 
@@ -96,6 +100,23 @@ public class MotionStateDriverDynamic : MonoBehaviour
             if (t == null || !t.enabled) continue;
             t.ApplyInstant(index);
         }
+    }
+
+    static AnimationCurve BuildAEEaseCurve(StageDef def)
+    {
+        if (def == null || !def.useAEEase) return null;
+        float tScale = Mathf.Max(0.01f, def.aeTangentScale);
+        float outTan0 = def.aeStartSpeed * tScale;
+        float inTan1  = def.aeEndSpeed   * tScale;
+        var k0 = new Keyframe(0f, 0f, 0f, outTan0);
+        var k1 = new Keyframe(1f, 1f, inTan1, 0f);
+#if UNITY_2018_1_OR_NEWER
+        k0.weightedMode = WeightedMode.Both;
+        k1.weightedMode = WeightedMode.Both;
+        k0.outWeight = Mathf.Clamp01(def.aeStartInfluence / 100f);
+        k1.inWeight  = Mathf.Clamp01(def.aeEndInfluence   / 100f);
+#endif
+        return new AnimationCurve(k0, k1);
     }
 }
 
@@ -113,7 +134,7 @@ public abstract class TrackBase
     public abstract Type ValueType { get; }
     public abstract int Count { get; }
     public abstract void EnsureSize(int stageCount);
-    public abstract void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot);
+    public abstract void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot, AnimationCurve customCurve);
     public abstract void ApplyInstant(int idx);
     public abstract void BuildAccessors();
 }
@@ -146,20 +167,15 @@ public class FloatTrack : TrackBase
         ReflectionAccessors.BuildFloat(target, memberName, out getter, out setter);
     }
 
-    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot)
+    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot, AnimationCurve customCurve)
     {
         if (setter == null || idx < 0 || idx >= values.Count) return;
         float to = values[idx];
         var tween = DOTween.To(() => getter != null ? getter() : to, x => setter(x), to, duration)
                       .SetDelay(delay).SetId(tweenId);
-        if (useOvershoot)
-        {
-            tween.SetEase(ease, overshoot);
-        }
-        else
-        {
-            tween.SetEase(ease);
-        }
+        if (customCurve != null) tween.SetEase(customCurve);
+        else if (useOvershoot) tween.SetEase(ease, overshoot);
+        else tween.SetEase(ease);
     }
 
     public override void ApplyInstant(int idx)
@@ -199,20 +215,15 @@ public class ColorTrack : TrackBase
         ReflectionAccessors.BuildColor(target, memberName, out getter, out setter);
     }
 
-    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot)
+    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot, AnimationCurve customCurve)
     {
         if (setter == null || idx < 0 || idx >= values.Count) return;
         var to = values[idx];
         var tween = DOTween.To(() => getter != null ? getter() : to, c => setter(c), to, duration)
                       .SetDelay(delay).SetId(tweenId);
-        if (useOvershoot)
-        {
-            tween.SetEase(ease, overshoot);
-        }
-        else
-        {
-            tween.SetEase(ease);
-        }
+        if (customCurve != null) tween.SetEase(customCurve);
+        else if (useOvershoot) tween.SetEase(ease, overshoot);
+        else tween.SetEase(ease);
     }
 
     public override void ApplyInstant(int idx)
@@ -252,20 +263,15 @@ public class Vector3Track : TrackBase
         ReflectionAccessors.BuildVector3(target, memberName, out getter, out setter);
     }
 
-    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot)
+    public override void ApplyTween(int idx, float duration, Ease ease, string tweenId, float delay, bool useOvershoot, float overshoot, AnimationCurve customCurve)
     {
         if (setter == null || idx < 0 || idx >= values.Count) return;
         var to = values[idx];
         var tween = DOTween.To(() => getter != null ? getter() : to, v => setter(v), to, duration)
                       .SetDelay(delay).SetId(tweenId);
-        if (useOvershoot)
-        {
-            tween.SetEase(ease, overshoot);
-        }
-        else
-        {
-            tween.SetEase(ease);
-        }
+        if (customCurve != null) tween.SetEase(customCurve);
+        else if (useOvershoot) tween.SetEase(ease, overshoot);
+        else tween.SetEase(ease);
     }
 
     public override void ApplyInstant(int idx)

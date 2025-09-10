@@ -31,7 +31,8 @@ Material:
     m_Floats:
     - _BlurAmount: 0
     - _ColorMask: 15
-    - _MaxBlurRadius: 20
+    - _MaxBlurRadius: 35.7
+    - _Spread: 1.46
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0

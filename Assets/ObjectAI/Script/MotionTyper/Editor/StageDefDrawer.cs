@@ -32,6 +32,18 @@ public class StageDefDrawer : PropertyDrawer
         var stageFlag = property.FindPropertyRelative("triggerByStage");
         var triggerStageIndex = property.FindPropertyRelative("triggerStageIndex");
         var triggerStageDelay = property.FindPropertyRelative("triggerStageDelay");
+        var overrideDuration = property.FindPropertyRelative("overrideDuration");
+        var duration = property.FindPropertyRelative("duration");
+        var overrideEase = property.FindPropertyRelative("overrideEase");
+        var ease = property.FindPropertyRelative("ease");
+        var useDelay = property.FindPropertyRelative("useDelay");
+        var delay = property.FindPropertyRelative("delay");
+        var useAEEase = property.FindPropertyRelative("useAEEase");
+        var aeStartSpeed = property.FindPropertyRelative("aeStartSpeed");
+        var aeStartInfluence = property.FindPropertyRelative("aeStartInfluence");
+        var aeEndSpeed = property.FindPropertyRelative("aeEndSpeed");
+        var aeEndInfluence = property.FindPropertyRelative("aeEndInfluence");
+        var aeTangentScale = property.FindPropertyRelative("aeTangentScale");
 
         // ID
         r = new Rect(position.x, y, position.width, line);
@@ -145,6 +157,63 @@ public class StageDefDrawer : PropertyDrawer
             y += line + vsp;
         }
 
+        // Per-stage timing overrides
+        EditorGUI.LabelField(new Rect(position.x, y, position.width, line), new GUIContent("Timing Overrides (on enter)"), EditorStyles.boldLabel);
+        y += line + vsp;
+
+        r = new Rect(position.x, y, position.width, line);
+        overrideDuration.boolValue = EditorGUI.ToggleLeft(r, new GUIContent("Override Duration"), overrideDuration.boolValue);
+        y += line + vsp;
+        if (overrideDuration.boolValue)
+        {
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, duration, new GUIContent("Duration"));
+            y += line + vsp;
+        }
+
+        r = new Rect(position.x, y, position.width, line);
+        overrideEase.boolValue = EditorGUI.ToggleLeft(r, new GUIContent("Override Ease"), overrideEase.boolValue);
+        y += line + vsp;
+        if (overrideEase.boolValue)
+        {
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, ease, new GUIContent("Ease"));
+            y += line + vsp;
+        }
+
+        r = new Rect(position.x, y, position.width, line);
+        useDelay.boolValue = EditorGUI.ToggleLeft(r, new GUIContent("Use Delay"), useDelay.boolValue);
+        y += line + vsp;
+        if (useDelay.boolValue)
+        {
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, delay, new GUIContent("Delay (s)"));
+            y += line + vsp;
+        }
+
+        // AE-style ease override
+        r = new Rect(position.x, y, position.width, line);
+        useAEEase.boolValue = EditorGUI.ToggleLeft(r, new GUIContent("Use AE-style Ease"), useAEEase.boolValue);
+        y += line + vsp;
+        if (useAEEase.boolValue)
+        {
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, aeStartSpeed, new GUIContent("Start Speed"));
+            y += line + vsp;
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, aeStartInfluence, new GUIContent("Start Influence (%)"));
+            y += line + vsp;
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, aeEndSpeed, new GUIContent("End Speed"));
+            y += line + vsp;
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, aeEndInfluence, new GUIContent("End Influence (%)"));
+            y += line + vsp;
+            r = new Rect(position.x + 12, y, position.width - 12, line);
+            EditorGUI.PropertyField(r, aeTangentScale, new GUIContent("Tangent Scale"));
+            y += line + vsp;
+        }
+
         EditorGUI.EndProperty();
     }
 
@@ -162,6 +231,10 @@ public class StageDefDrawer : PropertyDrawer
         var customFlag = property.FindPropertyRelative("triggerByCustom");
         var onCustom = property.FindPropertyRelative("onCustomTrigger");
         var stageFlag = property.FindPropertyRelative("triggerByStage");
+        var overrideDuration = property.FindPropertyRelative("overrideDuration");
+        var overrideEase = property.FindPropertyRelative("overrideEase");
+        var useDelay = property.FindPropertyRelative("useDelay");
+        var useAEEase = property.FindPropertyRelative("useAEEase");
 
         // id
         h += line + vsp;
@@ -190,6 +263,29 @@ public class StageDefDrawer : PropertyDrawer
         {
             h += line + vsp; // triggerStageId row
             h += line + vsp; // triggerStageDelay row
+        }
+
+        // Timing overrides block header
+        h += line + vsp;
+        // Duration override toggle + maybe field
+        h += line + vsp;
+        if (overrideDuration.boolValue) h += line + vsp;
+        // Ease override toggle + maybe field
+        h += line + vsp;
+        if (overrideEase.boolValue) h += line + vsp;
+        // Delay toggle + maybe field
+        h += line + vsp;
+        if (useDelay.boolValue) h += line + vsp;
+
+        // AE-style ease override toggle and fields
+        h += line + vsp; // toggle
+        if (useAEEase.boolValue)
+        {
+            h += line + vsp; // start speed
+            h += line + vsp; // start influence
+            h += line + vsp; // end speed
+            h += line + vsp; // end influence
+            h += line + vsp; // tangent scale
         }
 
         return h;
