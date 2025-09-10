@@ -68,7 +68,7 @@ public class MotionStateDriver : MonoBehaviour
 
 
 
-    [SerializeField] string tweenId;
+    [NonSerialized] string tweenId;
 
     [Header("Dynamic Tracks (optional)")]
     [Tooltip("Additional user-defined tracks driven by stages. Uses the same timing and easing as above.")]
@@ -83,7 +83,7 @@ public class MotionStateDriver : MonoBehaviour
 
     void Awake()
     {
-        if (string.IsNullOrEmpty(tweenId)) tweenId = "DRV_CORE_" + GetInstanceID();
+        tweenId = "DRV_CORE_" + GetInstanceID();
         rt = GetComponent<RectTransform>();
         cg = GetComponent<CanvasGroup>();
         tf = GetComponent<Transform>();
@@ -96,6 +96,7 @@ public class MotionStateDriver : MonoBehaviour
 
     void OnEnable()
     {
+        if (string.IsNullOrEmpty(tweenId)) tweenId = "DRV_CORE_" + GetInstanceID();
         if (controller != null)
         {
             controller.OnStageChanged += ApplyStageLegacy;
@@ -117,7 +118,7 @@ public class MotionStateDriver : MonoBehaviour
 
     void OnValidate()
     {
-        if (string.IsNullOrEmpty(tweenId)) tweenId = "DRV_CORE_" + GetInstanceID();
+        tweenId = "DRV_CORE_" + GetInstanceID();
         rt = GetComponent<RectTransform>();
         cg = GetComponent<CanvasGroup>();
         tf = GetComponent<Transform>();
