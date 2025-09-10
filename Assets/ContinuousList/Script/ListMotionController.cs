@@ -90,6 +90,11 @@ public class ListMotionController : MonoBehaviour
     public Ease bounceBackEase = Ease.OutBack;
     Tweener _bounceTween;
 
+    [Header("Selection Gate")]
+    [Tooltip("Max |z - zFront| allowed for an item to become selected.")]
+    public float selectionZThreshold = 10f;
+    int _selectedIndex = 0;
+
     void Awake()
     {
         _rect = GetComponent<RectTransform>();
@@ -356,10 +361,31 @@ public class ListMotionController : MonoBehaviour
         float t = 0f;
         if (_step > Mathf.Epsilon) t = Mathf.Clamp01((_offset - baseK) / _step);
 
-        // For each item, compute pose at stage k (t=0) and k+1 (t=1), then lerp
-        // Selection: only change when an item is exactly at posA (zFront),
-        // which occurs when crossing a step boundary → use floor index.
-        int selectedIndex = Mathf.Clamp(Mathf.FloorToInt(_offset / _step), 0, Mathf.Max(0, items.Count - 1));
+        // First pass: determine candidate based on z gate (closest to zFront within threshold)
+        int candidate = -1;
+        float bestYDist = float.PositiveInfinity;
+        for (int i = 0; i < items.Count; i++)
+        {
+            var it = items[i];
+            if (it == null) continue;
+            Pose p0 = PoseAtStage(k, i);
+            Pose p1 = PoseAtStage(k + 1, i);
+            float y = Mathf.Lerp(p0.y, p1.y, t);
+            float z = Mathf.Lerp(p0.z, p1.z, t);
+            float zDist = Mathf.Abs(z - zFront);
+            if (zDist <= selectionZThreshold)
+            {
+                float yDist = Mathf.Abs(y - 0f); // posA is y=0
+                if (yDist < bestYDist)
+                {
+                    bestYDist = yDist;
+                    candidate = i;
+                }
+            }
+        }
+        if (candidate >= 0) _selectedIndex = candidate;
+
+        // Second pass: apply layout and visuals
         for (int i = 0; i < items.Count; i++)
         {
             var it = items[i];
@@ -386,7 +412,7 @@ public class ListMotionController : MonoBehaviour
             it.SetEdgeSqueeze(squeezeT, _itemHeight);
             it.SetContentAlphaBasedOnZ(z, zMid, zFront);
 
-            float alpha = (i == selectedIndex) ? 1f : 0f;
+            float alpha = (i == _selectedIndex) ? 1f : 0f;
 
             it.SetOutlineAlpha(alpha);
         }
