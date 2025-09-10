@@ -18,6 +18,7 @@ public class ListItemView : MonoBehaviour
 
     const float MinOutlineAlpha = 0.1f; // clamp range is [0.2, 1]
     float _contentAlphaFromZ = 1f; // Stores alpha based on Z-position
+    float _edgeContainerAlphaFactor = 1f; // Multiplies container visuals (outline/bg) during top squeeze
     [Header("Smoothing")]
     [Tooltip("Higher values make outline alpha ease more slowly to target (smoother). Units are 1/seconds in an exponential ease.")]
     [Range(1f, 20f)] public float outlineAlphaSmoothing = 8f;
@@ -196,7 +197,7 @@ public class ListItemView : MonoBehaviour
         float k = 1f - Mathf.Exp(-outlineAlphaSmoothing * dt);
         _outlineVisualAlpha = Mathf.Lerp(_outlineVisualAlpha, target, k);
 
-        g.alpha = _outlineVisualAlpha;
+        g.alpha = _outlineVisualAlpha * _edgeContainerAlphaFactor;
     }
 
     public void SetContentAlphaBasedOnZ(float currentZ, float zMid, float zFront)
@@ -253,10 +254,28 @@ public class ListItemView : MonoBehaviour
         var cg = ContentGroup;
         if (cg != null)
         {
-            // Calculate alpha based on edge squeeze (fade out at top)
-            float edgeAlpha = 1f - Mathf.Clamp01(t * 5f); // fade out quicker with squeeze
-            // Final alpha is the product of Z-based alpha and edge-squeeze alpha
+            // Keep content fade behavior as before (independent of the container quick-fade)
+            float edgeAlpha = 1f - Mathf.Clamp01(t * 5f); // content fades with squeeze, quicker but continuous
             cg.alpha = _contentAlphaFromZ * edgeAlpha;
+        }
+
+        // Apply fast container fade after halfway squeeze
+        if (t <= 0.5f)
+        {
+            _edgeContainerAlphaFactor = 1f;
+        }
+        else
+        {
+            float u = Mathf.Clamp01((t - 0.5f) / 0.3f); // quick fade over last 15%
+            _edgeContainerAlphaFactor = 1f - u;
+        }
+
+        // Optionally dim BG image directly
+        if (bgImage != null)
+        {
+            var c = bgImage.color;
+            c.a = _edgeContainerAlphaFactor;
+            bgImage.color = c;
         }
     }
 }
