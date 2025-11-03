@@ -335,44 +335,42 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 66434804}
   cg: {fileID: 66434805}
-  graphic: {fileID: 0}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  tf: {fileID: 66434804}
+  useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: -169, z: 0}
   - {x: 0, y: -169, z: 0}
   - {x: 0, y: -169, z: 0}
   - {x: 0, y: 16, z: 0}
-  anchoredPosPerStage: []
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 1
-  colorPerStage:
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &93550706
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,24 +535,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 93550707}
   cg: {fileID: 93550708}
-  graphic: {fileID: 93550709}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  tf: {fileID: 93550707}
+  useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 80, y: 16, z: 0}
   - {x: 80, y: 16, z: 0}
   - {x: -16, y: 16, z: 0}
   - {x: 0, y: 167, z: 0}
-  anchoredPosPerStage: []
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 100, y: 36}
   - {x: 100, y: 36}
@@ -565,16 +561,20 @@ MonoBehaviour:
   - 0
   - 1
   - 1
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &155434474
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,44 +679,46 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 155434475}
   cg: {fileID: 155434478}
-  graphic: {fileID: 155434476}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  tf: {fileID: 155434475}
+  useLocalPosition: 0
   useEuler: 1
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: -229, y: 0, z: 47}
   - {x: -229, y: 0, z: 47}
   - {x: -229, y: 0, z: 47}
   - {x: -180, y: 0, z: -7.5}
-  anchoredPosPerStage: []
   eulerPerStage:
   - {x: -0, y: 330, z: 0}
   - {x: -0, y: 310, z: 0}
   - {x: -0, y: 330, z: 0}
   - {x: -0, y: 330, z: 0}
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 0.8
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &318927099
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,44 +913,46 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 476020996}
   cg: {fileID: 476020999}
-  graphic: {fileID: 476020997}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  tf: {fileID: 476020996}
+  useLocalPosition: 0
   useEuler: 1
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 410, y: 0, z: 60}
   - {x: 410, y: 0, z: 60}
   - {x: 410, y: 0, z: 60}
   - {x: 275, y: 0, z: 7.5}
-  anchoredPosPerStage: []
   eulerPerStage:
   - {x: -0, y: 80, z: 0}
   - {x: -0, y: 80, z: -0}
   - {x: -0, y: 80, z: -0}
   - {x: -0, y: 45, z: -0}
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 0.6
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &484070516
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,41 +1057,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 1682461111}
   rt: {fileID: 484070517}
-  cg: {fileID: 0}
-  graphic: {fileID: 484070518}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  cg: {fileID: 484070520}
+  tf: {fileID: 484070517}
+  useLocalPosition: 0
   useEuler: 0
   useUniformScale: 1
   useSizeDelta: 0
   useAlpha: 0
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: -133, y: 0, z: 0}
   - {x: 0, y: 410, z: 0}
-  anchoredPosPerStage: []
   eulerPerStage: []
-  uniformScalePerStage:
-  - 0.90000004
-  - 0.90000004
-  - 0.9
-  - 3.8
+  scalePerStage:
+  - {x: 0.90000004, y: 0.90000004, z: 0.90000004}
+  - {x: 0.90000004, y: 0.90000004, z: 0.90000004}
+  - {x: 0.90000004, y: 0.90000004, z: 0.90000004}
+  - {x: 0.90000004, y: 0.90000004, z: 0.90000004}
   sizePerStage: []
   alphaPerStage: []
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &509064365
 GameObject:
   m_ObjectHideFlags: 0
@@ -1421,40 +1427,42 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 695045585}
   cg: {fileID: 695045586}
-  graphic: {fileID: 695045587}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  tf: {fileID: 695045585}
+  useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 80, y: -17, z: 0}
   - {x: 80, y: -17, z: 0}
   - {x: 32, y: -17, z: 0}
   - {x: 0, y: 134, z: 0}
-  anchoredPosPerStage: []
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 1
   - 1
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &721356243
 GameObject:
   m_ObjectHideFlags: 0
@@ -2109,44 +2117,46 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1112655378}
   cg: {fileID: 1112655381}
-  graphic: {fileID: 1112655379}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  tf: {fileID: 1112655378}
+  useLocalPosition: 0
   useEuler: 1
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 230, y: 0, z: 47}
   - {x: 230, y: 0, z: 47}
   - {x: 230, y: 0, z: 47}
   - {x: 174, y: 0, z: -7.5}
-  anchoredPosPerStage: []
   eulerPerStage:
   - {x: -0, y: 50, z: -0}
   - {x: -0, y: 50, z: -0}
   - {x: -0, y: 50, z: -0}
   - {x: -0, y: 30.000008, z: -0}
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 0.8
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1147332477
 GameObject:
   m_ObjectHideFlags: 0
@@ -2285,11 +2295,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1961278762}
-  pillTarget: {fileID: 1147332478}
-  outlineImage: {fileID: 1147332480}
   defaultAlpha: 0.3
   highlightAlpha: 1
-  fadeSpeed: 5
 --- !u!114 &1147332485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2305,24 +2312,22 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1147332478}
   cg: {fileID: 1147332479}
-  graphic: {fileID: 1147332480}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 0
-  useAnchoredPos: 0
+  tf: {fileID: 1147332478}
+  useLocalPosition: 0
   useEuler: 0
   useUniformScale: 0
   useSizeDelta: 1
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  anchoredPosPerStage: []
   eulerPerStage: []
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage:
   - {x: 100, y: 100}
   - {x: 100, y: 100}
@@ -2333,24 +2338,20 @@ MonoBehaviour:
   - 1
   - 1
   - 0
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides:
-  - fromIndex: 0
-    toIndex: 0
-    overrideDuration: 0
-    duration: 0
-    overrideEase: 0
-    ease: 0
-    overrideDelay: 0
-    delay: 0
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1148720712
 GameObject:
   m_ObjectHideFlags: 0
@@ -2800,44 +2801,46 @@ MonoBehaviour:
   controller: {fileID: 1682461111}
   rt: {fileID: 1591655227}
   cg: {fileID: 1591655230}
-  graphic: {fileID: 1591655228}
-  targetRenderer: {fileID: 0}
-  useAnchoredPosition: 0
-  useLocalPos: 1
-  useAnchoredPos: 0
+  tf: {fileID: 1591655227}
+  useLocalPosition: 0
   useEuler: 1
   useUniformScale: 0
   useSizeDelta: 0
   useAlpha: 1
-  useColor: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
   localPosPerStage:
   - {x: -410, y: 0, z: 60}
   - {x: -410, y: 0, z: 60}
   - {x: -410, y: 0, z: 60}
   - {x: -275, y: 0, z: -7.5}
-  anchoredPosPerStage: []
   eulerPerStage:
   - {x: -0, y: 280, z: 0}
   - {x: -0, y: 280, z: 0}
   - {x: -0, y: 280, z: 0}
   - {x: -0, y: 315, z: 0}
-  uniformScalePerStage: []
+  scalePerStage: []
   sizePerStage: []
   alphaPerStage:
   - 0
   - 0
   - 0
   - 0.6
-  colorPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
   overrideDuration: 0
   duration: 1
   overrideEase: 0
   ease: 19
   startDelay: 0
-  enableLoop: 0
-  loopCount: -1
-  loopType: 1
-  transitionOverrides: []
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1682461108
 GameObject:
   m_ObjectHideFlags: 0
@@ -2884,32 +2887,170 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stages:
   - id: dot
+    triggerBySlider: 1
     rangeMin: 0
     rangeMax: 2
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
   - id: icon
+    triggerBySlider: 1
     rangeMin: 2
     rangeMax: 4
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
   - id: pill
+    triggerBySlider: 1
     rangeMin: 4
     rangeMax: 7
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
   - id: panel
+    triggerBySlider: 1
     rangeMin: 7
     rangeMax: 10
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
   edges:
   - from: 0
     to: 1
+    useMotion: 0
     motion: 1
+    useCustomCall: 0
+    onTraverse:
+      m_PersistentCalls:
+        m_Calls: []
   - from: 1
     to: 0
+    useMotion: 0
     motion: 2
+    useCustomCall: 0
+    onTraverse:
+      m_PersistentCalls:
+        m_Calls: []
   - from: 2
     to: 3
+    useMotion: 0
     motion: 3
+    useCustomCall: 0
+    onTraverse:
+      m_PersistentCalls:
+        m_Calls: []
   - from: 3
     to: 2
+    useMotion: 0
     motion: 4
+    useCustomCall: 0
+    onTraverse:
+      m_PersistentCalls:
+        m_Calls: []
   duration: 1
   ease: 28
+  overshoot: 1.70158
+  motionLibrary: {fileID: 0}
+  sliderInput: {fileID: 0}
+  distanceTarget: {fileID: 0}
+  distanceCamera: {fileID: 0}
+  logDistance: 0
 --- !u!1 &1716642805
 GameObject:
   m_ObjectHideFlags: 0
