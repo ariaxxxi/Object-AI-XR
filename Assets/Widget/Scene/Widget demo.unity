@@ -602,6 +602,7 @@ GameObject:
   - component: {fileID: 365105943}
   - component: {fileID: 365105942}
   - component: {fileID: 365105944}
+  - component: {fileID: 365105945}
   m_Layer: 5
   m_Name: widget 1.4
   m_TagString: Untagged
@@ -707,6 +708,18 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 365105942}
+--- !u!225 &365105945
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 365105940}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &382772482
 GameObject:
   m_ObjectHideFlags: 0
@@ -1347,6 +1360,7 @@ GameObject:
   - component: {fileID: 569223624}
   - component: {fileID: 569223623}
   - component: {fileID: 569223622}
+  - component: {fileID: 569223625}
   m_Layer: 5
   m_Name: Time
   m_TagString: Untagged
@@ -1424,6 +1438,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 569223620}
   m_CullTransparentMesh: 1
+--- !u!225 &569223625
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569223620}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &620287050
 GameObject:
   m_ObjectHideFlags: 0
@@ -3108,7 +3134,7 @@ MonoBehaviour:
   scrollRect: {fileID: 989968807}
   viewport: {fileID: 912041617}
   snapToBottomOnStart: 1
-  snapDuration: 0.35
+  snapDuration: 1
   snapThreshold: 0.2
   overscrollPixelsPerStep: 80
   topBlockItems:
@@ -3124,8 +3150,15 @@ MonoBehaviour:
   onItemClicked:
     m_PersistentCalls:
       m_Calls: []
-  hoverColor: {r: 0, g: 0, b: 1, a: 1}
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  hoverFadeDuration: 0.15
+  continuous: 0
+  mouseSensitivity: 2
+  mouseStopDelay: 0.2
+  animatedRoot: {fileID: 2001234752}
+  animateContentItems: 1
+  animationEdgeRange: 80
+  animationMinScale: 0.7
+  autoAddCanvasGroup: 1
 --- !u!1 &1009978379
 GameObject:
   m_ObjectHideFlags: 0
@@ -3534,6 +3567,7 @@ GameObject:
   - component: {fileID: 1117382951}
   - component: {fileID: 1117382953}
   - component: {fileID: 1117382952}
+  - component: {fileID: 1117382954}
   m_Layer: 5
   m_Name: widget 1x1 (3)
   m_TagString: Untagged
@@ -3598,6 +3632,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1117382950}
   m_CullTransparentMesh: 1
+--- !u!225 &1117382954
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1117382950}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1138062135
 GameObject:
   m_ObjectHideFlags: 0
@@ -3610,6 +3656,7 @@ GameObject:
   - component: {fileID: 1138062138}
   - component: {fileID: 1138062137}
   - component: {fileID: 1138062139}
+  - component: {fileID: 1138062140}
   m_Layer: 5
   m_Name: widget 1.1
   m_TagString: Untagged
@@ -3715,6 +3762,18 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1138062137}
+--- !u!225 &1138062140
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138062135}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1160587110
 GameObject:
   m_ObjectHideFlags: 0
@@ -3802,6 +3861,7 @@ GameObject:
   - component: {fileID: 1217329662}
   - component: {fileID: 1217329661}
   - component: {fileID: 1217329663}
+  - component: {fileID: 1217329664}
   m_Layer: 5
   m_Name: widget 1.3
   m_TagString: Untagged
@@ -3907,6 +3967,18 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1217329661}
+--- !u!225 &1217329664
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217329659}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1265415081
 GameObject:
   m_ObjectHideFlags: 0
@@ -4776,6 +4848,7 @@ GameObject:
   - component: {fileID: 1496068735}
   - component: {fileID: 1496068734}
   - component: {fileID: 1496068736}
+  - component: {fileID: 1496068737}
   m_Layer: 5
   m_Name: widget 1.2
   m_TagString: Untagged
@@ -4881,6 +4954,18 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1496068734}
+--- !u!225 &1496068737
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496068732}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1521006801
 GameObject:
   m_ObjectHideFlags: 0
@@ -6758,6 +6843,7 @@ GameObject:
   - component: {fileID: 2048822492}
   - component: {fileID: 2048822494}
   - component: {fileID: 2048822493}
+  - component: {fileID: 2048822495}
   m_Layer: 5
   m_Name: widget 2x1
   m_TagString: Untagged
@@ -6822,6 +6908,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2048822491}
   m_CullTransparentMesh: 1
+--- !u!225 &2048822495
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048822491}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2091429864
 GameObject:
   m_ObjectHideFlags: 0
@@ -7044,6 +7142,7 @@ GameObject:
   - component: {fileID: 2103940689}
   - component: {fileID: 2103940691}
   - component: {fileID: 2103940690}
+  - component: {fileID: 2103940692}
   m_Layer: 5
   m_Name: widget 1x1 (1)
   m_TagString: Untagged
@@ -7108,6 +7207,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2103940688}
   m_CullTransparentMesh: 1
+--- !u!225 &2103940692
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103940688}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2113984831
 GameObject:
   m_ObjectHideFlags: 0
