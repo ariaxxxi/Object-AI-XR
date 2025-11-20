@@ -23,6 +23,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     [SerializeField] private RectTransform topBlockRoot;
     [SerializeField] private RectTransform bottomBlockRoot;
     [SerializeField] private CanvasGroup bottomBlockCanvasGroup;
+    [SerializeField] private CanvasGroup widgetCanvasGroup;
     [SerializeField] [Min(0f)] private float transitionDuration = 0.35f;
     [SerializeField] [Min(0f)] private float topBlockMoveDownDistance = 120f;
     [SerializeField] [Range(0f, 1f)] private float bottomBlockDimmedAlpha = 0.4f;
@@ -42,6 +43,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     [SerializeField] [Min(0f)] private float backHoverGraceSeconds = 2f;
     [Header("App Stage Visuals")]
     [SerializeField] [Min(0f)] private float appLogoDisplaySeconds = 1f;
+    [SerializeField] [Min(0f)] private float appScreenExitDuration = 0.3f;
     [SerializeField] [Min(0f)] private float detailFadeDuration = 0.2f;
     [Header("Widget Item Visuals")]
     [SerializeField] private float widgetVisualStartY = 240f;
@@ -71,6 +73,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         CacheBlockDefaults();
         ApplyBlockVisualState(_currentStage, true);
         ApplyAllNormalStates();
+        PrepareWidgetVisuals();
     }
 
     private void OnValidate()
@@ -82,6 +85,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         hoverFadeDuration = Mathf.Max(0.05f, hoverFadeDuration);
         backHoverGraceSeconds = Mathf.Max(0f, backHoverGraceSeconds);
         appLogoDisplaySeconds = Mathf.Max(0f, appLogoDisplaySeconds);
+        appScreenExitDuration = Mathf.Max(0.01f, appScreenExitDuration);
         detailFadeDuration = Mathf.Max(0.01f, detailFadeDuration);
         if (Mathf.Approximately(widgetVisualStartY, widgetVisualEndY))
         {
@@ -95,6 +99,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             CacheBlockDefaults();
             ApplyBlockVisualState(_currentStage, true);
             ApplyAllNormalStates();
+            PrepareWidgetVisuals();
         }
     }
 
@@ -102,6 +107,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     {
         CacheBlockDefaults();
         ApplyBlockVisualState(_currentStage, true);
+        PrepareWidgetVisuals();
     }
 
     private void OnDisable()
@@ -211,6 +217,11 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             else
             {
                 EnsureLastItemHovered();
+            }
+            var widgetCg = GetWidgetCanvasGroup();
+            if (widgetCg != null)
+            {
+                widgetCg.alpha = 1f;
             }
         }
         else
@@ -352,6 +363,19 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
 
         return bottomBlockCanvasGroup;
+    }
+
+    private CanvasGroup GetWidgetCanvasGroup()
+    {
+        if (widgetCanvasGroup == null && topBlockRoot != null)
+        {
+            widgetCanvasGroup = topBlockRoot.GetComponent<CanvasGroup>();
+            if (widgetCanvasGroup == null)
+            {
+                widgetCanvasGroup = topBlockRoot.gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+        return widgetCanvasGroup;
     }
 
     private void PrepareWidgetVisuals()
@@ -692,6 +716,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             _detailRoutine = null;
         }
 
+        yield return FadeWidgetView(false);
         SetStage(Stage.App);
 
         if (entry.DefaultText != null)
@@ -741,25 +766,19 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             _activeAppItem.AppLogo.gameObject.SetActive(false);
         }
 
-        Coroutine homeRoutine = null;
+        if (_activeAppItem != null && _activeAppItem.AppScreen != null)
+        {
+            yield return FadeAndScaleCanvas(_activeAppItem.AppScreen, 1f, 0.8f, appScreenExitDuration, fadeOut: true);
+            _activeAppItem.AppScreen.gameObject.SetActive(false);
+        }
+
         CanvasGroup homeGroup = GetBottomBlockCanvasGroup();
         if (homeGroup != null && bottomBlockRoot != null)
         {
             bottomBlockRoot.localScale = _bottomBlockBaseScale * bottomBlockDimmedScale;
             homeGroup.alpha = 0f;
             homeGroup.gameObject.SetActive(true);
-            homeRoutine = StartCoroutine(FadeHomeViewIn(homeGroup, bottomBlockRoot, transitionDuration));
-        }
-
-        if (_activeAppItem != null && _activeAppItem.AppScreen != null)
-        {
-            yield return FadeAndScaleCanvas(_activeAppItem.AppScreen, 1f, 0.8f, transitionDuration, fadeOut: true);
-            _activeAppItem.AppScreen.gameObject.SetActive(false);
-        }
-
-        if (homeRoutine != null)
-        {
-            yield return homeRoutine;
+            yield return FadeHomeViewIn(homeGroup, bottomBlockRoot, transitionDuration);
         }
 
         SetStage(Stage.Home);
@@ -832,29 +851,28 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             yield return null;
         }
 
-        for (int i = 0; i < itemConfigs.Count; i++)
-        {
-            var cfg = itemConfigs[i];
-            if (cfg.group != null)
-            {
-                cfg.group.alpha = cfg.targetA;
-            }
-            cfg.rect.localScale = cfg.targetScale;
-            if (open)
-            {
-                cfg.rect.gameObject.SetActive(false);
-            }
-        }
-
         detail.alpha = targetAlpha;
         detail.transform.localScale = targetScale;
         if (!open)
         {
             detail.gameObject.SetActive(false);
-            if (_hoveredIndex >= 0 && _hoveredIndex < topBlockItems.Count)
+        }
+        // Ensure final state for widgets after animation completes
+        for (int i = 0; i < itemConfigs.Count; i++)
+        {
+            var cfg = itemConfigs[i];
+            if (cfg.group != null)
             {
-                SetItemHoverState(_hoveredIndex, true);
+                // Keep hidden while detail is open, restore to 1 when closing
+                cfg.group.alpha = open ? 0f : 1f;
             }
+            cfg.rect.localScale = cfg.targetScale;
+            // Keep widgets active; rely on alpha/scale for visibility during detail view
+            cfg.rect.gameObject.SetActive(true);
+        }
+        if (!open && _hoveredIndex >= 0 && _hoveredIndex < topBlockItems.Count)
+        {
+            SetItemHoverState(_hoveredIndex, true);
         }
         _detailRoutine = null;
     }
@@ -944,8 +962,34 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    private IEnumerator FadeWidgetView(bool show)
+    {
+        CanvasGroup widgetCg = GetWidgetCanvasGroup();
+        if (widgetCg == null)
+        {
+            yield break;
+        }
+        float duration = Mathf.Max(0.01f, transitionDuration * 0.5f);
+        float startAlpha = widgetCg.alpha;
+        float targetAlpha = show ? 1f : 0f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float eased = EaseOutCubic(t);
+            widgetCg.alpha = Mathf.Lerp(startAlpha, targetAlpha, eased);
+            yield return null;
+        }
+        widgetCg.alpha = targetAlpha;
+    }
+
     private void UpdateWidgetItemVisuals()
     {
+        if (_detailOpen)
+        {
+            return;
+        }
         if (topBlockItems.Count == 0 || topBlockRoot == null)
         {
             return;
