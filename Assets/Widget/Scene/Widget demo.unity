@@ -2412,7 +2412,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912041616}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
   m_Name: 
@@ -2911,6 +2911,7 @@ MonoBehaviour:
   topBlockItems:
   - Item: {fileID: 2103940689}
     Interaction: 1
+    StageController: {fileID: 0}
     AppLogo: {fileID: 0}
     AppScreen: {fileID: 0}
     AppPill: {fileID: 0}
@@ -2919,6 +2920,7 @@ MonoBehaviour:
     QuickAction: {fileID: 0}
   - Item: {fileID: 1117382951}
     Interaction: 1
+    StageController: {fileID: 0}
     AppLogo: {fileID: 0}
     AppScreen: {fileID: 0}
     AppPill: {fileID: 0}
@@ -2926,7 +2928,8 @@ MonoBehaviour:
     Detail: {fileID: 0}
     QuickAction: {fileID: 0}
   - Item: {fileID: 2048822492}
-    Interaction: 1
+    Interaction: 3
+    StageController: {fileID: 0}
     AppLogo: {fileID: 0}
     AppScreen: {fileID: 0}
     AppPill: {fileID: 0}
@@ -2935,6 +2938,7 @@ MonoBehaviour:
     QuickAction: {fileID: 0}
   - Item: {fileID: 1138062136}
     Interaction: 1
+    StageController: {fileID: 0}
     AppLogo: {fileID: 0}
     AppScreen: {fileID: 0}
     AppPill: {fileID: 0}
@@ -2943,6 +2947,7 @@ MonoBehaviour:
     QuickAction: {fileID: 0}
   - Item: {fileID: 1496068733}
     Interaction: 1
+    StageController: {fileID: 1496068738}
     AppLogo: {fileID: 0}
     AppScreen: {fileID: 0}
     AppPill: {fileID: 0}
@@ -2951,6 +2956,7 @@ MonoBehaviour:
     QuickAction: {fileID: 1620212471}
   - Item: {fileID: 1217329660}
     Interaction: 2
+    StageController: {fileID: 0}
     AppLogo: {fileID: 0}
     AppScreen: {fileID: 0}
     AppPill: {fileID: 0}
@@ -2959,6 +2965,7 @@ MonoBehaviour:
     QuickAction: {fileID: 0}
   - Item: {fileID: 365105941}
     Interaction: 0
+    StageController: {fileID: 0}
     AppLogo: {fileID: 569223625}
     AppScreen: {fileID: 1116630108}
     AppPill: {fileID: 471216685}
@@ -3165,7 +3172,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 400}
+  m_SizeDelta: {x: 480, y: 480}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1116630108
 CanvasGroup:
@@ -4353,6 +4360,8 @@ GameObject:
   - component: {fileID: 1496068734}
   - component: {fileID: 1496068736}
   - component: {fileID: 1496068737}
+  - component: {fileID: 1496068738}
+  - component: {fileID: 1496068739}
   m_Layer: 5
   m_Name: 5
   m_TagString: Untagged
@@ -4471,6 +4480,135 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1496068738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496068732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b73e9db910ba4704a872f62785b7a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stages:
+  - id: dot
+    triggerBySlider: 1
+    rangeMin: 0
+    rangeMax: 2
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
+  - id: icon
+    triggerBySlider: 1
+    rangeMin: 2
+    rangeMax: 4
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
+  edges: []
+  duration: 1
+  ease: 19
+  overshoot: 1.70158
+  motionLibrary: {fileID: 0}
+  sliderInput: {fileID: 0}
+  distanceTarget: {fileID: 0}
+  distanceCamera: {fileID: 0}
+  logDistance: 0
+--- !u!114 &1496068739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496068732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd04ef78de5a3442398b142bec4bbeb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1496068738}
+  rt: {fileID: 1496068733}
+  cg: {fileID: 1496068737}
+  tf: {fileID: 1496068733}
+  useLocalPosition: 1
+  useEuler: 0
+  useUniformScale: 0
+  useSizeDelta: 0
+  useAlpha: 0
+  useTransform3DPosition: 0
+  useTransform3DRotation: 0
+  useTransform3DScale: 0
+  localPosPerStage:
+  - {x: -50.5, y: -50, z: 0}
+  - {x: -50.5, y: -100, z: 0}
+  eulerPerStage: []
+  scalePerStage: []
+  sizePerStage: []
+  alphaPerStage: []
+  transform3DPositionPerStage: []
+  transform3DRotationPerStage: []
+  transform3DScalePerStage: []
+  showGlobalTimingOverrides: 0
+  overrideDuration: 0
+  duration: 1
+  overrideEase: 0
+  ease: 19
+  startDelay: 0
+  edgeTimingOverrides: []
+  dynamicTracks: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1521006801
 GameObject:
   m_ObjectHideFlags: 0
@@ -6231,6 +6369,7 @@ GameObject:
   - component: {fileID: 2048822494}
   - component: {fileID: 2048822493}
   - component: {fileID: 2048822495}
+  - component: {fileID: 2048822496}
   m_Layer: 5
   m_Name: 3
   m_TagString: Untagged
@@ -6308,6 +6447,90 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &2048822496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048822491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b73e9db910ba4704a872f62785b7a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stages:
+  - id: dot
+    triggerBySlider: 1
+    rangeMin: 0
+    rangeMax: 2
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
+  - id: icon
+    triggerBySlider: 1
+    rangeMin: 2
+    rangeMax: 4
+    triggerByKey: 0
+    key: 0
+    triggerByTouch: 0
+    touchOnBeginOnly: 1
+    triggerByButton: 0
+    button: {fileID: 0}
+    triggerByDistance: 0
+    distanceThreshold: 1
+    triggerByCustom: 0
+    onCustomTrigger:
+      m_PersistentCalls:
+        m_Calls: []
+    triggerByStage: 0
+    triggerStageIndex: -1
+    triggerStageDelay: 0
+    overrideDuration: 0
+    duration: 1
+    overrideEase: 0
+    ease: 19
+    useDelay: 0
+    delay: 0
+    useAEEase: 0
+    aeStartSpeed: 1
+    aeStartInfluence: 33
+    aeEndSpeed: 1
+    aeEndInfluence: 33
+    aeTangentScale: 1
+  edges: []
+  duration: 1
+  ease: 19
+  overshoot: 1.70158
+  motionLibrary: {fileID: 0}
+  sliderInput: {fileID: 0}
+  distanceTarget: {fileID: 0}
+  distanceCamera: {fileID: 0}
+  logDistance: 0
 --- !u!1 &2091429864
 GameObject:
   m_ObjectHideFlags: 0

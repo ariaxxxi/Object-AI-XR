@@ -16,7 +16,8 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     {
         AppLauncher,
         QuickAction,
-        Expandable
+        Expandable,
+        NonSelectable
     }
 
     [Header("Widget/Home Transition Visuals")]
@@ -49,6 +50,8 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float widgetVisualStartY = 240f;
     [SerializeField] private float widgetVisualEndY = 200f;
     [SerializeField] [Range(0f, 1f)] private float widgetMinScale = 0.5f;
+    [SerializeField] private bool controlWidgetAlpha = true;
+    [SerializeField] private bool controlWidgetScale = true;
 
     private Stage _currentStage = Stage.Home;
     private int _hoveredIndex = -1;
@@ -64,7 +67,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     private int _detailIndex = -1;
     private Coroutine _detailRoutine;
     private Coroutine _appRoutine;
-    private Coroutine _quickActionRoutine;
     private TopBlockItemConfig _activeAppItem;
     private readonly Vector3[] _corners = new Vector3[4];
 
@@ -127,11 +129,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             StopCoroutine(_appRoutine);
             _appRoutine = null;
         }
-        if (_quickActionRoutine != null)
-        {
-            StopCoroutine(_quickActionRoutine);
-            _quickActionRoutine = null;
-        }
     }
 
     private void Update()
@@ -188,13 +185,14 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         {
             if (_currentStage == Stage.Widget)
             {
-                if (_hoveredIndex >= topBlockItems.Count - 1)
+                int nextIndex = FindNextSelectable(_hoveredIndex, 1);
+                if (nextIndex < 0)
                 {
                     SetStage(Stage.Home);
                 }
                 else
                 {
-                    HoverNextItem();
+                    SetHoveredIndex(nextIndex, true);
                 }
             }
         }
@@ -391,7 +389,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             entry.AppLogo = EnsureCanvasGroup(entry.AppLogo != null ? entry.AppLogo.gameObject : null);
             entry.AppScreen = EnsureCanvasGroup(entry.AppScreen != null ? entry.AppScreen.gameObject : null);
             entry.Detail = EnsureCanvasGroup(entry.Detail != null ? entry.Detail.gameObject : null);
-            entry.QuickAction = EnsureCanvasGroup(entry.QuickAction != null ? entry.QuickAction.gameObject : null);
 
             if (entry.AppLogo != null)
             {
@@ -413,11 +410,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
                     pillGroup.alpha = 1f;
                 }
             }
-            if (entry.QuickAction != null)
-            {
-                entry.QuickAction.alpha = 0f;
-            }
-            entry.QuickActionActive = false;
             entry.AppLaunchedOnce = false;
         }
     }
@@ -451,35 +443,41 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             ClearHover();
             return;
         }
-        int lastIndex = topBlockItems.Count - 1;
-        if (GetItem(lastIndex) == null)
+        for (int i = topBlockItems.Count - 1; i >= 0; i--)
         {
-            ClearHover();
+            if (!IsSelectable(i))
+            {
+                continue;
+            }
+            if (_hoveredIndex != i)
+            {
+                SetHoveredIndex(i, true);
+            }
             return;
         }
-        if (_hoveredIndex != lastIndex)
-        {
-            SetHoveredIndex(lastIndex, true);
-        }
+
+        ClearHover();
     }
 
     private void HoverPreviousItem()
     {
-        if (topBlockItems.Count == 0)
+        int startIndex = _hoveredIndex >= 0 ? _hoveredIndex : topBlockItems.Count;
+        int targetIndex = FindNextSelectable(startIndex, -1);
+        if (targetIndex < 0)
         {
             return;
         }
-        int targetIndex = Mathf.Max(0, _hoveredIndex - 1);
         SetHoveredIndex(targetIndex, true);
     }
 
     private void HoverNextItem()
     {
-        if (topBlockItems.Count == 0)
+        int startIndex = _hoveredIndex;
+        int targetIndex = FindNextSelectable(startIndex, 1);
+        if (targetIndex < 0)
         {
             return;
         }
-        int targetIndex = Mathf.Min(topBlockItems.Count - 1, _hoveredIndex + 1);
         SetHoveredIndex(targetIndex, true);
     }
 
@@ -508,7 +506,13 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        index = Mathf.Clamp(index, 0, topBlockItems.Count - 1);
+        index = GetSelectableOrFallbackIndex(index);
+        if (index < 0)
+        {
+            ClearHover();
+            return;
+        }
+
         if (!force && index == _hoveredIndex)
         {
             return;
@@ -548,6 +552,10 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         if (_currentStage != Stage.Widget || _hoveredIndex < 0 || _hoveredIndex >= topBlockItems.Count)
+        {
+            return;
+        }
+        if (!IsSelectable(_hoveredIndex))
         {
             return;
         }
@@ -688,11 +696,14 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
                 BeginAppLaunch(entry);
                 break;
             case InteractionType.Expandable:
+                ToggleStageController(entry);
                 ToggleDetail(entry, index);
                 break;
             case InteractionType.QuickAction:
-                ToggleQuickAction(entry);
+                ToggleStageController(entry);
                 break;
+            case InteractionType.NonSelectable:
+                return;
         }
     }
 
@@ -716,7 +727,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             _detailRoutine = null;
         }
 
-        yield return FadeWidgetView(false);
         SetStage(Stage.App);
 
         if (entry.DefaultText != null)
@@ -1002,6 +1012,8 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
         float startY = widgetVisualStartY;
         float endY = widgetVisualEndY;
+        bool allowAlpha = controlWidgetAlpha && !IsExpandableHovered();
+        bool allowScale = controlWidgetScale;
         for (int i = 0; i < topBlockItems.Count; i++)
         {
             RectTransform rect = GetItem(i);
@@ -1013,53 +1025,39 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             Vector3 centerWorld = (_corners[0] + _corners[2]) * 0.5f;
             Vector3 centerCanvas = canvasRect.InverseTransformPoint(centerWorld);
             float t = Mathf.Clamp01(Mathf.InverseLerp(startY, endY, centerCanvas.y));
-            float scale = Mathf.Lerp(widgetMinScale, 1f, t);
-            float alpha = Mathf.Lerp(0f, 1f, t);
             CanvasGroup cg = EnsureCanvasGroup(rect.gameObject);
-            cg.alpha = alpha;
-            rect.localScale = Vector3.one * scale;
+            if (allowAlpha && cg != null)
+            {
+                float alpha = Mathf.Lerp(0f, 1f, t);
+                cg.alpha = alpha;
+            }
+            if (allowScale)
+            {
+                float scale = Mathf.Lerp(widgetMinScale, 1f, t);
+                rect.localScale = Vector3.one * scale;
+            }
         }
     }
 
-    private void ToggleQuickAction(TopBlockItemConfig entry)
+    private void ToggleStageController(TopBlockItemConfig entry)
     {
-        if (entry.QuickAction == null)
+        var controller = entry.StageController;
+        if (controller == null)
         {
             return;
         }
-        if (_quickActionRoutine != null)
+        if (controller.stages == null || controller.stages.Count < 2)
         {
-            StopCoroutine(_quickActionRoutine);
+            return;
         }
-        bool show = !entry.QuickActionActive;
-        _quickActionRoutine = StartCoroutine(RunQuickActionToggle(entry, show));
-    }
 
-    private IEnumerator RunQuickActionToggle(TopBlockItemConfig entry, bool show)
-    {
-        float duration = Mathf.Max(0.05f, detailFadeDuration);
-        if (show)
+        int currentIndex = controller.CurrentIndex;
+        int target = currentIndex == 0 ? 1 : 0;
+        if (target >= controller.stages.Count)
         {
-            entry.QuickAction.gameObject.SetActive(true);
+            target = 0;
         }
-        float startAlpha = entry.QuickAction.alpha;
-        float targetAlpha = show ? 1f : 0f;
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = t * t * (3f - 2f * t);
-            entry.QuickAction.alpha = Mathf.Lerp(startAlpha, targetAlpha, eased);
-            yield return null;
-        }
-        entry.QuickAction.alpha = targetAlpha;
-        entry.QuickActionActive = show;
-        if (!show)
-        {
-            entry.QuickAction.gameObject.SetActive(false);
-        }
-        _quickActionRoutine = null;
+        controller.RequestStageIndex(target);
     }
 
     private IEnumerator FadeHomeViewIn(CanvasGroup group, RectTransform root, float duration)
@@ -1096,18 +1094,86 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return topBlockItems[index];
     }
 
+    private bool IsExpandableHovered()
+    {
+        var entry = GetEntry(_hoveredIndex);
+        return entry != null && entry.Interaction == InteractionType.Expandable;
+    }
+
+    private bool IsSelectable(int index)
+    {
+        if (index < 0 || index >= topBlockItems.Count)
+        {
+            return false;
+        }
+
+        TopBlockItemConfig entry = topBlockItems[index];
+        return entry != null &&
+               entry.Item != null &&
+               entry.Interaction != InteractionType.NonSelectable;
+    }
+
+    private int FindNextSelectable(int startIndex, int direction)
+    {
+        if (direction == 0 || topBlockItems.Count == 0)
+        {
+            return -1;
+        }
+
+        int i = startIndex + direction;
+        while (i >= 0 && i < topBlockItems.Count)
+        {
+            if (IsSelectable(i))
+            {
+                return i;
+            }
+            i += direction;
+        }
+
+        return -1;
+    }
+
+    private int GetSelectableOrFallbackIndex(int index)
+    {
+        if (IsSelectable(index))
+        {
+            return index;
+        }
+
+        int forward = FindNextSelectable(index, 1);
+        int backward = FindNextSelectable(index, -1);
+
+        if (forward < 0 && backward < 0)
+        {
+            return -1;
+        }
+
+        if (forward < 0)
+        {
+            return backward;
+        }
+
+        if (backward < 0)
+        {
+            return forward;
+        }
+
+        int forwardDistance = Mathf.Abs(forward - index);
+        int backwardDistance = Mathf.Abs(index - backward);
+        return forwardDistance <= backwardDistance ? forward : backward;
+    }
+
     [System.Serializable]
     public class TopBlockItemConfig
     {
         public RectTransform Item;
         public InteractionType Interaction = InteractionType.QuickAction;
+        public StageController StageController;
         public CanvasGroup AppLogo;
         public CanvasGroup AppScreen;
         public GameObject AppPill;
         public GameObject DefaultText;
         public CanvasGroup Detail;
-        public CanvasGroup QuickAction;
-        [System.NonSerialized] public bool QuickActionActive;
         [System.NonSerialized] public bool AppLaunchedOnce;
     }
 }

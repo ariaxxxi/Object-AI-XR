@@ -47,10 +47,13 @@ public class TwoStageScrollControllerEditor : PropertyDrawer
                 y = DrawProp(property.FindPropertyRelative("DefaultText"), position.x, y, width, lineHeight);
                 break;
             case TwoStageScrollController.InteractionType.Expandable:
+                y = DrawProp(property.FindPropertyRelative("StageController"), position.x, y, width, lineHeight);
                 y = DrawProp(property.FindPropertyRelative("Detail"), position.x, y, width, lineHeight);
                 break;
             case TwoStageScrollController.InteractionType.QuickAction:
-                y = DrawProp(property.FindPropertyRelative("QuickAction"), position.x, y, width, lineHeight);
+                y = DrawProp(property.FindPropertyRelative("StageController"), position.x, y, width, lineHeight);
+                break;
+            case TwoStageScrollController.InteractionType.NonSelectable:
                 break;
         }
     }
