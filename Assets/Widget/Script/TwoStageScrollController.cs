@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
 {
@@ -33,10 +33,11 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
 
     [Header("Widget Selection")]
     [SerializeField] private List<TopBlockItemConfig> topBlockItems = new();
-    [SerializeField] private bool sendPointerEvents = false;
-    [SerializeField] private bool sendClickEvents = false;
     [SerializeField] private UnityEvent<int> onHoverIndexChanged;
     [SerializeField] private UnityEvent<int> onItemClicked;
+    [Header("Scroll Input")]
+    [SerializeField] [Min(0.01f)] private float scrollPixelsPerStep = 100f;
+    [SerializeField] private InputRouter inputRouter;
 
     [Header("Hover Effect")]
     [SerializeField] [Min(0.05f)] private float hoverFadeDuration = 0.15f;
@@ -45,7 +46,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     [Header("App Stage Visuals")]
     [SerializeField] [Min(0f)] private float appLogoDisplaySeconds = 1f;
     [SerializeField] [Min(0f)] private float appScreenExitDuration = 0.3f;
-    [SerializeField] [Min(0f)] private float detailFadeDuration = 0.2f;
     [Header("Widget Item Visuals")]
     [SerializeField] private float widgetVisualStartY = 240f;
     [SerializeField] private float widgetVisualEndY = 200f;
@@ -55,7 +55,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
 
     private Stage _currentStage = Stage.Home;
     private int _hoveredIndex = -1;
-    private Coroutine _blockTransitionRoutine;
     private bool _hasCachedBlockDefaults;
     private Vector2 _topBlockBaseAnchoredPosition;
     private Vector3 _bottomBlockBaseScale = Vector3.one;
@@ -63,13 +62,13 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     private float _blockVisualProgress;
     private float _lastBackTime = float.NegativeInfinity;
     private int _lastWidgetHoverIndex = -1;
-    private bool _detailOpen;
-    private int _detailIndex = -1;
-    private Coroutine _detailRoutine;
-    private Coroutine _appRoutine;
     private TopBlockItemConfig _activeAppItem;
     private readonly Vector3[] _corners = new Vector3[4];
+    private float _scrollAccumulator;
+    private Tweener _blockTween;
+    private Sequence _appSequence;
 
+    // Cache defaults and prime visuals on startup.
     private void Awake()
     {
         CacheBlockDefaults();
@@ -78,6 +77,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         PrepareWidgetVisuals();
     }
 
+    // Clamp inspector values and refresh visuals when edited in the editor.
     private void OnValidate()
     {
         transitionDuration = Mathf.Max(0.05f, transitionDuration);
@@ -88,7 +88,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         backHoverGraceSeconds = Mathf.Max(0f, backHoverGraceSeconds);
         appLogoDisplaySeconds = Mathf.Max(0f, appLogoDisplaySeconds);
         appScreenExitDuration = Mathf.Max(0.01f, appScreenExitDuration);
-        detailFadeDuration = Mathf.Max(0.01f, detailFadeDuration);
+        scrollPixelsPerStep = Mathf.Max(0.01f, scrollPixelsPerStep);
         if (Mathf.Approximately(widgetVisualStartY, widgetVisualEndY))
         {
             widgetVisualEndY = widgetVisualStartY - 0.01f;
@@ -105,38 +105,34 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Reset cached data and register listeners when enabled.
     private void OnEnable()
     {
         CacheBlockDefaults();
         ApplyBlockVisualState(_currentStage, true);
         PrepareWidgetVisuals();
+        RegisterRingInput();
     }
 
+    // Clean up coroutines and listeners when disabled.
     private void OnDisable()
     {
-        if (_blockTransitionRoutine != null)
-        {
-            StopCoroutine(_blockTransitionRoutine);
-            _blockTransitionRoutine = null;
-        }
-        if (_detailRoutine != null)
-        {
-            StopCoroutine(_detailRoutine);
-            _detailRoutine = null;
-        }
-        if (_appRoutine != null)
-        {
-            StopCoroutine(_appRoutine);
-            _appRoutine = null;
-        }
+        UnregisterRingInput();
+        _blockTween?.Kill();
+        _blockTween = null;
+        _appSequence?.Kill();
+        _appSequence = null;
     }
 
+    // Poll frame-based inputs and update per-frame visuals.
     private void Update()
     {
         HandleKeyboardInput();
+        HandleScrollInput();
         UpdateWidgetItemVisuals();
     }
 
+    // Handle keyboard A/D navigation and space back actions.
     private void HandleKeyboardInput()
     {
         bool aPressed = Input.GetKeyDown(KeyCode.A);
@@ -145,28 +141,29 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
 
         if (backPressed)
         {
-            if (_currentStage == Stage.Widget)
-            {
-                _lastWidgetHoverIndex = _hoveredIndex;
-                _lastBackTime = Time.unscaledTime;
-            }
-            else if (_currentStage == Stage.App)
-            {
-                if (_appRoutine != null)
-                {
-                    StopCoroutine(_appRoutine);
-                    _appRoutine = null;
-                }
-                _lastWidgetHoverIndex = _hoveredIndex;
-                _lastBackTime = Time.unscaledTime;
-                StartCoroutine(ExitAppStage());
-                return;
-            }
-            SetStage(Stage.Home);
+            HandleBackAction();
             return;
         }
 
         if (aPressed)
+        {
+            HandleNavigationStep(-1);
+        }
+        else if (dPressed)
+        {
+            HandleNavigationStep(1);
+        }
+    }
+
+    // Shared navigation logic for directional input (left/up = -1, right/down = 1).
+    private void HandleNavigationStep(int direction)
+    {
+        if (direction == 0)
+        {
+            return;
+        }
+
+        if (direction < 0)
         {
             if (_currentStage == Stage.Home)
             {
@@ -181,7 +178,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
                 HoverPreviousItem();
             }
         }
-        else if (dPressed)
+        else
         {
             if (_currentStage == Stage.Widget)
             {
@@ -195,6 +192,128 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
                     SetHoveredIndex(nextIndex, true);
                 }
             }
+        }
+    }
+
+    // Convert mouse scroll wheel movement into navigation steps.
+    private void HandleScrollInput()
+    {
+        float scrollDelta = Input.mouseScrollDelta.y;
+        ApplyScrollDelta(scrollDelta);
+    }
+
+    // Consume ring input: taps map to click/back and delta maps to scrolling.
+    private void HandleRingInput(RingGestureSchema input)
+    {
+        if (input == null || input.packet == null)
+        {
+            return;
+        }
+
+        var packet = input.packet;
+
+        if (packet.ringGestureLocal == HaeanGesture.DOUBLE_TAP)
+        {
+            HandleBackAction();
+            return;
+        }
+
+        if (packet.ringGestureLocal == HaeanGesture.TAP)
+        {
+            PerformHoveredClick();
+        }
+
+        float scrollDelta = packet.deltaVector.y;
+        ApplyScrollDelta(scrollDelta);
+    }
+
+    // Accumulate scroll distance and trigger navigation for each threshold passed.
+    private void ApplyScrollDelta(float scrollDelta)
+    {
+        if (Mathf.Approximately(scrollDelta, 0f))
+        {
+            return;
+        }
+
+        float stepSize = Mathf.Max(0.01f, scrollPixelsPerStep);
+        _scrollAccumulator += scrollDelta;
+        int steps = Mathf.FloorToInt(Mathf.Abs(_scrollAccumulator) / stepSize);
+        if (steps <= 0)
+        {
+            return;
+        }
+
+        int navigationDirection = _scrollAccumulator > 0f ? -1 : 1; // up scroll maps to "A", down scroll maps to "D"
+        for (int i = 0; i < steps; i++)
+        {
+            HandleNavigationStep(navigationDirection);
+        }
+
+        float consumed = steps * stepSize * Mathf.Sign(_scrollAccumulator);
+        _scrollAccumulator -= consumed;
+    }
+
+    // Centralized back behavior used by keyboard and ring double-tap.
+    private void HandleBackAction()
+    {
+        if (_currentStage == Stage.Widget)
+        {
+            _lastWidgetHoverIndex = _hoveredIndex;
+            _lastBackTime = Time.unscaledTime;
+        }
+        else if (_currentStage == Stage.App)
+        {
+            _lastWidgetHoverIndex = _hoveredIndex;
+            _lastBackTime = Time.unscaledTime;
+            StartExitAppStage();
+            return;
+        }
+
+        SetStage(Stage.Home);
+    }
+
+    // Perform a click action on the currently hovered widget item.
+    private void PerformHoveredClick(PointerEventData eventData = null)
+    {
+        if (_currentStage != Stage.Widget || _hoveredIndex < 0 || _hoveredIndex >= topBlockItems.Count)
+        {
+            return;
+        }
+        if (!IsSelectable(_hoveredIndex))
+        {
+            return;
+        }
+
+        onItemClicked?.Invoke(_hoveredIndex);
+
+        HandleItemSelection(_hoveredIndex);
+    }
+
+    // Register to ring input events when available.
+    private void RegisterRingInput()
+    {
+        if (inputRouter != null)
+        {
+            inputRouter.OnRingInputRecieved += HandleRingInput;
+        }
+    }
+
+    // Unregister ring input events to avoid leaks.
+    private void UnregisterRingInput()
+    {
+        if (inputRouter != null)
+        {
+            inputRouter.OnRingInputRecieved -= HandleRingInput;
+        }
+    }
+
+    // Stop any running app sequence tweens.
+    private void KillAppSequence()
+    {
+        if (_appSequence != null)
+        {
+            _appSequence.Kill();
+            _appSequence = null;
         }
     }
 
@@ -216,7 +335,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             {
                 EnsureLastItemHovered();
             }
-            var widgetCg = GetWidgetCanvasGroup();
+            CanvasGroup widgetCg = GetWidgetCanvasGroup();
             if (widgetCg != null)
             {
                 widgetCg.alpha = 1f;
@@ -225,15 +344,12 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         else
         {
             ClearHover();
-            if (_detailOpen)
-            {
-                CloseDetailInstant();
-            }
         }
 
         ApplyBlockVisualState(stage, false);
     }
 
+    // Update visuals for the home/widget transition, optionally animated.
     private void ApplyBlockVisualState(Stage stage, bool instant)
     {
         if (topBlockRoot == null && bottomBlockRoot == null)
@@ -243,12 +359,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
 
         CacheBlockDefaults();
-        if (_blockTransitionRoutine != null)
-        {
-            StopCoroutine(_blockTransitionRoutine);
-            _blockTransitionRoutine = null;
-        }
-
+        _blockTween?.Kill();
         float targetProgress = StageToProgress(stage);
         if (instant || !Application.isPlaying || Mathf.Approximately(_blockVisualProgress, targetProgress))
         {
@@ -257,27 +368,12 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
 
         float duration = Mathf.Max(0.05f, transitionDuration);
-        _blockTransitionRoutine = StartCoroutine(AnimateBlockVisuals(targetProgress, duration));
+        _blockTween = DOTween.To(() => _blockVisualProgress, SetBlockVisualState, targetProgress, duration)
+            .SetEase(Ease.OutCubic)
+            .SetUpdate(true);
     }
 
-    private IEnumerator AnimateBlockVisuals(float targetProgress, float duration)
-    {
-        float startProgress = _blockVisualProgress;
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = EaseOutCubic(t);
-            float progress = Mathf.Lerp(startProgress, targetProgress, eased);
-            SetBlockVisualState(progress);
-            yield return null;
-        }
-
-        SetBlockVisualState(targetProgress);
-        _blockTransitionRoutine = null;
-    }
-
+    // Apply visual transform/alpha values based on progress.
     private void SetBlockVisualState(float progress)
     {
         progress = Mathf.Clamp01(progress);
@@ -313,11 +409,13 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Convert stage enum to normalized progress value.
     private float StageToProgress(Stage stage)
     {
         return stage == Stage.Widget ? 1f : 0f;
     }
 
+    // Store baseline transform/alpha data for later interpolation.
     private void CacheBlockDefaults()
     {
         if (_hasCachedBlockDefaults)
@@ -344,11 +442,13 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         _hasCachedBlockDefaults = true;
     }
 
+    // Reset cache flag so defaults are re-read.
     private void ResetBlockDefaultsCache()
     {
         _hasCachedBlockDefaults = false;
     }
 
+    // Get or add canvas group for bottom block.
     private CanvasGroup GetBottomBlockCanvasGroup()
     {
         if (bottomBlockCanvasGroup == null && bottomBlockRoot != null)
@@ -363,6 +463,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return bottomBlockCanvasGroup;
     }
 
+    // Get or add canvas group for the widget root.
     private CanvasGroup GetWidgetCanvasGroup()
     {
         if (widgetCanvasGroup == null && topBlockRoot != null)
@@ -376,6 +477,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return widgetCanvasGroup;
     }
 
+    // Initialize per-item visuals and alpha defaults.
     private void PrepareWidgetVisuals()
     {
         for (int i = 0; i < topBlockItems.Count; i++)
@@ -388,7 +490,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
 
             entry.AppLogo = EnsureCanvasGroup(entry.AppLogo != null ? entry.AppLogo.gameObject : null);
             entry.AppScreen = EnsureCanvasGroup(entry.AppScreen != null ? entry.AppScreen.gameObject : null);
-            entry.Detail = EnsureCanvasGroup(entry.Detail != null ? entry.Detail.gameObject : null);
 
             if (entry.AppLogo != null)
             {
@@ -397,10 +498,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             if (entry.AppScreen != null)
             {
                 entry.AppScreen.alpha = 0f;
-            }
-            if (entry.Detail != null)
-            {
-                entry.Detail.alpha = 0f;
             }
             if (entry.AppPill != null)
             {
@@ -414,6 +511,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Ensure a canvas group exists on the provided object.
     private CanvasGroup EnsureCanvasGroup(GameObject go)
     {
         if (go == null)
@@ -428,6 +526,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return cg;
     }
 
+    // Reset all items to non-hover state.
     private void ApplyAllNormalStates()
     {
         for (int i = 0; i < topBlockItems.Count; i++)
@@ -436,6 +535,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Select the last selectable item when entering widget stage.
     private void EnsureLastItemHovered()
     {
         if (topBlockItems.Count == 0)
@@ -459,6 +559,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         ClearHover();
     }
 
+    // Move hover to the previous selectable item.
     private void HoverPreviousItem()
     {
         int startIndex = _hoveredIndex >= 0 ? _hoveredIndex : topBlockItems.Count;
@@ -470,6 +571,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         SetHoveredIndex(targetIndex, true);
     }
 
+    // Move hover to the next selectable item.
     private void HoverNextItem()
     {
         int startIndex = _hoveredIndex;
@@ -481,16 +583,12 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         SetHoveredIndex(targetIndex, true);
     }
 
+    // Remove hover selection and notify listeners.
     private void ClearHover()
     {
         RectTransform previousRect = GetItem(_hoveredIndex);
         if (previousRect != null)
         {
-            GameObject previous = previousRect.gameObject;
-            if (sendPointerEvents)
-            {
-                ExecutePointerExit(previous);
-            }
             SetItemHoverState(_hoveredIndex, false);
         }
 
@@ -498,6 +596,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         onHoverIndexChanged?.Invoke(-1);
     }
 
+    // Update hovered index with bounds/selectable checks.
     private void SetHoveredIndex(int index, bool force = false)
     {
         if (topBlockItems.Count == 0)
@@ -518,29 +617,9 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        GameObject previous = null;
-        RectTransform previousRect = GetItem(_hoveredIndex);
-        if (previousRect != null)
-        {
-            previous = previousRect.gameObject;
-        }
-
-        RectTransform currentRect = GetItem(index);
-        GameObject current = currentRect != null ? currentRect.gameObject : null;
-
-        if (sendPointerEvents && previous != null)
-        {
-            ExecutePointerExit(previous);
-        }
-
         SetItemHoverState(_hoveredIndex, false);
         _hoveredIndex = index;
         SetItemHoverState(_hoveredIndex, true);
-
-        if (current != null && sendPointerEvents)
-        {
-            ExecutePointerEnter(current);
-        }
 
         onHoverIndexChanged?.Invoke(_hoveredIndex);
         if (_hoveredIndex >= 0)
@@ -549,31 +628,13 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // IPointerClickHandler entry: route UI clicks to hovered item handling.
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (_currentStage != Stage.Widget || _hoveredIndex < 0 || _hoveredIndex >= topBlockItems.Count)
-        {
-            return;
-        }
-        if (!IsSelectable(_hoveredIndex))
-        {
-            return;
-        }
-
-        onItemClicked?.Invoke(_hoveredIndex);
-        if (sendClickEvents && EventSystem.current != null)
-        {
-            RectTransform rect = GetItem(_hoveredIndex);
-            GameObject current = rect != null ? rect.gameObject : null;
-            if (current != null)
-            {
-                ExecutePointerClick(current, eventData);
-            }
-        }
-
-        HandleItemSelection(_hoveredIndex);
+        PerformHoveredClick(eventData);
     }
 
+    // Set hover visuals for a given item.
     private void SetItemHoverState(int index, bool isHovered)
     {
         RectTransform rect = GetItem(index);
@@ -586,17 +647,12 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         if (hoverChild != null)
         {
             float targetAlpha = isHovered ? 1f : 0f;
-            if (Application.isPlaying)
-            {
-                StartCoroutine(FadeHoverChild(hoverChild, targetAlpha));
-            }
-            else
-            {
-                hoverChild.alpha = targetAlpha;
-            }
+            hoverChild.DOKill();
+            hoverChild.DOFade(targetAlpha, Application.isPlaying ? hoverFadeDuration : 0f).SetEase(Ease.InOutSine);
         }
     }
 
+    // Find first canvas group child to drive hover alpha.
     private CanvasGroup GetHoverChild(RectTransform parent)
     {
         for (int i = 0; i < parent.childCount; i++)
@@ -612,22 +668,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return null;
     }
 
-    private IEnumerator FadeHoverChild(CanvasGroup canvasGroup, float targetAlpha)
-    {
-        float startAlpha = canvasGroup.alpha;
-        float elapsedTime = 0f;
-        while (elapsedTime < hoverFadeDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsedTime / hoverFadeDuration);
-            float smoothProgress = progress * progress * (3f - 2f * progress);
-            canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, smoothProgress);
-            yield return null;
-        }
-
-        canvasGroup.alpha = targetAlpha;
-    }
-
     private RectTransform GetItem(int logicalIndex)
     {
         if (logicalIndex < 0 || logicalIndex >= topBlockItems.Count)
@@ -638,43 +678,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return topBlockItems[logicalIndex]?.Item;
     }
 
-    private void ExecutePointerEnter(GameObject target)
-    {
-        if (EventSystem.current == null)
-        {
-            return;
-        }
-
-        var data = new PointerEventData(EventSystem.current);
-        ExecuteEvents.Execute(target, data, ExecuteEvents.pointerEnterHandler);
-    }
-
-    private void ExecutePointerExit(GameObject target)
-    {
-        if (EventSystem.current == null)
-        {
-            return;
-        }
-
-        var data = new PointerEventData(EventSystem.current);
-        ExecuteEvents.Execute(target, data, ExecuteEvents.pointerExitHandler);
-    }
-
-    private void ExecutePointerClick(GameObject target, PointerEventData original)
-    {
-        if (EventSystem.current == null)
-        {
-            return;
-        }
-
-        var data = new PointerEventData(EventSystem.current)
-        {
-            button = original != null ? original.button : PointerEventData.InputButton.Left,
-            clickCount = original != null ? original.clickCount : 1
-        };
-        ExecuteEvents.Execute(target, data, ExecuteEvents.pointerClickHandler);
-    }
-
+    // Cubic easing helper for smoother animations.
     private static float EaseOutCubic(float t)
     {
         t = Mathf.Clamp01(t);
@@ -682,6 +686,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return 1f + inv * inv * inv;
     }
 
+    // Dispatch the interaction for the selected item.
     private void HandleItemSelection(int index)
     {
         TopBlockItemConfig entry = GetEntry(index);
@@ -697,7 +702,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
                 break;
             case InteractionType.Expandable:
                 ToggleStageController(entry);
-                ToggleDetail(entry, index);
                 break;
             case InteractionType.QuickAction:
                 ToggleStageController(entry);
@@ -707,26 +711,11 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Start an app launch tween sequence.
     private void BeginAppLaunch(TopBlockItemConfig entry)
     {
-        if (_appRoutine != null)
-        {
-            StopCoroutine(_appRoutine);
-        }
-        _appRoutine = StartCoroutine(RunAppLaunch(entry));
-    }
-
-    private IEnumerator RunAppLaunch(TopBlockItemConfig entry)
-    {
+        KillAppSequence();
         _activeAppItem = entry;
-        _detailOpen = false;
-        _detailIndex = -1;
-        if (_detailRoutine != null)
-        {
-            StopCoroutine(_detailRoutine);
-            _detailRoutine = null;
-        }
-
         SetStage(Stage.App);
 
         if (entry.DefaultText != null)
@@ -739,19 +728,20 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             entry.AppPill.SetActive(true);
         }
 
-        if (entry.AppLogo != null)
+        var seq = DOTween.Sequence().SetUpdate(false);
+
+        if (entry.AppLogo != null && !entry.AppLaunchedOnce)
         {
-            if (!entry.AppLaunchedOnce)
+            entry.AppLogo.gameObject.SetActive(true);
+            entry.AppLogo.alpha = 0f;
+            seq.Append(entry.AppLogo.DOFade(1f, appScreenExitDuration).SetEase(Ease.OutCubic));
+            if (appLogoDisplaySeconds > 0f)
             {
-                entry.AppLogo.gameObject.SetActive(true);
-                yield return FadeCanvas(entry.AppLogo, 0f, 1f, transitionDuration * 0.5f);
-                if (appLogoDisplaySeconds > 0f)
-                {
-                    yield return new WaitForSeconds(appLogoDisplaySeconds);
-                }
-                yield return FadeCanvas(entry.AppLogo, entry.AppLogo.alpha, 0f, transitionDuration * 0.5f);
-                entry.AppLogo.gameObject.SetActive(false);
+                seq.AppendInterval(appLogoDisplaySeconds);
             }
+            seq.Append(entry.AppLogo.DOFade(0f, appScreenExitDuration)
+                .SetEase(Ease.OutCubic)
+                .OnComplete(() => entry.AppLogo.gameObject.SetActive(false)));
         }
 
         if (entry.AppScreen != null)
@@ -761,15 +751,25 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             float fromAlpha = 0f;
             entry.AppScreen.alpha = fromAlpha;
             entry.AppScreen.transform.localScale = Vector3.one * fromScale;
-            yield return FadeAndScaleCanvas(entry.AppScreen, fromScale, 1f, transitionDuration, false, fromAlpha);
+            seq.Append(entry.AppScreen.DOFade(1f, appScreenExitDuration).SetEase(Ease.OutCubic));
+            seq.Join(entry.AppScreen.transform.DOScale(1f, appScreenExitDuration).SetEase(Ease.OutCubic));
         }
 
-        entry.AppLaunchedOnce = true;
-        _appRoutine = null;
+        seq.OnComplete(() =>
+        {
+            entry.AppLaunchedOnce = true;
+            _appSequence = null;
+        });
+
+        _appSequence = seq;
     }
 
-    private IEnumerator ExitAppStage()
+    // Animate returning from app stage back to home/widget.
+    private void StartExitAppStage()
     {
+        KillAppSequence();
+        var seq = DOTween.Sequence().SetUpdate(false);
+
         if (_activeAppItem != null && _activeAppItem.AppLogo != null)
         {
             _activeAppItem.AppLogo.alpha = 0f;
@@ -778,8 +778,11 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
 
         if (_activeAppItem != null && _activeAppItem.AppScreen != null)
         {
-            yield return FadeAndScaleCanvas(_activeAppItem.AppScreen, 1f, 0.8f, appScreenExitDuration, fadeOut: true);
-            _activeAppItem.AppScreen.gameObject.SetActive(false);
+            var screen = _activeAppItem.AppScreen;
+            screen.gameObject.SetActive(true);
+            seq.Append(screen.DOFade(0f, appScreenExitDuration).SetEase(Ease.OutCubic));
+            seq.Join(screen.transform.DOScale(0.8f, appScreenExitDuration).SetEase(Ease.OutCubic));
+            seq.AppendCallback(() => screen.gameObject.SetActive(false));
         }
 
         CanvasGroup homeGroup = GetBottomBlockCanvasGroup();
@@ -788,218 +791,22 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
             bottomBlockRoot.localScale = _bottomBlockBaseScale * bottomBlockDimmedScale;
             homeGroup.alpha = 0f;
             homeGroup.gameObject.SetActive(true);
-            yield return FadeHomeViewIn(homeGroup, bottomBlockRoot, transitionDuration);
+            seq.Append(homeGroup.DOFade(_bottomBlockBaseAlpha, transitionDuration).SetEase(Ease.OutCubic));
+            seq.Join(bottomBlockRoot.DOScale(_bottomBlockBaseScale, transitionDuration).SetEase(Ease.OutCubic));
         }
 
-        SetStage(Stage.Home);
-        _activeAppItem = null;
-    }
-
-    private void ToggleDetail(TopBlockItemConfig entry, int index)
-    {
-        if (entry.Detail == null)
+        seq.OnComplete(() =>
         {
-            return;
-        }
+            SetStage(Stage.Home);
+            _activeAppItem = null;
+            _appSequence = null;
+        });
 
-        bool open = !(_detailOpen && _detailIndex == index);
-        if (_detailRoutine != null)
-        {
-            StopCoroutine(_detailRoutine);
-        }
-        _detailRoutine = StartCoroutine(RunDetailToggle(entry.Detail, open, index));
-    }
-
-    private IEnumerator RunDetailToggle(CanvasGroup detail, bool open, int index)
-    {
-        _detailOpen = open;
-        _detailIndex = open ? index : -1;
-
-        float duration = Mathf.Max(0.01f, detailFadeDuration);
-        float elapsed = 0f;
-
-        // Prepare starting states
-        detail.gameObject.SetActive(true);
-        float startAlpha = detail.alpha;
-        float targetAlpha = open ? 1f : 0f;
-        Vector3 startScale = detail.transform.localScale;
-        Vector3 targetScale = open ? Vector3.one : Vector3.one * 0.8f;
-
-        // Fade out/in all widgets
-        var itemConfigs = new List<(RectTransform rect, CanvasGroup group, Vector3 startScale, Vector3 targetScale, float startA, float targetA)>();
-        for (int i = 0; i < topBlockItems.Count; i++)
-        {
-            var rect = GetItem(i);
-            if (rect == null) continue;
-            rect.gameObject.SetActive(true);
-
-            CanvasGroup cg = EnsureCanvasGroup(rect.gameObject);
-            float startItemAlpha = cg != null ? cg.alpha : 1f;
-            float targetItemAlpha = open ? 0f : 1f;
-            Vector3 startItemScale = rect.localScale;
-            Vector3 targetItemScale = open ? Vector3.one * 0.8f : Vector3.one;
-            itemConfigs.Add((rect, cg, startItemScale, targetItemScale, startItemAlpha, targetItemAlpha));
-        }
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = t * t * (3f - 2f * t);
-            detail.alpha = Mathf.Lerp(startAlpha, targetAlpha, eased);
-            detail.transform.localScale = Vector3.Lerp(startScale, targetScale, eased);
-
-            for (int i = 0; i < itemConfigs.Count; i++)
-            {
-                var cfg = itemConfigs[i];
-                if (cfg.group != null)
-                {
-                    cfg.group.alpha = Mathf.Lerp(cfg.startA, cfg.targetA, eased);
-                }
-                cfg.rect.localScale = Vector3.Lerp(cfg.startScale, cfg.targetScale, eased);
-            }
-            yield return null;
-        }
-
-        detail.alpha = targetAlpha;
-        detail.transform.localScale = targetScale;
-        if (!open)
-        {
-            detail.gameObject.SetActive(false);
-        }
-        // Ensure final state for widgets after animation completes
-        for (int i = 0; i < itemConfigs.Count; i++)
-        {
-            var cfg = itemConfigs[i];
-            if (cfg.group != null)
-            {
-                // Keep hidden while detail is open, restore to 1 when closing
-                cfg.group.alpha = open ? 0f : 1f;
-            }
-            cfg.rect.localScale = cfg.targetScale;
-            // Keep widgets active; rely on alpha/scale for visibility during detail view
-            cfg.rect.gameObject.SetActive(true);
-        }
-        if (!open && _hoveredIndex >= 0 && _hoveredIndex < topBlockItems.Count)
-        {
-            SetItemHoverState(_hoveredIndex, true);
-        }
-        _detailRoutine = null;
-    }
-
-    private void CloseDetailInstant()
-    {
-        if (_detailIndex < 0 || _detailIndex >= topBlockItems.Count)
-        {
-            _detailOpen = false;
-            _detailIndex = -1;
-            return;
-        }
-
-        var entry = GetEntry(_detailIndex);
-        if (entry != null && entry.Detail != null)
-        {
-            entry.Detail.alpha = 0f;
-            entry.Detail.transform.localScale = Vector3.one * 0.8f;
-            entry.Detail.gameObject.SetActive(false);
-        }
-
-        for (int i = 0; i < topBlockItems.Count; i++)
-        {
-            if (i == _detailIndex) continue;
-            var rect = GetItem(i);
-            if (rect == null) continue;
-            rect.gameObject.SetActive(true);
-            rect.localScale = Vector3.one;
-            CanvasGroup cg = GetHoverChild(rect);
-            if (cg != null)
-            {
-                cg.alpha = i == _hoveredIndex ? 1f : 0f;
-            }
-            SetItemHoverState(i, i == _hoveredIndex);
-        }
-
-        _detailOpen = false;
-        _detailIndex = -1;
-    }
-
-    private IEnumerator FadeCanvas(CanvasGroup group, float from, float to, float duration)
-    {
-        duration = Mathf.Max(0.01f, duration);
-        float elapsed = 0f;
-        group.alpha = from;
-        group.gameObject.SetActive(true);
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = t * t * (3f - 2f * t);
-            group.alpha = Mathf.Lerp(from, to, eased);
-            yield return null;
-        }
-        group.alpha = to;
-        if (Mathf.Approximately(to, 0f))
-        {
-            group.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator FadeAndScaleCanvas(CanvasGroup group, float fromScale, float toScale, float duration, bool fadeOut = false, float? startAlphaOverride = null)
-    {
-        duration = Mathf.Max(0.01f, duration);
-        float elapsed = 0f;
-        group.gameObject.SetActive(true);
-        float startAlpha = startAlphaOverride.HasValue ? startAlphaOverride.Value : (fadeOut ? 1f : 0f);
-        float targetAlpha = fadeOut ? 0f : 1f;
-        group.alpha = startAlpha;
-        group.transform.localScale = Vector3.one * fromScale;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = EaseOutCubic(t);
-            group.alpha = Mathf.Lerp(startAlpha, targetAlpha, eased);
-            group.transform.localScale = Vector3.one * Mathf.Lerp(fromScale, toScale, eased);
-            yield return null;
-        }
-
-        group.alpha = targetAlpha;
-        group.transform.localScale = Vector3.one * toScale;
-        if (fadeOut)
-        {
-            group.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator FadeWidgetView(bool show)
-    {
-        CanvasGroup widgetCg = GetWidgetCanvasGroup();
-        if (widgetCg == null)
-        {
-            yield break;
-        }
-        float duration = Mathf.Max(0.01f, transitionDuration * 0.5f);
-        float startAlpha = widgetCg.alpha;
-        float targetAlpha = show ? 1f : 0f;
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = EaseOutCubic(t);
-            widgetCg.alpha = Mathf.Lerp(startAlpha, targetAlpha, eased);
-            yield return null;
-        }
-        widgetCg.alpha = targetAlpha;
+        _appSequence = seq;
     }
 
     private void UpdateWidgetItemVisuals()
     {
-        if (_detailOpen)
-        {
-            return;
-        }
         if (topBlockItems.Count == 0 || topBlockRoot == null)
         {
             return;
@@ -1039,6 +846,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Toggle a StageController between its first two stages.
     private void ToggleStageController(TopBlockItemConfig entry)
     {
         var controller = entry.StageController;
@@ -1060,31 +868,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         controller.RequestStageIndex(target);
     }
 
-    private IEnumerator FadeHomeViewIn(CanvasGroup group, RectTransform root, float duration)
-    {
-        duration = Mathf.Max(0.01f, duration);
-        float elapsed = 0f;
-        Vector3 startScale = _bottomBlockBaseScale * bottomBlockDimmedScale;
-        Vector3 targetScale = _bottomBlockBaseScale;
-        float startAlpha = 0f;
-        float targetAlpha = _bottomBlockBaseAlpha;
-        group.alpha = startAlpha;
-        root.localScale = startScale;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = EaseOutCubic(t);
-            group.alpha = Mathf.Lerp(startAlpha, targetAlpha, eased);
-            root.localScale = Vector3.Lerp(startScale, targetScale, eased);
-            yield return null;
-        }
-
-        group.alpha = targetAlpha;
-        root.localScale = targetScale;
-    }
-
+    // Safely fetch an item config by index.
     private TopBlockItemConfig GetEntry(int index)
     {
         if (index < 0 || index >= topBlockItems.Count)
@@ -1094,12 +878,14 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return topBlockItems[index];
     }
 
+    // Determine if the hovered item is expandable.
     private bool IsExpandableHovered()
     {
         var entry = GetEntry(_hoveredIndex);
         return entry != null && entry.Interaction == InteractionType.Expandable;
     }
 
+    // Check if an index corresponds to a selectable item.
     private bool IsSelectable(int index)
     {
         if (index < 0 || index >= topBlockItems.Count)
@@ -1113,6 +899,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
                entry.Interaction != InteractionType.NonSelectable;
     }
 
+    // Find the next selectable index in a direction from a start.
     private int FindNextSelectable(int startIndex, int direction)
     {
         if (direction == 0 || topBlockItems.Count == 0)
@@ -1133,6 +920,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         return -1;
     }
 
+    // Resolve to the nearest selectable index or -1 if none.
     private int GetSelectableOrFallbackIndex(int index)
     {
         if (IsSelectable(index))
@@ -1166,6 +954,7 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
     [System.Serializable]
     public class TopBlockItemConfig
     {
+        // Data backing a single widget item and its visuals/interactions.
         public RectTransform Item;
         public InteractionType Interaction = InteractionType.QuickAction;
         public StageController StageController;
@@ -1173,7 +962,6 @@ public class TwoStageScrollController : MonoBehaviour, IPointerClickHandler
         public CanvasGroup AppScreen;
         public GameObject AppPill;
         public GameObject DefaultText;
-        public CanvasGroup Detail;
         [System.NonSerialized] public bool AppLaunchedOnce;
     }
 }

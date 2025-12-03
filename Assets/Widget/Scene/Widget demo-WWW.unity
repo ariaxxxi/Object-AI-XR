@@ -714,8 +714,8 @@ MonoBehaviour:
     to: 1
     useDuration: 1
     duration: 0.5
-    useEase: 0
-    ease: 19
+    useEase: 1
+    ease: 12
     useDelay: 1
     delay: 0.2
   - enabled: 1
@@ -2391,6 +2391,7 @@ MonoBehaviour:
   onItemClicked:
     m_PersistentCalls:
       m_Calls: []
+  scrollPixelsPerStep: 10
   hoverFadeDuration: 0.15
   backHoverGraceSeconds: 2
   appLogoDisplaySeconds: 1
